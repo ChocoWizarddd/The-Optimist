@@ -36,6 +36,7 @@ import CurvedLoop from './components/CurvedLoop';
 import FallingText from './components/FallingText';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import WeatherPage from './components/WeatherPage';
+import JellyRadio from './components/JellyRadio';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
 const nav = [
@@ -725,6 +726,14 @@ export default function App() {
             <strong>{page}</strong>
           </div>
           <div className="top-controls">
+            <JellyRadio
+              items={[{ value: 'demo', label: 'DEMO' }, { value: 'live', label: 'LIVE' }]}
+              value={mode}
+              onChange={setMode}
+              size="sm"
+              ariaLabel="Select telemetry mode"
+              className="topbar-mode-radio"
+            />
             <label className="device-select">
               <Factory size={15} />
               <select value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)} aria-label="Select storage unit">
