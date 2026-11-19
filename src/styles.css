@@ -114,3 +114,16 @@ body{background:#000;color:#e7e7e7}
 .black-theme .gauge-card,.black-theme .panel,.black-theme .unit-card{background:rgba(9,10,8,.76)}
 .light-theme .app-shell,.light-theme{background:transparent!important}
 .light-theme .gauge-card,.light-theme .panel,.light-theme .unit-card{background:rgba(250,251,248,.82)}
+/* Near-black dark surfaces; keep the animated backdrop almost monochrome */
+.black-theme .sidebar{background:#030303;border-color:#171717}
+.black-theme .topbar{background:#050505;border-color:#171717}
+.black-theme .gauge-card,.black-theme .panel,.black-theme .unit-card{background:#050505;border-color:#191919}
+.black-theme .device-select,.black-theme .mode-switch,.black-theme .form-panel input,.black-theme .form-panel select,.black-theme .panel-heading select,.black-theme .page-intro select{background:#050505;border-color:#202020;color:#ededed}
+.black-theme .device-select select,.black-theme .device-select option{background:#050505;color:#ededed}
+.black-theme .cooler-model{background:#050505}
+.black-theme .model-heading{background:#050505e8;border-color:#202020}
+.black-theme .gauge-track{stroke:#202020}
+.black-theme .unit-values div,.black-theme .unit-foot,.black-theme .detail-row,.black-theme th,.black-theme td{border-color:#1b1b1b}
+.black-theme th{background:#080808}
+.black-theme .chart-panel{background:#050505}
+.grainient-backdrop{opacity:.65}
