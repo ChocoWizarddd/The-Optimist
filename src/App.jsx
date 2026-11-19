@@ -723,15 +723,8 @@ export default function App() {
           ))}
         </nav>
 
-        <div className="side-status">
-          <Eyebrow>SYSTEM STATUS</Eyebrow>
-          <div className="status-row"><span>Telemetry provider</span><b className="green">ACTIVE</b></div>
-          <div className="status-row"><span>Active unit</span><b>{selectedDevice}</b></div>
-          <div className="status-row"><span>Polling interval</span><b>3.0 s</b></div>
-          <div className="status-bars" aria-hidden="true">
-            {Array.from({ length: 22 }, (_, i) => <i key={i} style={{ animationDelay: `${i * 70}ms` }} />)}
-          </div>
-          <div className="side-clock"><span>LOCAL TIME</span><b>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b></div>
+        <div className="sidebar-logo">
+          <img src="/optimist-eco-tech-logo.png" alt="Optimist Eco-Tech" />
         </div>
         <div className="sidebar-foot">OPTAL OS · FIELD BUILD 1.0</div>
       </aside>
