@@ -28,7 +28,7 @@ Open the local URL printed by Vite. `npm run build` creates the production bundl
 
 ## Simulated mode
 
-Simulation mode is selected initially. It updates readings for OPT-001 and five simulated fleet units every three seconds, including compressor state. Use the device selector in the top bar to switch the selected unit; its gauges, charts, crop readings, alerts and reports follow that unit. Each simulated unit has its own changing readings and history. Threshold alerts are generated from the active unit. CSV export downloads current-session telemetry. Settings are local to the browser. All generated readings are labeled as simulated and are never presented as hardware data.
+Simulation mode is selected initially. It updates readings for OPT-001 and five demo fleet units every three seconds, including compressor state. Use the device selector in the top bar to switch the selected unit; its gauges, charts, crop readings, alerts and reports follow that unit. Each demo fleet entry has its own changing readings and history. Threshold alerts are generated from the active unit. CSV export downloads current-session telemetry. Settings are local to the browser. All generated readings are labeled as simulated and are never presented as hardware data.
 
 Crop profiles are illustrative defaults for software demonstration and must be verified for the target cultivar, maturity, packaging and storage duration by an agricultural specialist.
 
