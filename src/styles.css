@@ -85,3 +85,23 @@ body{background:#000;color:#e7e7e7}
 .light-theme .theme-toggle,.light-theme .small-btn,.light-theme .primary-btn{box-shadow:4px 4px 9px #cbd0d4,-3px -3px 8px #fff,inset 1px 1px 0 #fff}
 .light-theme .device-select,.light-theme .panel-heading select,.light-theme .page-intro select,.light-theme .form-panel input,.light-theme .form-panel select{box-shadow:inset 3px 3px 7px rgba(48,59,67,.09),inset -2px -2px 5px rgba(255,255,255,.85)}
 @media(prefers-reduced-motion:reduce){.app-shell,.nav-item,.gauge-card,.unit-card,.theme-toggle{transition:none}.gauge-card:hover,.unit-card:hover{transform:none}}
+/* Parrot-green brand accents */
+.brand-mark{background:#20391a;color:#91e855;border-color:#507a34}
+.brand em{color:#91e855}
+.nav-item.active{background:#21351d;color:#a5ef70;border-left-color:#8de34d}
+.text-btn{color:#9be864}
+.primary-btn{background:#263e1d;border-color:#527b35;color:#c3f49b}
+.theme-toggle:hover{border-color:#8de34d;color:#b5f58c}
+.mode-switch button.live-chosen{background:#26351f;color:#a5e77b}
+.mode-switch button.live-chosen span{background:#8de34d}
+.pill.live{color:#a5e77b;border-color:#55783e;background:#1d2b18}
+.gauge-value{filter:drop-shadow(0 0 2px rgba(141,227,77,.2))}
+.light-theme .sidebar nav .nav-item.active{background:#e6f4dd;color:#315f1d;border-left-color:#77c939}
+.light-theme .brand-mark{background:#e7f4dc;color:#4c8b24;border-color:#b3d697}
+.light-theme .brand em{color:#4c8b24}
+.light-theme .text-btn{color:#39771c!important}
+.light-theme .primary-btn{background:#e8f4df;border-color:#b8d69e;color:#315f1d}
+.light-theme .mode-switch button.live-chosen{background:#e8f4df;color:#315f1d}
+.light-theme .mode-switch button.live-chosen span{background:#68b62f}
+.light-theme .pill.live{color:#3d731f;border-color:#b3d49a;background:#eff7e9}
+.light-theme .theme-toggle:hover{border-color:#77c939;color:#39771c}
