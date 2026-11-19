@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
-import Grainient from './components/Grainient';
+import LightLines from './components/LightLines';
 import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
@@ -682,19 +682,16 @@ export default function App() {
   return (
     <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}`}>
       <div className="background-stack" aria-hidden="true">
-        <div className="bg-webgl">
-          <Grainient
-            colors={['#070809', '#0b0d0e', '#111315', '#1b1712', '#2a1c10']}
-            angle={38}
-            flow={0.42}
-            silk={0.22}
-            grainAmount={0.022}
-            lightMode={theme === 'light'}
-            interactive
-            clickSwirl
-            intro={false}
-          />
-        </div>
+        <LightLines
+          className="bg-light-lines"
+          linesOpacity={0.035}
+          lightsOpacity={0.56}
+          speedMultiplier={0.8}
+          gradientFrom="#080a0c"
+          gradientTo="#0d1114"
+          lineColor="#9bb6c2"
+          lightColor="#edf8ff"
+        />
         <div className="bg-grid" />
         <div className="bg-glow bg-glow--amber" />
         <div className="bg-glow bg-glow--mint" />

@@ -92,6 +92,22 @@ img, canvas { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
+.bg-light-lines,
+.light-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.bg-light-lines { opacity: 0.62; }
+.light-lines__svg { position: absolute; width: 100%; height: 100%; }
+.light-lines__content { position: relative; z-index: 1; width: 100%; height: 100%; }
+.light-lines .light { filter: drop-shadow(0 0 8px rgba(220, 242, 255, 0.45)); }
+
 /* fine geometric grid */
 .bg-grid {
   position: absolute;
