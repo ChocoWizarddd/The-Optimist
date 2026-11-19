@@ -1,4 +1,4 @@
-# OPTIMIST OS
+# OPTAL OS
 
 Industrial-style dashboard for a decentralized solar cold-storage prototype. This first phase runs fully in a browser with a local simulated provider. Simulated values are labeled SIMULATED DATA; Live mode makes backend requests and never substitutes generated values.
 

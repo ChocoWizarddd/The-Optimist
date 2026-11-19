@@ -808,7 +808,7 @@ export default function App() {
         <div className="brand">
           <div className="brand-mark"><Snowflake size={20} strokeWidth={1.6} /></div>
           <div className="brand__text">
-            <b>OPTIMIST <em>OS</em></b>
+            <b>OPTAL <em>OS</em></b>
             <small>COLD STORAGE SYSTEMS</small>
           </div>
           <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
@@ -840,7 +840,7 @@ export default function App() {
           </div>
           <div className="side-clock"><span>LOCAL TIME</span><b>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b></div>
         </div>
-        <div className="sidebar-foot">OPTIMIST OS · FIELD BUILD 1.0</div>
+        <div className="sidebar-foot">OPTAL OS · FIELD BUILD 1.0</div>
       </aside>
 
       {mobileOpen && <div className="scrim" onClick={() => setMobileOpen(false)} />}
@@ -849,7 +849,7 @@ export default function App() {
         <header className="topbar">
           <button className="menu-btn" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Menu size={19} /></button>
           <div className="crumb">
-            <span>OPTIMIST OS</span>
+            <span>OPTAL OS</span>
             <b>/</b>
             <strong>{page}</strong>
           </div>
@@ -880,7 +880,7 @@ export default function App() {
         <section className="content" key={page}>
           <div className="page-heading">
             <div>
-              <Eyebrow>{page === 'Overview' ? 'CONTROL ROOM' : 'OPTIMIST OS'}</Eyebrow>
+              <Eyebrow>{page === 'Overview' ? 'CONTROL ROOM' : 'OPTAL OS'}</Eyebrow>
               <h1>{page}</h1>
             </div>
             <div className="heading-meta">
