@@ -224,7 +224,7 @@ img, canvas { max-width: 100%; display: block; }
   color: var(--accent);
   box-shadow: 0 8px 24px rgba(242,166,90,0.12);
 }
-.brand__text { display: flex; align-items: center; min-width: 0; }
+.brand__text { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; min-width: 0; }
 .brand__text b {
   display: block; line-height: 1; white-space: nowrap;
   font-size: 17px; letter-spacing: -0.04em; color: var(--ink);
