@@ -37,6 +37,7 @@ import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import WeatherPage from './components/WeatherPage';
 import JellyRadio from './components/JellyRadio';
 import Antigravity from './components/Antigravity';
+import DarkVeil from './components/DarkVeil';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
 const nav = [
@@ -700,6 +701,21 @@ export default function App() {
       <InterfaceFX />
 
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
+        <DarkVeil
+          className="sidebar-dark-veil"
+          color="#174b62"
+          speed={0.18}
+          scale={1.15}
+          flow={0.7}
+          warp={0.22}
+          brightness={0.62}
+          glow={0.18}
+          grain={0.012}
+          quality={0.38}
+          mouseInteraction
+          mouseStrength={0.65}
+          opacity={0.5}
+        />
         <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
 
         <div className="nav-label">OPERATIONS</div>
