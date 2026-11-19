@@ -1170,3 +1170,21 @@ img, canvas { max-width: 100%; display: block; }
 .light-theme .ticker__group span { color: var(--ink-dim); }
 .light-theme .sidebar-foot { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.03); }
 .light-theme .nav-count { background: rgba(242,166,90,0.15); color: #b55f1e; border-color: rgba(242,166,90,0.4); }
+
+/* Keep the global header dark in both page themes. */
+.topbar,
+.light-theme .topbar {
+  --ink: #f3f1eb;
+  --ink-muted: #a6aaa2;
+  --ink-dim: #737870;
+  --panel-border: rgba(255,255,255,0.12);
+  --accent: #f2a65a;
+  --accent-glow: rgba(242,166,90,0.18);
+  --ok: #7fd1ae;
+  --warn: #e2685a;
+  color: #f3f1eb;
+  background: #050607 !important;
+  border-bottom-color: rgba(255,255,255,0.12);
+  color-scheme: dark;
+}
+.topbar .crumb b { color: #737870; }
