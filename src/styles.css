@@ -542,9 +542,24 @@ img, canvas { max-width: 100%; display: block; }
   50% { opacity: 0.55; box-shadow: 0 0 6px var(--ok); }
 }
 .gauge-wrap { position: relative; width: 150px; height: 150px; margin: 0 auto 14px; }
-.gauge-reading { text-align: center; }
-.gauge-reading strong { font-family: 'IBM Plex Mono', monospace; font-size: 34px; line-height: 1; color: var(--ink); letter-spacing: -0.02em; }
-.gauge-reading span { font-size: 13px; color: var(--ink-muted); font-weight: 600; }
+.gauge-reading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.gauge-reading strong {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.gauge-unit {
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
 .gauge-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-dim); margin-bottom: 8px; }
 .gauge-range { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-dim); margin-bottom: 10px; letter-spacing: 0.05em; }
 .zone { display: flex; gap: 8px; align-items: center; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }

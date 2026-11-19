@@ -32,6 +32,7 @@ import {
 import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
 import Grainient from './components/Grainient';
+import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
@@ -108,20 +109,22 @@ function Gauge({ title, value, unit, min, max, low, high, color, caption }) {
       </div>
       <div className="gauge-wrap">
         <svg viewBox="0 0 112 112" aria-hidden="true">
-          <circle cx="56" cy="56" r="46" className="gauge-track" />
+          <circle cx="56" cy="56" r="46" className="gauge-track" stroke="#1a1d1f" strokeWidth="14" />
           <circle
             cx="56"
             cy="56"
             r="46"
             className="gauge-value"
             stroke={color}
+            strokeWidth="14"
+            strokeLinecap="round"
             strokeDasharray={`${circ * pct} ${circ}`}
             transform="rotate(-90 56 56)"
           />
         </svg>
         <div className="gauge-reading">
           <strong>{value}</strong>
-          <span>{unit}</span>
+          <span className="gauge-unit">{unit}</span>
         </div>
       </div>
       <div className="gauge-meta">
@@ -321,6 +324,7 @@ function Ticker({ reading, fleet, mode }) {
 export default function App() {
   const [page, setPage] = useState('Overview');
   const [mode, setMode] = useState('demo');
+  const [theme, setTheme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
   const [range, setRange] = useState('6h');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -335,6 +339,10 @@ export default function App() {
     mode, 3000, range, selectedDevice,
   );
   useReveal(page);
+
+  useEffect(() => {
+    localStorage.setItem('optimist-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!reading) return;
@@ -665,7 +673,7 @@ export default function App() {
                   <div className="report-card__icon"><BarChart3 size={19} /></div>
                   <b>{label}</b>
                   <small>
-                    {key === 'alerts' ? alerts.length : history.length}
+                    {key === 'alerts' ? alerts.length : key === 'condition' ? (score?.score ?? '—') : history.length}
                     <span> records in current session</span>
                   </small>
                   <button className="text-btn" onClick={exportCsv}>Export CSV <ArrowUpRight size={14} /></button>
@@ -681,7 +689,7 @@ export default function App() {
   };
 
   return (
-    <div className="app-shell black-theme">
+    <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}`}>
       <div className="background-stack" aria-hidden="true">
         <div className="bg-webgl">
           <Grainient
@@ -690,7 +698,7 @@ export default function App() {
             flow={0.42}
             silk={0.22}
             grainAmount={0.022}
-            lightMode={false}
+            lightMode={theme === 'light'}
             interactive
             clickSwirl
             intro={false}
@@ -724,6 +732,16 @@ export default function App() {
           ))}
         </nav>
 
+        <div className="side-status">
+          <Eyebrow>SYSTEM STATUS</Eyebrow>
+          <div className="status-row"><span>Telemetry provider</span><b className="green">ACTIVE</b></div>
+          <div className="status-row"><span>Active unit</span><b>{selectedDevice}</b></div>
+          <div className="status-row"><span>Polling interval</span><b>3.0 s</b></div>
+          <div className="status-bars" aria-hidden="true">
+            {Array.from({ length: 22 }, (_, i) => <i key={i} style={{ animationDelay: `${i * 70}ms` }} />)}
+          </div>
+          <div className="side-clock"><span>LOCAL TIME</span><b>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b></div>
+        </div>
         <div className="sidebar-foot">OPTAL OS · FIELD BUILD 1.0</div>
       </aside>
 
@@ -752,6 +770,7 @@ export default function App() {
             </div>
 
             <div className="avatar" aria-hidden="true">OP</div>
+            <Magnetic strength={0.12}><ThemeToggleButton theme={theme} onToggle={setTheme} /></Magnetic>
           </div>
         </header>
 
