@@ -91,94 +91,19 @@ img, canvas { max-width: 100%; display: block; }
   z-index: -1;
   overflow: hidden;
 }
-
-.bg-light-lines,
-.light-lines {
+.app-antigravity {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
   pointer-events: none;
-}
-.bg-light-lines { opacity: 0.62; }
-.bg-light-lines::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(460px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(168, 208, 224, 0.16), transparent 72%);
-  transition: opacity 180ms ease-out;
-}
-.bg-light-lines[data-pointer-active='true']::after { opacity: 1; }
-.light-lines__svg { position: absolute; width: 100%; height: 100%; }
-.light-lines__content { position: relative; z-index: 1; width: 100%; height: 100%; }
-.light-lines .light { filter: drop-shadow(0 0 8px rgba(220, 242, 255, 0.45)); }
-
-/* fine geometric grid */
-.bg-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* subtle motion glow orbs */
-.bg-glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(64px);
-  opacity: 0;
-  animation: glow-drift 22s ease-in-out infinite alternate;
-}
-.bg-glow--blue {
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(143,205,232,0.16), transparent 70%);
-  top: -10%; left: -12%;
-  animation-duration: 26s;
-}
-.bg-glow--mint {
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(127,209,174,0.10), transparent 70%);
-  bottom: -15%; right: -10%;
-  animation-duration: 20s;
-  animation-delay: -6s;
-}
-
-@keyframes glow-drift {
-  0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-  100% { transform: translate(60px, -80px) scale(1.15); opacity: 0.85; }
-}
-
-/* animated film grain */
-.bg-noise {
-  position: absolute;
-  inset: 0;
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 1;
-  mask-image: radial-gradient(circle at center, black 30%, transparent 100%);
-  animation: noise 0.12s steps(1) infinite;
-}
-@keyframes noise {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(-4px, 4px); }
-  50% { transform: translate(4px, -4px); }
-  75% { transform: translate(-4px, -4px); }
 }
 
 /* soft vignette */
 .bg-vignette {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: radial-gradient(ellipse at center, transparent 40%, rgba(6, 7, 8, 0.9) 100%);
   pointer-events: none;
 }
@@ -194,7 +119,7 @@ img, canvas { max-width: 100%; display: block; }
   position: fixed;
   inset: 0 auto 0 0;
   width: 270px;
-  background: rgba(10, 11, 12, 0.85);
+  background: rgba(10, 11, 12, 0.74);
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--panel-border);
   display: flex;
@@ -202,27 +127,6 @@ img, canvas { max-width: 100%; display: block; }
   z-index: 20;
   transition: transform 340ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.sidebar__galaxy {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  opacity: .56;
-  pointer-events: none;
-}
-.sidebar-color-bends {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 20% 25%, rgba(30,105,145,.32), transparent 58%),
-    radial-gradient(ellipse at 78% 72%, rgba(90,166,200,.15), transparent 62%);
-}
-.sidebar-color-bends canvas { display: block; pointer-events: none; }
-.sidebar > :not(.sidebar__galaxy) { position: relative; z-index: 1; }
-
 .main {
   position: relative;
   margin-left: 270px;
@@ -1377,7 +1281,7 @@ img, canvas { max-width: 100%; display: block; }
 [data-reveal="scale"] { transform: scale(0.92) translate3d(0, 0, 0); }
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }
-  .bg-glow, .hero__scroll { animation: none; }
+  .hero__scroll { animation: none; }
 }
 
 /* ---------- magnetic & tilt ---------- */

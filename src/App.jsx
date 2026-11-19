@@ -31,13 +31,12 @@ import {
 } from 'lucide-react';
 import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
-import LightLines from './components/LightLines';
 import CurvedLoop from './components/CurvedLoop';
 import FallingText from './components/FallingText';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import WeatherPage from './components/WeatherPage';
 import JellyRadio from './components/JellyRadio';
-import ColorBends from './components/ColorBends';
+import Antigravity from './components/Antigravity';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
 const nav = [
@@ -51,7 +50,7 @@ const nav = [
 ];
 
 const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
-const SIDEBAR_BEND_COLORS = ['#145071', '#318bb5', '#74c6e5', '#abcdec'];
+const ANTIGRAVITY_COLORS = ['#4e9bbf', '#84c4e0', '#d2efff'];
 const RANGES = [
   ['6h', '6 hours'],
   ['7d', '7 days'],
@@ -673,45 +672,34 @@ export default function App() {
   return (
     <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}`}>
       <div className="background-stack" aria-hidden="true">
-        <LightLines
-          className="bg-light-lines"
-          linesOpacity={0.035}
-          lightsOpacity={0.56}
-          speedMultiplier={0.8}
-          gradientFrom="#080a0c"
-          gradientTo="#0d1114"
-          lineColor="#9bb6c2"
-          lightColor="#edf8ff"
+        <Antigravity
+          count={950}
+          colors={ANTIGRAVITY_COLORS}
+          colorMode="radial"
+          colorSpeed={0.025}
+          ringRadius={7}
+          waveSpeed={0.28}
+          waveAmplitude={0.72}
+          waveCount={2}
+          particleSize={0.68}
+          particleVariance={0.7}
+          rotationSpeed={0.035}
+          depthFactor={0.72}
+          pulseSpeed={2.1}
+          fieldStrength={8}
+          ambient={0.16}
+          interactive
+          clickBurst
+          opacity={0.42}
+          maxDevicePixelRatio={1.35}
+          className="app-antigravity"
         />
-        <div className="bg-grid" />
-        <div className="bg-glow bg-glow--blue" />
-        <div className="bg-glow bg-glow--mint" />
-        <div className="bg-noise" />
         <div className="bg-vignette" />
       </div>
 
       <InterfaceFX />
 
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
-        <div className="sidebar__galaxy" aria-hidden="true">
-          <ColorBends
-            colors={SIDEBAR_BEND_COLORS}
-            rotation={18}
-            speed={0.12}
-            autoRotate={1.2}
-            scale={1.1}
-            frequency={1.05}
-            warpStrength={0.55}
-            mouseInfluence={0.45}
-            parallax={0.2}
-            noise={0.025}
-            iterations={2}
-            intensity={1.05}
-            bandWidth={5.5}
-            transparent
-            className="sidebar-color-bends"
-          />
-        </div>
         <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
 
         <div className="nav-label">OPERATIONS</div>
