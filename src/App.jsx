@@ -212,7 +212,7 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
               width={40}
             />
             <Tooltip
-              cursor={{ stroke: 'rgba(242,166,90,.35)', strokeDasharray: '3 3' }}
+              cursor={{ stroke: 'rgba(143,205,232,.35)', strokeDasharray: '3 3' }}
               contentStyle={{
                 background: 'rgba(14,16,17,.96)',
                 border: '1px solid rgba(255,255,255,.12)',
@@ -223,7 +223,7 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
                 boxShadow: '0 18px 40px rgba(0,0,0,.5)',
               }}
             />
-            <ReferenceLine y={threshold} stroke="#f2a65a" strokeDasharray="4 4" strokeOpacity={0.8} />
+            <ReferenceLine y={threshold} stroke="#8fcde8" strokeDasharray="4 4" strokeOpacity={0.8} />
             <Area
               type="monotone"
               dataKey={dataKey}
@@ -444,7 +444,7 @@ export default function App() {
                       title: 'BATTERY VOLTAGE',
                       value: nfmt(reading?.battery_voltage, 2),
                       unit: 'V', min: 10, max: 14, low: '11.9 V', high: '12.8 V',
-                      color: '#f2a65a', caption: 'Battery monitor',
+                      color: '#8fcde8', caption: 'Battery monitor',
                     },
                     {
                       title: 'CHAMBER TEMPERATURE',
@@ -681,7 +681,7 @@ export default function App() {
           lightColor="#edf8ff"
         />
         <div className="bg-grid" />
-        <div className="bg-glow bg-glow--amber" />
+        <div className="bg-glow bg-glow--blue" />
         <div className="bg-glow bg-glow--mint" />
         <div className="bg-noise" />
         <div className="bg-vignette" />
