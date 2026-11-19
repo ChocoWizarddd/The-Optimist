@@ -339,10 +339,6 @@ export default function App() {
   useReveal(page);
 
   useEffect(() => {
-    localStorage.setItem('optimist-theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
     if (!reading) return;
     setHistory((h) => [
       ...h.slice(-167),
