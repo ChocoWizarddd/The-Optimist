@@ -494,7 +494,7 @@ export default function App() {
         return (
           <>
             <PageIntro eyebrow="TELEMETRY" title="Live Monitoring" copy="Live readings and historical graphs for every storage unit." />
-            <div className="metric-row">
+            <div className="metric-row metric-row--live">
               {[
                 ['Temperature', reading ? `${nfmt(reading.temperature)} °C` : '—'],
                 ['Humidity', reading ? `${nfmt(reading.humidity)} %` : '—'],
