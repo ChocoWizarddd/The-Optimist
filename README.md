@@ -50,3 +50,5 @@ Battery runtime and energy consumption are not invented: reliable runtime requir
 
 The Overview now displays the supplied `public/models/cooler3Dmodel1.glb` above the three compact telemetry gauges. The viewer uses Three.js with local GLB loading and interactive orbit controls: drag to rotate and scroll to zoom. The model asset is served by Vite from the app itself; no external model host is required. If WebGL is unavailable or the asset fails to load, the viewer displays an inline status message.
 
+
+The 3D viewer places the cooler in a locally rendered agricultural warehouse scene with corrugated walls, steel framing, concrete flooring and produce crates. The environment is generated in Three.js and requires no remote background image.
