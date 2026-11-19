@@ -603,7 +603,7 @@ export default function App() {
         return (
           <>
             <PageIntro eyebrow="RELIABILITY" title="Maintenance" copy="Inspection planning and current device health." />
-            <div className="two-col">
+            <div className="two-col maintenance-grid">
               <div className="panel" data-reveal="left">
                 <Eyebrow>DEVICE HEALTH</Eyebrow>
                 <h3>{selectedDevice}</h3>
