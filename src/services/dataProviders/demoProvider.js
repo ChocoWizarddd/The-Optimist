@@ -1,4 +1,4 @@
-const sample=(t,h,v,compressor,device_id='OPT-001',timestamp=new Date().toISOString())=>({device_id,temperature:+t.toFixed(1),humidity:+h.toFixed(1),battery_voltage:+v.toFixed(2),compressor_running:compressor,timestamp,uptime_seconds:86400+Math.floor(Math.random()*9000),sensor_health:{temperature:true,humidity:true,battery:true},source:'DEMO'});
+const sample=(t,h,v,compressor,device_id='OPT-001',timestamp=new Date().toISOString())=>({device_id,temperature:+t.toFixed(1),humidity:+h.toFixed(1),battery_voltage:+v.toFixed(2),compressor_running:compressor,timestamp,uptime_seconds:86400+Math.floor(Math.random()*9000),sensor_health:{temperature:true,humidity:true,battery:true},source:'SIMULATED'});
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 const historyRanges={'1h':{count:120,minutes:30,cycles:2.2},'6h':{count:108,minutes:200/60,cycles:2.7},'24h':{count:144,minutes:10,cycles:1.8},'7d':{count:168,minutes:60,cycles:5.2}};
 export function createDemoProvider(){
