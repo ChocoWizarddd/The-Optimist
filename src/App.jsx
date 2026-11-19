@@ -742,7 +742,7 @@ export default function App() {
           </div>
         </header>
 
-        <section className="content" key={page}>
+        <section className={`content ${page === 'Overview' ? 'content--overview' : 'content--inner'}`} key={page}>
           <div className="page-heading">
             <div>
               <Eyebrow>{page === 'Overview' ? 'CONTROL ROOM' : 'OPTAL OS'}</Eyebrow>
