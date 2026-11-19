@@ -53,3 +53,5 @@ body{background:#000;color:#e7e7e7}
 .light-theme .recharts-cartesian-grid line{stroke:#e0e5e9}
 .light-theme .table-wrap{background:#fff}
 @media(max-width:560px){.theme-toggle{min-width:29px;width:29px;padding:0}.theme-toggle span{display:none}}
+/* Strong text contrast for the light theme */
+.light-theme :is(.nav-item,.brand b,.brand small,.side-title,.side-clock,.status-row,.sidebar-foot,.crumb span,.crumb b,.crumb strong,.page-heading h1,.page-heading p,.page-intro h2,.page-intro p,.heading-meta,.section-title h2,.section-title small,.gauge-title,.gauge-reading strong,.gauge-reading span,.gauge-meta,.gauge-range,.gauge-caption,.zone span,.chart-panel,.chart-stats,.detail-row,.panel p,.panel h2,.panel h3,.panel small,.recommendations,.metric,.report-card,.table-wrap,.form-panel label,.content-foot,.unit-head b,.unit-values b,.unit-values small,.unit-foot,.device-select,.theme-toggle,.text-btn,.small-btn,.primary-btn){color:#000!important;font-weight:700!important}
