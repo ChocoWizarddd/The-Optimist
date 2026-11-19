@@ -114,6 +114,8 @@ body{background:#000;color:#e7e7e7}
 .black-theme .gauge-card,.black-theme .panel,.black-theme .unit-card{background:rgba(9,10,8,.76)}
 .light-theme .app-shell,.light-theme{background:transparent!important}
 .light-theme .gauge-card,.light-theme .panel,.light-theme .unit-card{background:rgba(250,251,248,.82)}
+.light-theme :is(p,span,small,label,th,td,button,input,select,h1,h2,h3,strong,b,li,dt,dd,figcaption,output,time,.avatar,.connection,.chart-stats,.pill,.gauge-title,.zone,.severity,.state,.side-clock,.nav-label,.content-foot){font-weight:700!important}
+.light-theme .recharts-cartesian-axis-tick-value{fill:#202a31!important;font-weight:700!important}
 /* Near-black dark surfaces; keep the animated backdrop almost monochrome */
 .black-theme .sidebar{background:#030303;border-color:#171717}
 .black-theme .topbar{background:#050505;border-color:#171717}
