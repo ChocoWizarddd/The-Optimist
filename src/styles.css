@@ -129,3 +129,33 @@ body{background:#000;color:#e7e7e7}
 .black-theme th{background:#080808}
 .black-theme .chart-panel{background:#050505}
 .grainient-backdrop{opacity:.65}
+
+/* Live monitoring fleet history */
+.overview-top{grid-template-columns:minmax(0,1fr)}
+.unit-monitoring-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));gap:12px;align-items:start}
+.unit-monitoring-card{min-width:0;padding:14px 15px 12px}
+.unit-monitoring-header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #293740;padding-bottom:10px}
+.unit-monitoring-header small{font-size:8px;letter-spacing:.8px;color:#74868f}
+.unit-monitoring-header h3{margin:4px 0 0;font-size:14px;color:#e2ebed}
+.unit-monitoring-readings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px 0;border-bottom:1px solid #293740}
+.unit-monitoring-readings div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.unit-monitoring-readings small{font-size:8px;color:#758790}
+.unit-monitoring-readings b{font-size:11px;font-weight:550;color:#dce6e8}
+.unit-monitoring-charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-top:10px}
+.unit-history-chart{min-width:0;padding:8px 7px;border:1px solid #293740;background:#101810}
+.unit-history-heading{display:flex;align-items:baseline;justify-content:space-between;gap:4px;min-height:18px}
+.unit-history-heading h4{margin:0;font-size:9px;font-weight:600;color:#d6e1d7}
+.unit-history-heading span{font-size:8px;color:#829083;white-space:nowrap}
+.unit-history-plot{height:125px;margin-top:4px}
+.unit-history-empty{min-height:125px;display:grid;place-items:center;padding:8px;text-align:center;color:#829083;font-size:9px}
+.unit-monitoring-foot{display:flex;justify-content:space-between;gap:8px;padding-top:9px;margin-top:9px;border-top:1px solid #293740;color:#83938b;font-size:9px}
+.unit-monitoring-foot span{color:#748572;font-size:8px}
+.history-range{display:flex;flex-direction:column;align-items:flex-start;gap:4px;color:#829083;font-size:8px;letter-spacing:.6px}
+.history-range select{min-width:115px}
+.light-theme .unit-monitoring-readings{border-color:#e0e4e8}
+.light-theme .unit-monitoring-header{border-color:#e0e4e8}
+.light-theme .unit-monitoring-header h3,.light-theme .unit-monitoring-readings b,.light-theme .unit-history-heading h4{color:#202a31}
+.light-theme .unit-monitoring-readings small,.light-theme .unit-monitoring-header small,.light-theme .unit-history-heading span,.light-theme .unit-monitoring-foot{color:#58646e}
+.light-theme .unit-monitoring-charts .unit-history-chart{background:#f5f7f2;border-color:#d5ddd2}
+.light-theme .unit-monitoring-foot{border-color:#e0e4e8}
+@media(max-width:700px){.unit-monitoring-charts{grid-template-columns:1fr}.unit-history-plot{height:150px}.unit-monitoring-readings{grid-template-columns:repeat(2,minmax(0,1fr))}.history-range{flex-direction:row;align-items:center;justify-content:space-between;width:100%}.history-range select{min-width:120px}}
