@@ -48,11 +48,13 @@ Battery runtime and energy consumption are not invented: reliable runtime requir
 
 ## 3D prototype viewer
 
-The dashboard background uses the React Bits SideRays WebGL component with a subdued green ray animation in Black mode and a low-contrast treatment in Light mode. It is bundled locally and renders behind the interface without an external image or service.
+The dashboard uses a quiet graphite surface system in Black mode and a restrained warm-grey surface system in Light mode. The farm cold-storage unit remains the primary visual; no animated background competes with telemetry.
 
 The Overview now displays the supplied `public/models/cooler3Dmodel1.glb` above the three compact telemetry gauges. The viewer uses Three.js with local GLB loading and interactive orbit controls: drag to rotate and scroll to zoom. The model asset is served by Vite from the app itself; no external model host is required. If WebGL is unavailable or the asset fails to load, the viewer displays an inline status message.
 
 
 The 3D viewer places the cooler in a locally rendered farm scene with open sky and clouds, crop rows, trees, a red barn and a produce warehouse. A concrete service pad keeps the prototype grounded in the farm environment. The scene is generated in Three.js and requires no remote background image.
+
+The interface design pass was informed by Unslop by Damir Sokolovsky, licensed under CC BY 4.0: https://github.com/heydamir/unslop.
 
 The Black/Light theme switch uses the supplied Skiper-style rectangle reveal from the bottom edge, with a rotating sun/moon control. It uses the native View Transitions API where available and respects reduced-motion preferences.
