@@ -971,7 +971,7 @@ img, canvas { max-width: 100%; display: block; }
 }
 .unit-monitoring-foot {
   display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink-dim);
+  text-transform: uppercase; color: #f4f7f9; font-weight: 700;
 }
 
 /* Dark liquid-glass surfaces for live telemetry panels */
