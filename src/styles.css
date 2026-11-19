@@ -9,3 +9,47 @@
 @media(max-width:1250px){.overview-top{grid-template-columns:1fr}.instrument-column{grid-template-rows:minmax(280px,1.2fr) auto}.instrument-column .gauges{grid-template-columns:repeat(3,minmax(0,1fr))}.instrument-column .gauge-wrap{width:min(100%,145px)}}
 @media(max-width:850px){.instrument-column{grid-template-rows:minmax(250px,1fr) auto}.instrument-column .gauge-wrap{width:min(100%,132px)}}
 @media(max-width:560px){.instrument-column{grid-template-rows:230px auto}.instrument-column .gauges{grid-template-columns:1fr;gap:8px}.instrument-column .gauge-card{display:grid;grid-template-columns:1fr 105px;grid-template-rows:auto auto auto;align-items:center;padding:11px}.instrument-column .gauge-title{grid-column:1;grid-row:1;font-size:9px}.instrument-column .gauge-wrap{width:100px;grid-column:2;grid-row:1/5;margin:0}.instrument-column .gauge-reading strong{font-size:23px}.instrument-column .gauge-meta{grid-column:1;grid-row:2;justify-content:flex-start;gap:15px}.instrument-column .gauge-range{grid-column:1;grid-row:3;text-align:left;margin:3px 0}.instrument-column .zone{grid-column:1;grid-row:4;justify-content:flex-start}.instrument-column .gauge-caption{display:none}.model-heading{padding:0 9px}.model-heading>div{gap:6px}.model-heading small{font-size:7px}.model-heading b{font-size:9px}.model-live{font-size:7px}}
+/* Global monochrome theme with a complete light-mode override */
+body{background:#000;color:#e7e7e7}
+.app-shell.black-theme{background:#000;color:#e7e7e7}
+.black-theme .sidebar{background:#050505;border-color:#242424}
+.black-theme .topbar{background:#080808;border-color:#242424}
+.black-theme .gauge-card,.black-theme .panel,.black-theme .unit-card{background:#0b0b0b;border-color:#252525}
+.black-theme .device-select,.black-theme .mode-switch,.black-theme .form-panel input,.black-theme .form-panel select{background:#080808;border-color:#303030;color:#e2e2e2}
+.black-theme .device-select select,.black-theme .device-select option,.black-theme .panel-heading select,.black-theme .page-intro select{background:#080808;color:#e2e2e2;border-color:#303030}
+.black-theme th{background:#101010}
+.black-theme .side-status,.black-theme .brand,.black-theme .sidebar-foot,.black-theme .content-foot{border-color:#242424}
+.theme-toggle{height:29px;min-width:62px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 8px;background:#101010;border:1px solid #343434;color:#dedede;font-size:9px;letter-spacing:.5px}
+.theme-toggle:hover{border-color:#62bdc9;color:#8adbe3}
+.app-shell.light-theme{background:#f1f3f5;color:#20252a;color-scheme:light}
+.light-theme .sidebar{background:#f8f9fa;border-color:#d8dde2;color:#20252a}
+.light-theme .brand{border-color:#d8dde2}
+.light-theme .brand b,.light-theme .crumb strong,.light-theme .page-heading h1,.light-theme .section-title h2,.light-theme .page-intro h2,.light-theme .panel h2,.light-theme .panel h3,.light-theme .unit-head>b{color:#182027}
+.light-theme .brand small,.light-theme .nav-label,.light-theme .side-title,.light-theme .side-clock,.light-theme .sidebar-foot,.light-theme .crumb span,.light-theme .crumb b,.light-theme .page-heading p,.light-theme .page-intro p,.light-theme .panel-heading small,.light-theme .panel small,.light-theme .section-title small{color:#68737d}
+.light-theme .sidebar nav .nav-item{color:#4e5962}
+.light-theme .sidebar nav .nav-item:hover{background:#e9edf0;color:#202830}
+.light-theme .sidebar nav .nav-item.active{background:#e1eff1;color:#13717d;border-left-color:#16818c}
+.light-theme .topbar{background:#fff;border-color:#d8dde2}
+.light-theme .gauge-card,.light-theme .panel,.light-theme .unit-card{background:#fff;border-color:#d8dde2}
+.light-theme .device-select,.light-theme .mode-switch,.light-theme .form-panel input,.light-theme .form-panel select,.light-theme .panel-heading select,.light-theme .page-intro select{background:#fff;border-color:#cbd2d8;color:#26313a}
+.light-theme .device-select select,.light-theme .device-select option{background:#fff;color:#26313a}
+.light-theme .gauge-title,.light-theme .gauge-reading strong,.light-theme .detail-row b,.light-theme td,.light-theme .metric b,.light-theme .report-card b,.light-theme .two-col .panel h2{color:#202a31}
+.light-theme .gauge-reading span,.light-theme .gauge-meta,.light-theme .gauge-range,.light-theme .zone,.light-theme .gauge-caption,.light-theme .chart-stats,.light-theme .detail-row,.light-theme .panel p,.light-theme .recommendations,.light-theme .form-panel label,.light-theme .report-card small{color:#58646e}
+.light-theme .gauge-track{stroke:#dce1e5}
+.light-theme .side-status,.light-theme .sidebar-foot,.light-theme .content-foot,.light-theme .detail-row,.light-theme .unit-values div,.light-theme .unit-foot,.light-theme td,.light-theme th{border-color:#e0e4e8}
+.light-theme .side-clock b{color:#38434b}
+.light-theme .status-row{color:#4f5b63}
+.light-theme th{background:#f2f4f6;color:#56616a}
+.light-theme td{color:#36414a}
+.light-theme .unit-values b{color:#243039}
+.light-theme .unit-values small,.light-theme .unit-foot{color:#65717a}
+.light-theme .metric,.light-theme .report-card{background:#fff}
+.light-theme .small-btn{background:#edf1f3;border-color:#cbd4da;color:#25434a}
+.light-theme .primary-btn{background:#e2f0f1;border-color:#a9cdd1;color:#14545d}
+.light-theme .theme-toggle{background:#fff;border-color:#cbd2d8;color:#303a42}
+.light-theme .content-foot{color:#69747d}
+.light-theme .notice{background:#fff8e6;color:#735a1e!important}
+.light-theme .recharts-cartesian-axis-tick-value{fill:#5c6871}
+.light-theme .recharts-cartesian-grid line{stroke:#e0e5e9}
+.light-theme .table-wrap{background:#fff}
+@media(max-width:560px){.theme-toggle{min-width:29px;width:29px;padding:0}.theme-toggle span{display:none}}
