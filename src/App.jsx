@@ -268,6 +268,7 @@ function Hero({ reading, mode, onNavigate, selectedDevice }) {
             order="center"
             draggable
             cursorPush={0.9}
+            restoreDelay={0.8}
             fontSize="1rem"
             className="hero__copy-falling"
           />
