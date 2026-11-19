@@ -1169,8 +1169,8 @@ img, canvas { max-width: 100%; display: block; }
 .hero-orbit--middle { top: 35%; left: 45%; width: 260px; height: 260px; animation-duration: 16s; animation-direction: reverse; }
 .hero-orbit--inner { top: 50%; left: 60%; width: 120px; height: 120px; animation-duration: 10s; }
 @keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.hero__title { font-size: 56px; line-height: 1.02; margin: 10px 0 14px; color: var(--ink); }
-.hero__title .hero__flip-line--accent { color: var(--accent); }
+.hero__title { font-size: 56px; line-height: 1.02; margin: 10px 0 14px; color: #fff; font-weight: 800; -webkit-text-stroke: 1.15px #000; paint-order: stroke fill; }
+.hero__title .hero__flip-line--accent { color: #fff; }
 .hero__flip-line { display: inline-block; }
 .flip-text-word { display: inline-block; white-space: nowrap; transform-style: preserve-3d; }
 .flip-char { display: inline-block; position: relative; transform-style: preserve-3d; backface-visibility: hidden; animation: flip-text-char var(--flip-duration, 2.2s) cubic-bezier(.2,.7,.2,1) var(--flip-delay, 0s) var(--flip-iteration, infinite); }
