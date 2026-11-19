@@ -266,8 +266,8 @@ function Hero({ reading, mode, onNavigate, selectedDevice }) {
             scatter={0.12}
             stagger={0.035}
             order="center"
-            draggable={false}
-            cursorPush={0}
+            draggable
+            cursorPush={0.9}
             fontSize="1rem"
             className="hero__copy-falling"
           />
