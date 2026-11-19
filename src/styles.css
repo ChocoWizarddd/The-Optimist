@@ -1017,3 +1017,13 @@ img, canvas { max-width: 100%; display: block; }
 .light-theme .ticker__group span { color: var(--ink-dim); }
 .light-theme .sidebar-foot { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.03); }
 .light-theme .nav-count { background: rgba(242,166,90,0.15); color: #b55f1e; border-color: rgba(242,166,90,0.4); }
+
+/* Keep the sticky header on the same continuous canvas as page content. */
+.topbar,
+.light-theme .topbar,
+.black-theme .topbar {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom-color: var(--panel-border);
+}
