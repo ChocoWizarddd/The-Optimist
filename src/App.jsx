@@ -33,6 +33,7 @@ import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
 import LightLines from './components/LightLines';
 import CurvedLoop from './components/CurvedLoop';
+import FallingText from './components/FallingText';
 import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
@@ -255,10 +256,22 @@ function Hero({ reading, mode, onNavigate, selectedDevice }) {
           Cold chain,<br />
           <span>without compromise.</span>
         </h1>
-        <p className="hero__copy">
-          A field-ready control layer for solar cold-storage units. Watch chamber conditions,
-          fleet health and storage intelligence in one calm, honest view.
-        </p>
+        <div className="hero__copy">
+          <FallingText
+            text="A field-ready control layer for solar cold-storage units. Watch chamber conditions, fleet health and storage intelligence in one calm, honest view."
+            split="words"
+            trigger="auto"
+            gravity={0.9}
+            bounciness={0.12}
+            scatter={0.12}
+            stagger={0.035}
+            order="center"
+            draggable={false}
+            cursorPush={0}
+            fontSize="1rem"
+            className="hero__copy-falling"
+          />
+        </div>
         <div className="hero__actions">
           <Magnetic>
             <button className="btn btn--primary" onClick={() => onNavigate('Live Monitoring')}>

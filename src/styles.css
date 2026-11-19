@@ -1172,6 +1172,24 @@ img, canvas { max-width: 100%; display: block; }
 .hero__title { font-size: 56px; line-height: 1.02; margin: 10px 0 14px; color: var(--ink); }
 .hero__title span { color: var(--accent); }
 .hero__copy { font-size: 16px; color: var(--ink-muted); max-width: 520px; margin-bottom: 24px; line-height: 1.6; }
+.falling-text.hero__copy-falling {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.hero__copy-falling .falling-text__text {
+  max-width: 520px;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  text-wrap: wrap;
+  line-height: inherit;
+}
+.hero__copy-falling .falling-text__piece { white-space: normal; }
 
 .hero__actions { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
 
