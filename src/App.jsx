@@ -54,7 +54,6 @@ const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
 const RANGES = [
   ['1h', '1 hour'],
   ['6h', '6 hours'],
-  ['24h', '1 day'],
   ['7d', '7 days'],
 ];
 const initSettings = {
@@ -809,6 +808,7 @@ export default function App() {
           <div className="brand-mark"><Snowflake size={20} strokeWidth={1.6} /></div>
           <div className="brand__text">
             <b>OPTAL <em>OS</em></b>
+            <small>COLD STORAGE SYSTEMS</small>
           </div>
           <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
         </div>

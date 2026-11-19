@@ -51,7 +51,6 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
           >
             <option value="1h">1 hour</option>
             <option value="6h">6 hours</option>
-            <option value="24h">1 day</option>
             <option value="7d">7 days</option>
           </select>
         </div>
