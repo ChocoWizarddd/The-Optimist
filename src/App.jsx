@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import FlipText from './components/FlipText';
 import {
   Area,
   AreaChart,
@@ -253,8 +254,8 @@ function Hero({ reading, mode, onNavigate, selectedDevice }) {
       <div className="hero__content">
         <Eyebrow index="001 / FIELD SYSTEM">DECENTRALIZED COLD STORAGE</Eyebrow>
         <h1 className="hero__title">
-          Cold chain,<br />
-          <span>without compromise.</span>
+          <FlipText className="hero__flip-line">Cold chain,</FlipText><br />
+          <FlipText className="hero__flip-line hero__flip-line--accent">without compromise.</FlipText>
         </h1>
         <div className="hero__copy">
           <FallingText

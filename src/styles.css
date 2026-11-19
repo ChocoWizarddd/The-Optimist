@@ -1170,7 +1170,19 @@ img, canvas { max-width: 100%; display: block; }
 .hero-orbit--inner { top: 50%; left: 60%; width: 120px; height: 120px; animation-duration: 10s; }
 @keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .hero__title { font-size: 56px; line-height: 1.02; margin: 10px 0 14px; color: var(--ink); }
-.hero__title span { color: var(--accent); }
+.hero__title .hero__flip-line--accent { color: var(--accent); }
+.hero__flip-line { display: inline-block; }
+.flip-text-word { display: inline-block; white-space: nowrap; transform-style: preserve-3d; }
+.flip-char { display: inline-block; position: relative; transform-style: preserve-3d; backface-visibility: hidden; animation: flip-text-char var(--flip-duration, 2.2s) cubic-bezier(.2,.7,.2,1) var(--flip-delay, 0s) var(--flip-iteration, infinite); }
+@keyframes flip-text-char {
+  0%, 8% { transform: rotateX(0deg); opacity: 1; }
+  18% { transform: rotateX(90deg); opacity: .15; }
+  30% { transform: rotateX(-12deg); opacity: 1; }
+  38%, 100% { transform: rotateX(0deg); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-char { animation: none; }
+}
 .hero__copy { font-size: 16px; color: var(--ink-muted); max-width: 520px; margin-bottom: 24px; line-height: 1.6; }
 .falling-text.hero__copy-falling {
   display: block;
