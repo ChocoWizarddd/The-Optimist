@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 const reduced = () =>
@@ -42,21 +42,24 @@ export function useReveal(pageKey) {
 
 /* Magnetic hover for buttons and links. */
 export function Magnetic({ children, strength = 0.18, className = '' }) {
+  const ref = useRef(null);
   if (reduced()) return <span className={`magnetic ${className}`}>{children}</span>;
 
   const onMove = (event) => {
-    const node = event.currentTarget;
+    const node = ref.current;
+    if (!node) return;
     const rect = node.getBoundingClientRect();
     const x = (event.clientX - rect.left - rect.width / 2) * strength;
     const y = (event.clientY - rect.top - rect.height / 2) * strength;
     node.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
   };
-  const onLeave = (event) => {
-    event.currentTarget.style.transform = 'translate3d(0,0,0)';
+  const onLeave = () => {
+    if (ref.current) ref.current.style.transform = 'translate3d(0,0,0)';
   };
 
   return (
     <span
+      ref={ref}
       className={`magnetic ${className}`}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
@@ -68,10 +71,12 @@ export function Magnetic({ children, strength = 0.18, className = '' }) {
 
 /* Subtle 3D pointer tilt for cards. */
 export function Tilt({ children, className = '', amount = 5 }) {
+  const ref = useRef(null);
   if (reduced()) return <div className={className}>{children}</div>;
 
   const onMove = (event) => {
-    const node = event.currentTarget;
+    const node = ref.current;
+    if (!node) return;
     const rect = node.getBoundingClientRect();
     const px = (event.clientX - rect.left) / rect.width - 0.5;
     const py = (event.clientY - rect.top) / rect.height - 0.5;
@@ -80,8 +85,9 @@ export function Tilt({ children, className = '', amount = 5 }) {
     node.style.setProperty('--tilt-gx', `${((px + 0.5) * 100).toFixed(1)}%`);
     node.style.setProperty('--tilt-gy', `${((py + 0.5) * 100).toFixed(1)}%`);
   };
-  const onLeave = (event) => {
-    const node = event.currentTarget;
+  const onLeave = () => {
+    const node = ref.current;
+    if (!node) return;
     node.style.setProperty('--tilt-x', '0deg');
     node.style.setProperty('--tilt-y', '0deg');
     node.style.setProperty('--tilt-gx', '50%');
@@ -89,7 +95,7 @@ export function Tilt({ children, className = '', amount = 5 }) {
   };
 
   return (
-    <div className={`tilt ${className}`} onMouseMove={onMove} onMouseLeave={onLeave}>
+    <div ref={ref} className={`tilt ${className}`} onMouseMove={onMove} onMouseLeave={onLeave}>
       {children}
     </div>
   );
