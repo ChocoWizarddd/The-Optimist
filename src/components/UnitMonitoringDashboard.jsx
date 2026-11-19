@@ -117,7 +117,7 @@ export default function UnitMonitoringDashboard({
     <div className="unit-monitoring-grid">
       {DEVICES.map((deviceId, index) => {
         const reading = fleet.find((unit) => unit.device_id === deviceId);
-        const simulated = mode === "demo" && reading?.source === "SIMULATED";
+        const demo = mode === "demo" && reading?.source === "DEMO";
         const points = histories[deviceId] || [];
         return (
           <section className="panel unit-monitoring-card" key={deviceId}>
@@ -128,7 +128,7 @@ export default function UnitMonitoringDashboard({
               </div>
               <span className={`state ${reading ? "ok" : "muted"}`}>
                 <i />
-                {reading ? (simulated ? "SIMULATED" : "ONLINE") : "NO TELEMETRY"}
+                {reading ? (demo ? "DEMO" : "ONLINE") : "NO TELEMETRY"}
               </span>
             </header>
             <div className="unit-monitoring-readings">
@@ -157,7 +157,7 @@ export default function UnitMonitoringDashboard({
             </div>
             <footer className="unit-monitoring-foot">
               {reading?.compressor_running ? "Compressor running" : reading ? "Compressor stopped" : "Waiting for telemetry"}
-              <span>{simulated ? "DEMO DATA" : mode === "live" ? "LIVE DATA" : `UNIT ${String(index + 1).padStart(2, "0")}`}</span>
+              <span>{demo ? "DEMO DATA" : mode === "live" ? "LIVE DATA" : `UNIT ${String(index + 1).padStart(2, "0")}`}</span>
             </footer>
           </section>
         );
