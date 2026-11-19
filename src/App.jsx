@@ -144,34 +144,19 @@ function Gauge({ title, value, unit, min, max, low, high, color, caption }) {
   );
 }
 
-function UnitCard({ index, reading, mode, large = false }) {
+function UnitCard({ index, reading }) {
   const id = `OPT-00${index + 1}`;
-  const simulated = mode === 'demo' && reading?.source === 'SIMULATED';
   const hasReading = Boolean(reading);
-  const state = simulated ? (index === 0 ? 'PROTOTYPE · SIM' : 'SIMULATED') : hasReading ? 'ONLINE' : 'OFFLINE';
 
   return (
     <Tilt className="unit-card-wrap" amount={4}>
-      <article className={`unit-card ${hasReading ? 'healthy' : 'inactive'} ${large ? 'unit-card--large' : ''}`}>
+      <article className={`unit-card ${hasReading ? 'healthy' : 'inactive'}`}>
         <div className="unit-card__glow" />
         <div className="unit-head">
           <div className="unit-head__id">
-            <span className="unit-index">{String(index + 1).padStart(2, '0')}</span>
             <b>{id}</b>
           </div>
-          <span className={`state ${hasReading ? 'ok' : 'muted'}`}><i />{state}</span>
         </div>
-        {large && (
-          <p className="unit-card__copy">
-            {simulated
-              ? index === 0
-                ? 'Locally connected prototype · simulated readings'
-                : 'Simulated unit readings'
-              : hasReading
-                ? 'Live backend readings'
-                : `No telemetry reported for ${id}.`}
-          </p>
-        )}
         <div className="unit-values">
           <div><small>TEMP</small><b>{hasReading ? `${nfmt(reading.temperature)}°C` : '—'}</b></div>
           <div><small>HUMIDITY</small><b>{hasReading ? `${nfmt(reading.humidity)}%` : '—'}</b></div>
@@ -181,11 +166,6 @@ function UnitCard({ index, reading, mode, large = false }) {
           <span>
             <Power size={13} />
             {hasReading ? (reading.compressor_running ? 'COMPRESSOR ON' : 'COMPRESSOR OFF') : 'NO TELEMETRY'}
-          </span>
-          <span>
-            {simulated
-              ? index === 0 ? 'LOCAL PROTOTYPE · SIM DATA' : 'SIMULATED UNIT'
-              : hasReading ? 'LIVE TELEMETRY' : 'AWAITING BACKEND'}
           </span>
         </div>
       </article>
@@ -516,7 +496,6 @@ export default function App() {
                 <div key={id} data-reveal="up">
                   <UnitCard
                     index={i}
-                    mode={mode}
                     reading={fleet.find((u) => u.device_id === id)}
                   />
                 </div>
@@ -567,15 +546,13 @@ export default function App() {
             <PageIntro
               eyebrow="FLEET"
               title="Storage Units"
-              copy="One local prototype; the remaining entries are simulated units running the same telemetry contract."
+              copy="Unit readings and compressor status."
             />
             <div className="unit-grid unit-grid--large">
               {DEVICES.map((id, i) => (
                 <div key={id} data-reveal="up">
                   <UnitCard
                     index={i}
-                    mode={mode}
-                    large
                     reading={fleet.find((u) => u.device_id === id)}
                   />
                 </div>
