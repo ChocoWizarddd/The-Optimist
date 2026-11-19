@@ -33,7 +33,6 @@ import {
 import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
 import Grainient from './components/Grainient';
-import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 import { cropProfiles } from './data/cropProfiles';
@@ -326,7 +325,6 @@ function Ticker({ reading, fleet, mode }) {
 export default function App() {
   const [page, setPage] = useState('Overview');
   const [mode, setMode] = useState('demo');
-  const [theme, setTheme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
   const [range, setRange] = useState('6h');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -734,7 +732,7 @@ export default function App() {
   };
 
   return (
-    <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}`}>
+    <div className="app-shell black-theme">
       <div className="background-stack" aria-hidden="true">
         <div className="bg-webgl">
           <Grainient
@@ -743,7 +741,7 @@ export default function App() {
             flow={0.42}
             silk={0.22}
             grainAmount={0.022}
-            lightMode={theme === 'light'}
+            lightMode={false}
             interactive
             clickSwirl
             intro={false}
@@ -822,7 +820,6 @@ export default function App() {
             </div>
 
             <div className="avatar" aria-hidden="true">OP</div>
-            <Magnetic strength={0.12}><ThemeToggleButton theme={theme} onToggle={setTheme} /></Magnetic>
           </div>
         </header>
 
