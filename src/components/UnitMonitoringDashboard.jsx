@@ -69,7 +69,7 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
               <CartesianGrid stroke="#27343d" strokeDasharray="3 3" />
               <XAxis
                 dataKey="label"
-                tick={{ fill: "#8295a0", fontSize: 9 }}
+                tick={{ fill: "#8295a0", fontSize: 10, fontWeight: 600 }}
                 tickLine={false}
                 axisLine={{ stroke: "#34434d" }}
                 minTickGap={24}
@@ -77,7 +77,7 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
               <YAxis
                 domain={domain}
                 width={34}
-                tick={{ fill: "#8295a0", fontSize: 9 }}
+                tick={{ fill: "#8295a0", fontSize: 10, fontWeight: 600 }}
                 tickLine={false}
                 axisLine={false}
               />

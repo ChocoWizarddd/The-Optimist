@@ -194,3 +194,6 @@ body{background:#000;color:#e7e7e7}
 .scroll-reveal{opacity:0;transform:translate3d(0,16px,0);filter:blur(3px);transition:opacity .5s ease var(--scroll-reveal-delay,0ms),transform .55s cubic-bezier(.2,.7,.2,1) var(--scroll-reveal-delay,0ms),filter .5s ease var(--scroll-reveal-delay,0ms);will-change:opacity,transform,filter}
 .scroll-reveal.scroll-reveal-visible{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}
 @media(prefers-reduced-motion:reduce){.scroll-reveal,.scroll-reveal.scroll-reveal-visible{opacity:1;transform:none;filter:none;transition:none;will-change:auto}}
+
+/* Improve small dashboard copy without scaling the card layout */
+.app-shell :is(small,label,.nav-item,.status-row,.side-title,.nav-label,.side-clock,.sidebar-foot,.crumb,.connection,.pill,.gauge-title,.gauge-meta,.gauge-range,.zone,.gauge-caption,.unit-values small,.unit-foot,.unit-monitoring-header small,.unit-monitoring-readings small,.unit-history-heading h4,.unit-history-heading span,.unit-history-tools span,.unit-monitoring-foot,.chart-stats,th,td,.detail-row,.content-foot,.model-heading small,.model-live,.model-caption,.report-card small,.severity,.state){font-size:max(10px,calc(1em + 1px))!important;font-weight:600}
