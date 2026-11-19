@@ -207,18 +207,20 @@ img, canvas { max-width: 100%; display: block; }
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  opacity: .62;
+  opacity: .56;
   pointer-events: none;
 }
-.sidebar-galaxy-canvas,
-.sidebar-galaxy-canvas canvas {
+.sidebar-color-bends {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
+  background:
+    radial-gradient(ellipse at 20% 25%, rgba(30,105,145,.32), transparent 58%),
+    radial-gradient(ellipse at 78% 72%, rgba(90,166,200,.15), transparent 62%);
 }
-.sidebar-galaxy-canvas canvas { display: block; }
+.sidebar-color-bends canvas { display: block; pointer-events: none; }
 .sidebar > :not(.sidebar__galaxy) { position: relative; z-index: 1; }
 
 .main {
