@@ -51,6 +51,7 @@ const nav = [
 ];
 
 const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
+const SIDEBAR_BEND_COLORS = ['#145071', '#318bb5', '#74c6e5', '#abcdec'];
 const RANGES = [
   ['6h', '6 hours'],
   ['7d', '7 days'],
@@ -694,7 +695,7 @@ export default function App() {
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
         <div className="sidebar__galaxy" aria-hidden="true">
           <ColorBends
-            colors={['#145071', '#318bb5', '#74c6e5', '#abcdec']}
+            colors={SIDEBAR_BEND_COLORS}
             rotation={18}
             speed={0.12}
             autoRotate={1.2}
