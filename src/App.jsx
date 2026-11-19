@@ -23,6 +23,7 @@ import {
   Factory,
   Menu,
   Power,
+  Snowflake,
   Wifi,
   WifiOff,
   Wrench,
@@ -148,7 +149,6 @@ function UnitCard({ index, reading }) {
   return (
     <Tilt className="unit-card-wrap" amount={4}>
       <article className={`unit-card ${hasReading ? 'healthy' : 'inactive'}`}>
-        <div className="unit-card__glow" />
         <div className="unit-head">
           <div className="unit-head__id">
             <b>{id}</b>
@@ -238,7 +238,7 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
   );
 }
 
-function Hero({ reading, mode, onNavigate }) {
+function Hero({ reading, mode, onNavigate, selectedDevice }) {
   const stats = [
     ['CHAMBER TEMP', reading ? `${nfmt(reading.temperature)}°C` : '—'],
     ['REL. HUMIDITY', reading ? `${nfmt(reading.humidity)}%` : '—'],
@@ -283,6 +283,10 @@ function Hero({ reading, mode, onNavigate }) {
         <div className="hero-orbit hero-orbit--outer" />
         <div className="hero-orbit hero-orbit--middle" />
         <div className="hero-orbit hero-orbit--inner" />
+        <div className="hero-core">
+          <Snowflake size={30} strokeWidth={1.1} />
+          <span>{selectedDevice}</span>
+        </div>
         <div className="hero-tag hero-tag--two">3s TELEMETRY INTERVAL</div>
       </div>
       <div className="hero__scroll">
@@ -410,7 +414,7 @@ export default function App() {
       case 'Overview':
         return (
           <>
-            <Hero reading={reading} mode={mode} onNavigate={setPage} />
+            <Hero reading={reading} mode={mode} onNavigate={setPage} selectedDevice={selectedDevice} />
             <Ticker reading={reading} fleet={fleet} mode={mode} />
 
             <SectionHead
