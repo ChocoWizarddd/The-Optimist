@@ -16,7 +16,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   BarChart3,
-  Battery,
   Box,
   ChevronDown,
   Clock,
@@ -41,10 +40,9 @@ const nav = [
   { label: 'Overview', icon: Activity, code: '01' },
   { label: 'Live Monitoring', icon: Activity, code: '02' },
   { label: 'Storage Units', icon: Box, code: '03' },
-  { label: 'Energy Analytics', icon: Battery, code: '04' },
-  { label: 'Alerts & Events', icon: AlertTriangle, code: '05' },
-  { label: 'Maintenance', icon: Wrench, code: '06' },
-  { label: 'Reports', icon: BarChart3, code: '07' },
+  { label: 'Alerts & Events', icon: AlertTriangle, code: '04' },
+  { label: 'Maintenance', icon: Wrench, code: '05' },
+  { label: 'Reports', icon: BarChart3, code: '06' },
 ];
 
 const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
@@ -547,37 +545,6 @@ export default function App() {
                   />
                 </div>
               ))}
-            </div>
-          </>
-        );
-
-      case 'Energy Analytics':
-        return (
-          <>
-            <PageIntro eyebrow="POWER SYSTEM" title="Energy Analytics" copy="Battery and compressor telemetry only. No solar or power consumption sensors are configured." />
-            <HistoryChart
-              title="Battery voltage history"
-              dataKey="battery_voltage"
-              data={data}
-              color="#f2a65a"
-              unit="V"
-              threshold={+settings.batteryWarning}
-              range={range}
-              setRange={setRange}
-              domains={[10, 14]}
-            />
-            <div className="two-col">
-              <div className="panel" data-reveal="left">
-                <Eyebrow>BATTERY MONITORING</Eyebrow>
-                <h3 className="display-value">{reading ? `${nfmt(reading.battery_voltage, 2)} V` : 'No reading'}</h3>
-                <p>Configured low-voltage warning: {settings.batteryWarning} V. Battery state of health cannot be calculated without capacity testing and calibrated discharge data.</p>
-                <div className="detail-row"><span>Compressor running samples</span><b>{history.filter((x) => x.compressor_running).length}/{history.length}</b></div>
-              </div>
-              <div className="panel" data-reveal="right">
-                <Eyebrow>ENERGY CONSUMPTION</Eyebrow>
-                <h3>Not measured</h3>
-                <p>Current and power measurements are not present in the confirmed prototype sensors. Solar generation and energy consumption are therefore not reported.</p>
-              </div>
             </div>
           </>
         );
