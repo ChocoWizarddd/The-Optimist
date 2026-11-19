@@ -62,7 +62,7 @@ function createFarmEnvironment(scene,floorY){
 function disposeTree(root){if(!root)return;root.traverse(object=>{object.geometry?.dispose();const materials=Array.isArray(object.material)?object.material:[object.material];materials.filter(Boolean).forEach(material=>{Object.values(material).forEach(value=>{if(value?.isTexture)value.dispose()});material.dispose()})})}
 
 export default function CoolerModel(){
- const host=useRef(null),[status,setStatus]=useState('Loading 3D model'),[failed,setFailed]=useState(false);
+ const host=useRef(null),[failed,setFailed]=useState(false);
  useEffect(()=>{
   const root=host.current;if(!root)return;let disposed=false,frame=0,model=null,farm=null;let renderer,controls,resizeObserver;
   try{
@@ -83,7 +83,7 @@ export default function CoolerModel(){
     const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
     const maxDim=Math.max(size.x,size.y,size.z),scale=maxDim>0?4.8/maxDim:1;model.scale.setScalar(scale);model.position.copy(center).multiplyScalar(-scale);model.traverse(object=>{if(object.isMesh){object.castShadow=true;object.receiveShadow=true}});
     scene.add(model);model.updateMatrixWorld(true);const finalBox=new THREE.Box3().setFromObject(model);farm=createFarmEnvironment(scene,finalBox.min.y-.04);
-    const distance=3.25/Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*.53;camera.position.set(distance*.85,distance*.48,distance);camera.near=Math.max(.01,distance/100);camera.far=distance*100;camera.updateProjectionMatrix();controls.target.set(0,0,0);controls.update();setStatus('INTERACTIVE 3D MODEL');
+    const distance=3.25/Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*.53;camera.position.set(distance*.85,distance*.48,distance);camera.near=Math.max(.01,distance/100);camera.far=distance*100;camera.updateProjectionMatrix();controls.target.set(0,0,0);controls.update();
    },xhr=>{if(xhr.total&& !disposed)setStatus(`Loading model · ${Math.round(xhr.loaded/xhr.total*100)}%`)},()=>{if(!disposed){setFailed(true);setStatus('Model could not be loaded')}});
    const draw=()=>{if(disposed)return;frame=requestAnimationFrame(draw);controls.update();renderer.render(scene,camera)};draw();
    resizeObserver=new ResizeObserver(()=>{if(!renderer||!root.clientWidth||!root.clientHeight)return;renderer.setSize(root.clientWidth,root.clientHeight);camera.aspect=root.clientWidth/root.clientHeight;camera.updateProjectionMatrix()});resizeObserver.observe(root);
