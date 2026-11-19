@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 const reduced = () =>
@@ -101,10 +101,8 @@ export function Tilt({ children, className = '', amount = 5 }) {
   );
 }
 
-/* Scroll progress, custom cursor, parallax variables and back-to-top. */
+/* Scroll progress and back-to-top. */
 export default function InterfaceFX() {
-  const dot = useRef(null);
-  const ring = useRef(null);
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
@@ -132,51 +130,9 @@ export default function InterfaceFX() {
     };
   }, []);
 
-  useEffect(() => {
-    if (reduced() || !window.matchMedia('(pointer: fine)').matches) return;
-    const dotEl = dot.current;
-    const ringEl = ring.current;
-    if (!dotEl || !ringEl) return;
-
-    let mx = window.innerWidth / 2;
-    let my = window.innerHeight / 2;
-    let rx = mx;
-    let ry = my;
-    let frame;
-
-    const onMove = (event) => {
-      mx = event.clientX;
-      my = event.clientY;
-      dotEl.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
-      const interactive = event.target.closest('button, a, select, label, [data-cursor]');
-      ringEl.classList.toggle('cursor-ring--active', Boolean(interactive));
-    };
-    const loop = () => {
-      rx += (mx - rx) * 0.14;
-      ry += (my - ry) * 0.14;
-      ringEl.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-      frame = requestAnimationFrame(loop);
-    };
-    const onDown = () => ringEl.classList.add('cursor-ring--down');
-    const onUp = () => ringEl.classList.remove('cursor-ring--down');
-
-    window.addEventListener('pointermove', onMove, { passive: true });
-    window.addEventListener('pointerdown', onDown);
-    window.addEventListener('pointerup', onUp);
-    frame = requestAnimationFrame(loop);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerdown', onDown);
-      window.removeEventListener('pointerup', onUp);
-    };
-  }, []);
-
   return (
     <>
       <div className="scroll-progress" aria-hidden="true"><i /></div>
-      <div className="cursor-dot" ref={dot} aria-hidden="true" />
-      <div className="cursor-ring" ref={ring} aria-hidden="true" />
       <button
         type="button"
         className={`scroll-top ${showTop ? 'scroll-top--visible' : ''}`}

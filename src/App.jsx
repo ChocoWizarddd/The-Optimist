@@ -69,7 +69,6 @@ const nfmt = (n, d = 1) => (Number.isFinite(+n) ? (+n).toFixed(d) : '—');
 function Eyebrow({ children, index }) {
   return (
     <div className="eyebrow">
-      <i />
       <span>{children}</span>
       {index && <em>{index}</em>}
     </div>
