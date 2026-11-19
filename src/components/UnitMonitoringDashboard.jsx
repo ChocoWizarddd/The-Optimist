@@ -49,7 +49,6 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
             onChange={(event) => setRange(event.target.value)}
             aria-label={`${title} history range`}
           >
-            <option value="1h">1 hour</option>
             <option value="6h">6 hours</option>
             <option value="7d">7 days</option>
           </select>

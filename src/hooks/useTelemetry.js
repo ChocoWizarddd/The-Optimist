@@ -4,13 +4,12 @@ import { createHardwareProvider } from "../services/dataProviders/hardwareProvid
 
 const DEVICE_IDS = Array.from({ length: 6 }, (_, index) => `OPT-00${index + 1}`);
 const rangeDuration = {
-  "1h": 60 * 60 * 1000,
   "6h": 6 * 60 * 60 * 1000,
   "24h": 24 * 60 * 60 * 1000,
   "7d": 7 * 24 * 60 * 60 * 1000,
 };
 
-export function useTelemetry(mode, interval = 3000, range = "1h", deviceId = "OPT-001") {
+export function useTelemetry(mode, interval = 3000, range = "6h", deviceId = "OPT-001") {
   const provider = useMemo(
     () => (mode === "demo" ? createDemoProvider() : createHardwareProvider()),
     [mode],
@@ -97,7 +96,7 @@ export function useTelemetry(mode, interval = 3000, range = "1h", deviceId = "OP
 
   useEffect(() => {
     if (!fleet.length) return;
-    const cutoff = Date.now() - (rangeDuration[range] || rangeDuration["1h"]);
+    const cutoff = Date.now() - (rangeDuration[range] || rangeDuration["6h"]);
     setUnitHistories((current) => {
       let changed = false;
       const next = { ...current };
@@ -117,7 +116,7 @@ export function useTelemetry(mode, interval = 3000, range = "1h", deviceId = "OP
   useEffect(() => {
     const selected = fleet.find((unit) => unit.device_id === deviceId);
     if (!selected) return;
-    const cutoff = Date.now() - (rangeDuration[range] || rangeDuration["1h"]);
+    const cutoff = Date.now() - (rangeDuration[range] || rangeDuration["6h"]);
     setSamples((previous) =>
       [...previous, selected]
         .filter((point) => new Date(point.timestamp).getTime() >= cutoff)

@@ -52,7 +52,6 @@ const nav = [
 
 const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
 const RANGES = [
-  ['1h', '1 hour'],
   ['6h', '6 hours'],
   ['7d', '7 days'],
 ];
@@ -360,7 +359,7 @@ export default function App() {
   const [mode, setMode] = useState('demo');
   const [theme, setTheme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
-  const [range, setRange] = useState('1h');
+  const [range, setRange] = useState('6h');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settings, setSettings] = useState(() => ({
     ...initSettings,
