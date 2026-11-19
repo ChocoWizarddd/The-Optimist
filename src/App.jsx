@@ -809,7 +809,6 @@ export default function App() {
           <div className="brand-mark"><Snowflake size={20} strokeWidth={1.6} /></div>
           <div className="brand__text">
             <b>OPTAL <em>OS</em></b>
-            <small>COLD STORAGE SYSTEMS</small>
           </div>
           <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
         </div>
