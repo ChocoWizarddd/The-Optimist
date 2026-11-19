@@ -653,7 +653,7 @@ export default function App() {
                   <div className="report-card__icon"><BarChart3 size={19} /></div>
                   <b>{label}</b>
                   <small>
-                    {key === 'alerts' ? alerts.length : key === 'condition' ? (score?.score ?? '—') : history.length}
+                    {key === 'alerts' ? alerts.length : history.length}
                     <span> records in current session</span>
                   </small>
                   <button className="text-btn" onClick={exportCsv}>Export CSV <ArrowUpRight size={14} /></button>
