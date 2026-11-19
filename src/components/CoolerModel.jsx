@@ -84,7 +84,7 @@ export default function CoolerModel(){
     const maxDim=Math.max(size.x,size.y,size.z),scale=maxDim>0?4.8/maxDim:1;model.scale.setScalar(scale);model.position.copy(center).multiplyScalar(-scale);model.traverse(object=>{if(object.isMesh){object.castShadow=true;object.receiveShadow=true}});
     scene.add(model);model.updateMatrixWorld(true);const finalBox=new THREE.Box3().setFromObject(model);farm=createFarmEnvironment(scene,finalBox.min.y-.04);
     const distance=3.25/Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*.53;camera.position.set(distance*.85,distance*.48,distance);camera.near=Math.max(.01,distance/100);camera.far=distance*100;camera.updateProjectionMatrix();controls.target.set(0,0,0);controls.update();
-   },xhr=>{if(xhr.total&& !disposed)setStatus(`Loading model · ${Math.round(xhr.loaded/xhr.total*100)}%`)},()=>{if(!disposed)setFailed(true)});
+   },()=>{if(!disposed)setFailed(true)});
    const draw=()=>{if(disposed)return;frame=requestAnimationFrame(draw);controls.update();renderer.render(scene,camera)};draw();
    resizeObserver=new ResizeObserver(()=>{if(!renderer||!root.clientWidth||!root.clientHeight)return;renderer.setSize(root.clientWidth,root.clientHeight);camera.aspect=root.clientWidth/root.clientHeight;camera.updateProjectionMatrix()});resizeObserver.observe(root);
    return()=>{disposed=true;cancelAnimationFrame(frame);resizeObserver?.disconnect();controls?.dispose();disposeTree(model);disposeTree(farm);renderer?.dispose();renderer?.domElement.remove()};
