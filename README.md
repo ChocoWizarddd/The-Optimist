@@ -54,3 +54,5 @@ The Overview now displays the supplied `public/models/cooler3Dmodel1.glb` above 
 
 
 The 3D viewer places the cooler in a locally rendered farm scene with open sky and clouds, crop rows, trees, a red barn and a produce warehouse. A concrete service pad keeps the prototype grounded in the farm environment. The scene is generated in Three.js and requires no remote background image.
+
+The Black/Light theme switch uses the supplied Skiper-style rectangle reveal from the bottom edge, with a rotating sun/moon control. It uses the native View Transitions API where available and respects reduced-motion preferences.
