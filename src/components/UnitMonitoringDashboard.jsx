@@ -11,9 +11,9 @@ import {
 
 const DEVICES = Array.from({ length: 6 }, (_, index) => `OPT-00${index + 1}`);
 const CHARTS = [
-  { title: "Temperature", dataKey: "temperature", unit: "°C", color: "#91e855", domain: [-2, 16] },
-  { title: "Humidity", dataKey: "humidity", unit: "%", color: "#a8e84f", domain: [30, 100] },
-  { title: "Battery voltage", dataKey: "battery_voltage", unit: "V", color: "#83dc46", domain: [10, 14] },
+  { title: "Temperature", dataKey: "temperature", unit: "°C", color: "#69baf0", domain: [-2, 16] },
+  { title: "Humidity", dataKey: "humidity", unit: "%", color: "#9bd8fa", domain: [30, 100] },
+  { title: "Battery voltage", dataKey: "battery_voltage", unit: "V", color: "#76c8f2", domain: [10, 14] },
 ];
 
 const format = (value, digits = 1) =>
@@ -66,24 +66,24 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
                   <stop offset="100%" stopColor={color} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid stroke="#27332a" strokeDasharray="3 3" />
+              <CartesianGrid stroke="#27343d" strokeDasharray="3 3" />
               <XAxis
                 dataKey="label"
-                tick={{ fill: "#829083", fontSize: 9 }}
+                tick={{ fill: "#8295a0", fontSize: 9 }}
                 tickLine={false}
-                axisLine={{ stroke: "#344135" }}
+                axisLine={{ stroke: "#34434d" }}
                 minTickGap={24}
               />
               <YAxis
                 domain={domain}
                 width={34}
-                tick={{ fill: "#829083", fontSize: 9 }}
+                tick={{ fill: "#8295a0", fontSize: 9 }}
                 tickLine={false}
                 axisLine={false}
               />
               <Tooltip
                 formatter={(value) => [`${format(value)} ${unit}`, title]}
-                contentStyle={{ background: "#080b08", border: "1px solid #394539", color: "#e5eee3" }}
+                contentStyle={{ background: "#080b08", border: "1px solid #394a55", color: "#e5eff5" }}
               />
               <ReferenceLine y={threshold} stroke="#d4aa47" strokeDasharray="4 4" />
               <Area
