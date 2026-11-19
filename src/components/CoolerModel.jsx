@@ -90,7 +90,7 @@ export default function CoolerModel(){
    return()=>{disposed=true;cancelAnimationFrame(frame);resizeObserver?.disconnect();controls?.dispose();disposeTree(model);disposeTree(farm);renderer?.dispose();renderer?.domElement.remove()};
   }catch(e){setFailed(true);setStatus('WebGL is unavailable in this browser');return()=>{disposed=true;cancelAnimationFrame(frame);resizeObserver?.disconnect();controls?.dispose();disposeTree(model);disposeTree(farm);renderer?.dispose();renderer?.domElement.remove()}}
  },[]);
- return <section className={`cooler-model panel ${failed?'model-error':''}`}><div className="model-heading"><div><small>PROTOTYPE VISUALIZATION</small><b>OPT-001 · Cold storage unit</b></div><span className="model-live"><i/>{status}</span></div><div className="model-stage warehouse-stage" ref={host}>{failed&&<div className="model-fallback"><span>3D PREVIEW UNAVAILABLE</span><small>Check WebGL support or refresh the model asset.</small></div>}<div className="model-caption">Drag to rotate <span>·</span> Scroll to zoom</div></div></section>
+ return <section className={`cooler-model panel ${failed?'model-error':''}`}><div className="model-heading"><div><small>VISUALIZATION</small><b>OPT-001 · Cold storage unit</b></div><span className="model-live"><i/>{status}</span></div><div className="model-stage warehouse-stage" ref={host}>{failed&&<div className="model-fallback"><span>3D PREVIEW UNAVAILABLE</span><small>Check WebGL support or refresh the model asset.</small></div>}<div className="model-caption">Drag to rotate <span>·</span> Scroll to zoom</div></div></section>
 }
 
 

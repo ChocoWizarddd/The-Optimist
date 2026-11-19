@@ -144,34 +144,19 @@ function Gauge({ title, value, unit, min, max, low, high, color, caption }) {
   );
 }
 
-function UnitCard({ index, reading, mode, large = false }) {
+function UnitCard({ index, reading }) {
   const id = `OPT-00${index + 1}`;
-  const simulated = mode === 'demo' && reading?.source === 'SIMULATED';
   const hasReading = Boolean(reading);
-  const state = simulated ? (index === 0 ? 'PROTOTYPE · SIM' : 'SIMULATED') : hasReading ? 'ONLINE' : 'OFFLINE';
 
   return (
     <Tilt className="unit-card-wrap" amount={4}>
-      <article className={`unit-card ${hasReading ? 'healthy' : 'inactive'} ${large ? 'unit-card--large' : ''}`}>
+      <article className={`unit-card ${hasReading ? 'healthy' : 'inactive'}`}>
         <div className="unit-card__glow" />
         <div className="unit-head">
           <div className="unit-head__id">
-            <span className="unit-index">{String(index + 1).padStart(2, '0')}</span>
             <b>{id}</b>
           </div>
-          <span className={`state ${hasReading ? 'ok' : 'muted'}`}><i />{state}</span>
         </div>
-        {large && (
-          <p className="unit-card__copy">
-            {simulated
-              ? index === 0
-                ? 'Locally connected prototype · simulated readings'
-                : 'Simulated unit readings'
-              : hasReading
-                ? 'Live backend readings'
-                : `No telemetry reported for ${id}.`}
-          </p>
-        )}
         <div className="unit-values">
           <div><small>TEMP</small><b>{hasReading ? `${nfmt(reading.temperature)}°C` : '—'}</b></div>
           <div><small>HUMIDITY</small><b>{hasReading ? `${nfmt(reading.humidity)}%` : '—'}</b></div>
@@ -181,11 +166,6 @@ function UnitCard({ index, reading, mode, large = false }) {
           <span>
             <Power size={13} />
             {hasReading ? (reading.compressor_running ? 'COMPRESSOR ON' : 'COMPRESSOR OFF') : 'NO TELEMETRY'}
-          </span>
-          <span>
-            {simulated
-              ? index === 0 ? 'LOCAL PROTOTYPE · SIM DATA' : 'SIMULATED UNIT'
-              : hasReading ? 'LIVE TELEMETRY' : 'AWAITING BACKEND'}
           </span>
         </div>
       </article>
@@ -206,7 +186,7 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
       <div className="chart-stats">
         <span>MIN <b>{nfmt(values.length ? Math.min(...values) : NaN, 1)} {unit}</b></span>
         <span>MAX <b>{nfmt(values.length ? Math.max(...values) : NaN, 1)} {unit}</b></span>
-        <span className="chart-stats__hint">LIVE SAMPLE STREAM</span>
+        <span className="chart-stats__hint">SAMPLE STREAM</span>
       </div>
       <div className="chart">
         <ResponsiveContainer width="100%" height="100%">
@@ -261,7 +241,7 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
   );
 }
 
-function Hero({ reading, onNavigate, selectedDevice }) {
+function Hero({ reading, mode, onNavigate, selectedDevice }) {
   const stats = [
     ['CHAMBER TEMP', reading ? `${nfmt(reading.temperature)}°C` : '—'],
     ['REL. HUMIDITY', reading ? `${nfmt(reading.humidity)}%` : '—'],
@@ -326,7 +306,6 @@ function Ticker({ reading, fleet, mode }) {
     `HUMIDITY · ${reading ? `${nfmt(reading.humidity)} %` : '—'}`,
     `BATTERY · ${reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'}`,
     `UNITS ONLINE · ${fleet.filter((u) => u).length.toString().padStart(2, '0')} / 06`,
-    `SOURCE · ${mode === 'demo' ? 'SIMULATED DATA' : 'LIVE HARDWARE'}`,
     `PROTOCOL · OPT/TELEMETRY-1.0`,
   ];
   return (
@@ -451,7 +430,7 @@ export default function App() {
       case 'Overview':
         return (
           <>
-            <Hero reading={reading} onNavigate={setPage} selectedDevice={selectedDevice} />
+            <Hero reading={reading} mode={mode} onNavigate={setPage} selectedDevice={selectedDevice} />
             <Ticker reading={reading} fleet={fleet} mode={mode} />
 
             <SectionHead
@@ -513,7 +492,6 @@ export default function App() {
                 <div key={id} data-reveal="up">
                   <UnitCard
                     index={i}
-                    mode={mode}
                     reading={fleet.find((u) => u.device_id === id)}
                   />
                 </div>
@@ -545,7 +523,7 @@ export default function App() {
               eyebrow="UNIT HISTORY"
               title="All six storage units"
               count="06"
-              action={<span className={`pill ${mode === 'demo' ? 'demo' : 'live'}`}>{mode === 'demo' ? 'SIMULATED DATA' : 'LIVE HARDWARE'}</span>}
+              action={null}
             />
             <UnitMonitoringDashboard
               fleet={fleet}
@@ -564,15 +542,13 @@ export default function App() {
             <PageIntro
               eyebrow="FLEET"
               title="Storage Units"
-              copy="One local prototype; the remaining entries are simulated units running the same telemetry contract."
+              copy="Unit readings and compressor status."
             />
             <div className="unit-grid unit-grid--large">
               {DEVICES.map((id, i) => (
                 <div key={id} data-reveal="up">
                   <UnitCard
                     index={i}
-                    mode={mode}
-                    large
                     reading={fleet.find((u) => u.device_id === id)}
                   />
                 </div>
@@ -608,7 +584,7 @@ export default function App() {
               </div>
               <div className="panel" data-reveal="right">
                 <Eyebrow>MEASURED CONDITIONS</Eyebrow>
-                <h3>{selectedDevice} · {mode === 'demo' ? 'SIMULATED DATA' : 'LIVE HARDWARE'}</h3>
+                <h3>{selectedDevice}</h3>
                 <div className="detail-row"><span>Temperature</span><b>{reading ? `${nfmt(reading.temperature)} °C` : '—'}</b></div>
                 <div className="detail-row"><span>Humidity</span><b>{reading ? `${nfmt(reading.humidity)} %` : '—'}</b></div>
                 <div className="detail-row"><span>Deviation</span><b className={outside ? 'is-alert' : 'is-good'}>{reading ? (outside ? 'Outside profile' : 'Within profile') : 'No reading'}</b></div>
@@ -685,7 +661,7 @@ export default function App() {
                 </tbody>
               </table>
             </div>
-            <p className="muted-text">Alert history is held in this browser session during simulation mode. Live alert API integration is pending.</p>
+            <p className="muted-text">Alert history is held in this browser session. Live alert API integration is pending.</p>
           </>
         );
 
@@ -700,7 +676,7 @@ export default function App() {
                 <div className="detail-row"><span>Temperature sensor</span><b>{reading ? 'Connected' : 'Unknown'}</b></div>
                 <div className="detail-row"><span>Humidity sensor</span><b>{reading ? 'Connected' : 'Unknown'}</b></div>
                 <div className="detail-row"><span>Battery monitor</span><b>{reading ? 'Connected' : 'Unknown'}</b></div>
-                <div className="detail-row"><span>Hardware backend</span><b>{mode === 'demo' ? 'Simulated provider' : error ? 'Disconnected' : 'Connected'}</b></div>
+                <div className="detail-row"><span>Hardware backend</span><b>{error ? 'Disconnected' : 'Connected'}</b></div>
               </div>
               <div className="panel" data-reveal="right">
                 <Eyebrow>RECOMMENDED CHECKS</Eyebrow>
@@ -810,7 +786,7 @@ export default function App() {
 
         <div className="side-status">
           <Eyebrow>SYSTEM STATUS</Eyebrow>
-          <div className="status-row"><span>Telemetry provider</span><b className="green">{mode === 'demo' ? 'SIMULATOR' : 'BACKEND'}</b></div>
+          <div className="status-row"><span>Telemetry provider</span><b className="green">ACTIVE</b></div>
           <div className="status-row"><span>Active unit</span><b>{selectedDevice}</b></div>
           <div className="status-row"><span>Polling interval</span><b>3.0 s</b></div>
           <div className="status-bars" aria-hidden="true">
@@ -840,14 +816,9 @@ export default function App() {
               <ChevronDown size={13} />
             </label>
 
-            <div className="mode-switch" role="group" aria-label="Data source">
-              <button className={mode === 'demo' ? 'chosen' : ''} onClick={() => setMode('demo')}><span />DEMO</button>
-              <button className={mode === 'live' ? 'chosen live-chosen' : ''} onClick={() => setMode('live')}><span />LIVE</button>
-            </div>
-
             <div className={`connection ${mode === 'demo' ? 'connected' : error ? 'disconnected' : 'connected'}`}>
               {mode === 'demo' || !error ? <Wifi size={14} /> : <WifiOff size={14} />}
-              <span>{mode === 'demo' ? 'SIMULATED' : error ? 'OFFLINE' : 'CONNECTED'}</span>
+              <span>{error ? 'OFFLINE' : 'CONNECTED'}</span>
             </div>
 
             <div className="avatar" aria-hidden="true">OP</div>
@@ -862,7 +833,6 @@ export default function App() {
               <h1>{page}</h1>
             </div>
             <div className="heading-meta">
-              <span className={`pill ${mode === 'demo' ? 'demo' : 'live'}`}>{mode === 'demo' ? 'SIMULATED DATA' : 'LIVE MODE'}</span>
               <span><Clock size={13} /> {new Date().toLocaleDateString()}</span>
             </div>
           </div>
@@ -873,7 +843,7 @@ export default function App() {
               <div>
                 <b>HARDWARE BACKEND DISCONNECTED</b>
                 <small>
-                  No simulated values are generated in Live mode.{' '}
+                  No values are generated in Live mode.{' '}
                   {reading
                     ? `Showing last successful reading from ${new Date(lastSuccess).toLocaleTimeString()} as stale.`
                     : 'Waiting for /api/status from the FastAPI backend.'}
