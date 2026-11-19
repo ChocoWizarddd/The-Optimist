@@ -1128,7 +1128,7 @@ img, canvas { max-width: 100%; display: block; }
 
 /* ---------- ticker ---------- */
 .ticker {
-  position: relative; height: 34px; overflow: hidden;
+  position: relative; height: 62px; overflow: hidden;
   margin-bottom: 10px;
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(8, 9, 10, 0.45);
@@ -1137,6 +1137,7 @@ img, canvas { max-width: 100%; display: block; }
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.10),
     0 10px 30px rgba(0,0,0,0.45);
   border-radius: 14px;
+  color: var(--ink);
 }
 .ticker::before {
   content: '';
@@ -1144,15 +1145,14 @@ img, canvas { max-width: 100%; display: block; }
   background: linear-gradient(90deg, rgba(242,166,90,0.10), transparent 40%, transparent 60%, rgba(242,166,90,0.05) 100%);
   pointer-events: none; opacity: 0.6;
 }
-.ticker__track { display: flex; width: max-content; animation: ticker 28s linear infinite; }
-.ticker__group { display: flex; gap: 60px; white-space: nowrap; padding: 6px 0; }
-.ticker__group span {
-  display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink);
+.ticker .curved-loop-jacket { min-height: 0; height: 100%; }
+.ticker .curved-loop-svg { width: 100%; height: 100%; aspect-ratio: auto; overflow: visible; }
+.ticker .ticker__text {
+  fill: currentColor;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
   text-shadow: 0 0 12px rgba(255,255,255,0.15);
 }
-.ticker__group i { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); flex-shrink: 0; }
-@keyframes ticker { from { transform: translatex(0); } to { transform: translatex(-50%); } }
 
 /* ---------- overview top / instrument column ---------- */
 .overview-top { display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; margin-bottom: 30px; }
@@ -1276,8 +1276,6 @@ img, canvas { max-width: 100%; display: block; }
     0 10px 30px rgba(0,0,0,0.25);
   border-radius: 14px;
 }
-.light-theme .ticker__group span { color: #141513; text-shadow: none; }
-.light-theme .ticker__group i { background: #b55f1e; box-shadow: 0 0 10px #b55f1e; }
 .light-theme .sidebar-foot { border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.03); }
 .light-theme .nav-count { background: rgba(242,166,90,0.15); color: #b55f1e; border-color: rgba(242,166,90,0.4); }
 

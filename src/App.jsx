@@ -32,6 +32,7 @@ import {
 import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
 import LightLines from './components/LightLines';
+import CurvedLoop from './components/CurvedLoop';
 import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
@@ -305,17 +306,22 @@ function Ticker({ reading, fleet, mode }) {
     `UNITS ONLINE · ${fleet.filter((u) => u).length.toString().padStart(2, '0')} / 06`,
     `PROTOCOL · OPT/TELEMETRY-1.0`,
   ];
+  const marqueeText = items.join('     •     ');
   return (
-    <div className="ticker" aria-hidden="true">
-      <div className="ticker__track">
-        {[0, 1].map((copy) => (
-          <div className="ticker__group" key={copy}>
-            {items.map((item) => (
-              <span key={item}><i />{item}</span>
-            ))}
-          </div>
-        ))}
-      </div>
+    <div className="ticker" aria-label={marqueeText}>
+      <CurvedLoop
+        marqueeText={marqueeText}
+        speed={1.2}
+        curveAmount={24}
+        direction="left"
+        interactive
+        pauseOnHover={false}
+        className="ticker__text"
+        fontSize={26}
+        fontWeight={700}
+        letterSpacing={1.1}
+        edgeFade={0.08}
+      />
     </div>
   );
 }
