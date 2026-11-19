@@ -108,12 +108,13 @@ function Gauge({ title, value, unit, min, max, low, high, color, caption }) {
       </div>
       <div className="gauge-wrap">
         <svg viewBox="0 0 112 112" aria-hidden="true">
-          <circle cx="56" cy="56" r="46" className="gauge-track" />
+          <circle cx="56" cy="56" r="46" className="gauge-track" fill="none" />
           <circle
             cx="56"
             cy="56"
             r="46"
             className="gauge-value"
+            fill="none"
             stroke={color}
             strokeDasharray={`${circ * pct} ${circ}`}
             transform="rotate(-90 56 56)"
