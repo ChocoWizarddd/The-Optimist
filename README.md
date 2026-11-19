@@ -28,13 +28,13 @@ Open the local URL printed by Vite. `npm run build` creates the production bundl
 
 ## Simulated mode
 
-Simulation mode is selected initially. It updates readings for OPT-001 and five simulated fleet units every three seconds, including compressor state. The simulated chart histories use distinct time windows for 1 hour, 6 hours, 24 hours and 7 days, and current readings continue to update each chart. Threshold alerts are generated from the active unit. CSV export downloads current-session telemetry. Settings are local to the browser. All generated readings are labeled as simulated and are never presented as hardware data.
+Simulation mode is selected initially. It updates readings for OPT-001 and five simulated fleet units every three seconds, including compressor state. Use the device selector in the top bar to switch the selected unit; its gauges, charts, crop readings, alerts and reports follow that unit. Each simulated unit has its own changing readings and history. Threshold alerts are generated from the active unit. CSV export downloads current-session telemetry. Settings are local to the browser. All generated readings are labeled as simulated and are never presented as hardware data.
 
 Crop profiles are illustrative defaults for software demonstration and must be verified for the target cultivar, maturity, packaging and storage duration by an agricultural specialist.
 
 ## Live hardware mode / future USB integration
 
-Live mode polls `GET /api/status` at `http://localhost:8000` by default (override with `VITE_API_BASE_URL`). If the backend is unavailable, the UI reports disconnected and shows no new values; any previous successful sample remains identified as stale. Live mode never runs the simulator.
+Live mode polls `GET /api/status?device_id=OPT-001` for the selected device at `http://localhost:8000` by default (override with `VITE_API_BASE_URL`). History requests include both `range` and `device_id`. If the backend is unavailable, the UI reports disconnected and shows no new values; any previous successful sample remains identified as stale. Live mode never runs the simulator.
 
 Target data path:
 

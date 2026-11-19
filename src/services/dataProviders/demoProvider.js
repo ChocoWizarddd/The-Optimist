@@ -8,16 +8,17 @@ export function createDemoProvider(){
   mode:'demo',
   async getStatus(){primary.t=clamp(primary.t+(Math.random()-.5)*.35,5,13);primary.h=clamp(primary.h+(Math.random()-.5)*1.4,62,84);primary.v=clamp(primary.v+(Math.random()-.5)*.025,11.8,12.8);if(Math.random()<.05)primary.c=!primary.c;return sample(primary.t,primary.h,primary.v,primary.c)},
   async getFleet(status){return[status,...secondary.map((unit,index)=>{unit.t=clamp(unit.t+(Math.random()-.5)*.28,4,13);unit.h=clamp(unit.h+(Math.random()-.5)*1.1,60,88);unit.v=clamp(unit.v+(Math.random()-.5)*.02,11.8,12.8);if(Math.random()<.035)unit.c=!unit.c;return sample(unit.t,unit.h,unit.v,unit.c,`OPT-00${index+2}`)})]},
-  async getHistory(range='1h'){
+  async getHistory(range='1h',deviceId='OPT-001'){
    const spec=historyRanges[range]||historyRanges['1h'],now=Date.now(),duration=spec.count*spec.minutes*60000,phaseOffset=Math.random()*Math.PI*2,bumpCenter=.23+Math.random()*.5;
+   const unitIndex=Math.max(0,Number(deviceId.slice(-1))-1),unitOffset=unitIndex*.91;
    return Array.from({length:spec.count},(_,index)=>{
-    const progress=index/(spec.count-1),phase=progress*Math.PI*2*spec.cycles+phaseOffset;
+    const progress=index/(spec.count-1),phase=progress*Math.PI*2*spec.cycles+phaseOffset+unitOffset;
     const excursion=Math.exp(-Math.pow((progress-bumpCenter)/.045,2));
-    const temperature=clamp(7.7+1.35*Math.sin(phase)+.48*Math.sin(phase*2.4+.8)+excursion*.9,4,13);
-    const humidity=clamp(72+8*Math.sin(phase-1.1)+2.7*Math.sin(phase*1.7)+excursion*3,58,90);
-    const battery=clamp(12.44+.105*Math.sin(phase*.72+.3)+.035*Math.sin(phase*2.1)-progress*(range==='7d'?.09:.025),11.8,12.8);
+    const temperature=clamp(7.7+unitIndex*.42+1.35*Math.sin(phase)+.48*Math.sin(phase*2.4+.8)+excursion*.9,4,13);
+    const humidity=clamp(72+unitIndex*1.4+8*Math.sin(phase-1.1)+2.7*Math.sin(phase*1.7)+excursion*3,58,90);
+    const battery=clamp(12.44-unitIndex*.035+.105*Math.sin(phase*.72+.3)+.035*Math.sin(phase*2.1)-progress*(range==='7d'?.09:.025),11.8,12.8);
     const timestamp=new Date(now-duration+(progress*duration)).toISOString();
-    return sample(temperature,humidity,battery,index%24<14,'OPT-001',timestamp);
+    return sample(temperature,humidity,battery,(index+unitIndex*3)%24<14,deviceId,timestamp);
    });
   }
  }
