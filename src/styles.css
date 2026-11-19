@@ -104,6 +104,17 @@ img, canvas { max-width: 100%; display: block; }
   pointer-events: none;
 }
 .bg-light-lines { opacity: 0.62; }
+.bg-light-lines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(460px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(168, 208, 224, 0.16), transparent 72%);
+  transition: opacity 180ms ease-out;
+}
+.bg-light-lines[data-pointer-active='true']::after { opacity: 1; }
 .light-lines__svg { position: absolute; width: 100%; height: 100%; }
 .light-lines__content { position: relative; z-index: 1; width: 100%; height: 100%; }
 .light-lines .light { filter: drop-shadow(0 0 8px rgba(220, 242, 255, 0.45)); }

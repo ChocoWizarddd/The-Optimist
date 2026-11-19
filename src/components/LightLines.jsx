@@ -16,7 +16,38 @@ export function LightLines({
     const frameRef = useRef(null);
 
     useEffect(() => {
-        if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+        const container = containerRef.current;
+        if (!container) return;
+
+        // The background sits behind the application and ignores pointer hits,
+        // so listen on window and drive its spotlight with CSS variables.
+        let pointerFrame = 0;
+        let pointerX = 0;
+        let pointerY = 0;
+        const updatePointer = () => {
+            pointerFrame = 0;
+            container.style.setProperty("--pointer-x", `${pointerX}px`);
+            container.style.setProperty("--pointer-y", `${pointerY}px`);
+            container.dataset.pointerActive = "true";
+        };
+        const onPointerMove = (event) => {
+            pointerX = event.clientX;
+            pointerY = event.clientY;
+            if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointer);
+        };
+        const onPointerLeave = () => {
+            container.dataset.pointerActive = "false";
+        };
+        window.addEventListener("pointermove", onPointerMove, { passive: true });
+        document.documentElement.addEventListener("pointerleave", onPointerLeave);
+
+        if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+            return () => {
+                window.removeEventListener("pointermove", onPointerMove);
+                document.documentElement.removeEventListener("pointerleave", onPointerLeave);
+                if (pointerFrame) cancelAnimationFrame(pointerFrame);
+            };
+        }
 
         // Light elements configuration
         const lightsDown = [
@@ -41,9 +72,6 @@ export function LightLines({
             { selector: ".light10", from: 1080, to: -1080 },
             { selector: ".light17", from: 1080, to: -1080 },
         ];
-
-        const container = containerRef.current;
-        if (!container) return;
 
         // Initialize animations
         const allLights = [...lightsDown, ...lightsUp];
@@ -101,6 +129,9 @@ export function LightLines({
         frameRef.current = requestAnimationFrame(animate);
 
         return () => {
+            window.removeEventListener("pointermove", onPointerMove);
+            document.documentElement.removeEventListener("pointerleave", onPointerLeave);
+            if (pointerFrame) cancelAnimationFrame(pointerFrame);
             if (frameRef.current) {
                 cancelAnimationFrame(frameRef.current);
             }
