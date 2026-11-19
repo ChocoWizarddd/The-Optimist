@@ -19,6 +19,7 @@ import {
   Box,
   ChevronDown,
   Clock,
+  CloudSun,
   Download,
   Factory,
   Menu,
@@ -34,15 +35,17 @@ import LightLines from './components/LightLines';
 import CurvedLoop from './components/CurvedLoop';
 import FallingText from './components/FallingText';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
+import WeatherPage from './components/WeatherPage';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
 const nav = [
   { label: 'Overview', icon: Activity, code: '01' },
   { label: 'Live Monitoring', icon: Activity, code: '02' },
   { label: 'Storage Units', icon: Box, code: '03' },
-  { label: 'Alerts & Events', icon: AlertTriangle, code: '04' },
-  { label: 'Maintenance', icon: Wrench, code: '05' },
-  { label: 'Reports', icon: BarChart3, code: '06' },
+  { label: 'Weather', icon: CloudSun, code: '04' },
+  { label: 'Alerts & Events', icon: AlertTriangle, code: '05' },
+  { label: 'Maintenance', icon: Wrench, code: '06' },
+  { label: 'Reports', icon: BarChart3, code: '07' },
 ];
 
 const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
@@ -546,6 +549,14 @@ export default function App() {
                 </div>
               ))}
             </div>
+          </>
+        );
+
+      case 'Weather':
+        return (
+          <>
+            <PageIntro eyebrow="LOCAL CONDITIONS" title="Weather" copy="Search cities and regions worldwide for current conditions, a seven-day outlook, and detailed local hourly forecasts." />
+            <WeatherPage />
           </>
         );
 
