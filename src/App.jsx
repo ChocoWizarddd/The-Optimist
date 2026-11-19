@@ -703,18 +703,18 @@ export default function App() {
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
         <DarkVeil
           className="sidebar-dark-veil"
-          color="#174b62"
-          speed={0.18}
-          scale={1.15}
-          flow={0.7}
-          warp={0.22}
-          brightness={0.62}
-          glow={0.18}
+          color="#347fa0"
+          speed={0.2}
+          scale={1.1}
+          flow={0.8}
+          warp={0.26}
+          brightness={1.15}
+          glow={0.48}
           grain={0.012}
           quality={0.38}
           mouseInteraction
           mouseStrength={0.65}
-          opacity={0.5}
+          opacity={0.88}
         />
         <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
 
