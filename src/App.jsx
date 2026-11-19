@@ -21,7 +21,6 @@ import {
   Clock,
   Download,
   Factory,
-  Leaf,
   Menu,
   Power,
   Snowflake,
@@ -33,20 +32,18 @@ import {
 import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
 import Grainient from './components/Grainient';
+import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
-import { cropProfiles } from './data/cropProfiles';
-import { conditionScore } from './intelligence/scoring';
 
 const nav = [
   { label: 'Overview', icon: Activity, code: '01' },
   { label: 'Live Monitoring', icon: Activity, code: '02' },
   { label: 'Storage Units', icon: Box, code: '03' },
-  { label: 'Crop Intelligence', icon: Leaf, code: '04' },
-  { label: 'Energy Analytics', icon: Battery, code: '05' },
-  { label: 'Alerts & Events', icon: AlertTriangle, code: '06' },
-  { label: 'Maintenance', icon: Wrench, code: '07' },
-  { label: 'Reports', icon: BarChart3, code: '08' },
+  { label: 'Energy Analytics', icon: Battery, code: '04' },
+  { label: 'Alerts & Events', icon: AlertTriangle, code: '05' },
+  { label: 'Maintenance', icon: Wrench, code: '06' },
+  { label: 'Reports', icon: BarChart3, code: '07' },
 ];
 
 const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
@@ -325,6 +322,7 @@ function Ticker({ reading, fleet, mode }) {
 export default function App() {
   const [page, setPage] = useState('Overview');
   const [mode, setMode] = useState('demo');
+  const [theme, setTheme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
   const [range, setRange] = useState('6h');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -339,11 +337,6 @@ export default function App() {
     mode, 3000, range, selectedDevice,
   );
   useReveal(page);
-
-  const score = useMemo(
-    () => conditionScore(reading, cropProfiles[settings.crop]),
-    [reading, settings.crop],
-  );
 
   useEffect(() => {
     localStorage.setItem('optimist-theme', theme);
@@ -555,44 +548,6 @@ export default function App() {
           </>
         );
 
-      case 'Crop Intelligence': {
-        const profile = cropProfiles[settings.crop];
-        const outside = reading && (
-          reading.temperature < profile.temperature[0] || reading.temperature > profile.temperature[1] ||
-          reading.humidity < profile.humidity[0] || reading.humidity > profile.humidity[1]
-        );
-        return (
-          <>
-            <PageIntro eyebrow="POST HARVEST" title="Crop Intelligence" copy="Editable reference ranges — indicative defaults, not authoritative agronomic advice.">
-              <label className="select-wrap select-wrap--page">
-                <select value={settings.crop} onChange={(e) => update({ crop: e.target.value })} aria-label="Select crop">
-                  {Object.keys(cropProfiles).map((crop) => <option key={crop}>{crop}</option>)}
-                </select>
-                <ChevronDown size={13} />
-              </label>
-            </PageIntro>
-            <div className="two-col">
-              <div className="panel" data-reveal="left">
-                <Eyebrow>SELECTED CROP</Eyebrow>
-                <h2 className="display-value">{settings.crop}</h2>
-                <div className="detail-row"><span>Recommended temperature</span><b>{profile.temperature[0]}–{profile.temperature[1]} °C</b></div>
-                <div className="detail-row"><span>Recommended RH</span><b>{profile.humidity[0]}–{profile.humidity[1]}%</b></div>
-                <p>{profile.guidance}</p>
-                <p className="muted-text">Profile source: configurable local reference file. Verify ranges with a qualified post-harvest advisor for your cultivar and storage duration.</p>
-              </div>
-              <div className="panel" data-reveal="right">
-                <Eyebrow>MEASURED CONDITIONS</Eyebrow>
-                <h3>{selectedDevice}</h3>
-                <div className="detail-row"><span>Temperature</span><b>{reading ? `${nfmt(reading.temperature)} °C` : '—'}</b></div>
-                <div className="detail-row"><span>Humidity</span><b>{reading ? `${nfmt(reading.humidity)} %` : '—'}</b></div>
-                <div className="detail-row"><span>Deviation</span><b className={outside ? 'is-alert' : 'is-good'}>{reading ? (outside ? 'Outside profile' : 'Within profile') : 'No reading'}</b></div>
-                <div className="detail-row"><span>Condition score</span><b>{score ? `${score.score} / 100` : '—'}</b></div>
-              </div>
-            </div>
-          </>
-        );
-      }
-
       case 'Energy Analytics':
         return (
           <>
@@ -732,7 +687,7 @@ export default function App() {
   };
 
   return (
-    <div className="app-shell black-theme">
+    <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}`}>
       <div className="background-stack" aria-hidden="true">
         <div className="bg-webgl">
           <Grainient
@@ -741,7 +696,7 @@ export default function App() {
             flow={0.42}
             silk={0.22}
             grainAmount={0.022}
-            lightMode={false}
+            lightMode={theme === 'light'}
             interactive
             clickSwirl
             intro={false}
@@ -820,6 +775,7 @@ export default function App() {
             </div>
 
             <div className="avatar" aria-hidden="true">OP</div>
+            <Magnetic strength={0.12}><ThemeToggleButton theme={theme} onToggle={setTheme} /></Magnetic>
           </div>
         </header>
 
