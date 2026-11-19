@@ -262,7 +262,7 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
   );
 }
 
-function Hero({ reading, mode, onNavigate, selectedDevice }) {
+function Hero({ reading, mode, onNavigate }) {
   const stats = [
     ['CHAMBER TEMP', reading ? `${nfmt(reading.temperature)}°C` : '—'],
     ['REL. HUMIDITY', reading ? `${nfmt(reading.humidity)}%` : '—'],
@@ -309,7 +309,6 @@ function Hero({ reading, mode, onNavigate, selectedDevice }) {
         <div className="hero-orbit hero-orbit--inner" />
         <div className="hero-core">
           <Snowflake size={30} strokeWidth={1.1} />
-          <span>{selectedDevice}</span>
         </div>
         <div className="hero-tag hero-tag--one">
           <i /> {mode === 'demo' ? 'SIMULATION ACTIVE' : 'HARDWARE LINK'}
@@ -455,7 +454,7 @@ export default function App() {
       case 'Overview':
         return (
           <>
-            <Hero reading={reading} mode={mode} onNavigate={setPage} selectedDevice={selectedDevice} />
+            <Hero reading={reading} mode={mode} onNavigate={setPage} />
             <Ticker reading={reading} fleet={fleet} mode={mode} />
 
             <SectionHead
