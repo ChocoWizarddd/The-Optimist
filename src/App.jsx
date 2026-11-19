@@ -32,6 +32,7 @@ import {
 import { useTelemetry } from './hooks/useTelemetry';
 import CoolerModel from './components/CoolerModel';
 import Grainient from './components/Grainient';
+import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
@@ -108,13 +109,12 @@ function Gauge({ title, value, unit, min, max, low, high, color, caption }) {
       </div>
       <div className="gauge-wrap">
         <svg viewBox="0 0 112 112" aria-hidden="true">
-          <circle cx="56" cy="56" r="46" className="gauge-track" fill="none" />
+          <circle cx="56" cy="56" r="46" className="gauge-track" />
           <circle
             cx="56"
             cy="56"
             r="46"
             className="gauge-value"
-            fill="none"
             stroke={color}
             strokeDasharray={`${circ * pct} ${circ}`}
             transform="rotate(-90 56 56)"
@@ -322,6 +322,7 @@ function Ticker({ reading, fleet, mode }) {
 export default function App() {
   const [page, setPage] = useState('Overview');
   const [mode, setMode] = useState('demo');
+  const [theme, setTheme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
   const [range, setRange] = useState('6h');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -336,6 +337,10 @@ export default function App() {
     mode, 3000, range, selectedDevice,
   );
   useReveal(page);
+
+  useEffect(() => {
+    localStorage.setItem('optimist-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!reading) return;
@@ -666,7 +671,7 @@ export default function App() {
                   <div className="report-card__icon"><BarChart3 size={19} /></div>
                   <b>{label}</b>
                   <small>
-                    {key === 'alerts' ? alerts.length : history.length}
+                    {key === 'alerts' ? alerts.length : key === 'condition' ? (score?.score ?? '—') : history.length}
                     <span> records in current session</span>
                   </small>
                   <button className="text-btn" onClick={exportCsv}>Export CSV <ArrowUpRight size={14} /></button>
@@ -682,7 +687,7 @@ export default function App() {
   };
 
   return (
-    <div className="app-shell black-theme">
+    <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}`}>
       <div className="background-stack" aria-hidden="true">
         <div className="bg-webgl">
           <Grainient
@@ -691,7 +696,7 @@ export default function App() {
             flow={0.42}
             silk={0.22}
             grainAmount={0.022}
-            lightMode={false}
+            lightMode={theme === 'light'}
             interactive
             clickSwirl
             intro={false}
@@ -707,14 +712,7 @@ export default function App() {
       <InterfaceFX />
 
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
-        <div className="brand">
-          <div className="brand-mark"><Snowflake size={20} strokeWidth={1.6} /></div>
-          <div className="brand__text">
-            <b>OPTAL <em>OS</em></b>
-            <small>COLD STORAGE SYSTEMS</small>
-          </div>
-          <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
-        </div>
+        <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
 
         <div className="nav-label">OPERATIONS</div>
         <nav>
@@ -770,6 +768,7 @@ export default function App() {
             </div>
 
             <div className="avatar" aria-hidden="true">OP</div>
+            <Magnetic strength={0.12}><ThemeToggleButton theme={theme} onToggle={setTheme} /></Magnetic>
           </div>
         </header>
 
