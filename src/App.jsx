@@ -203,12 +203,6 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
           <Eyebrow>HISTORY</Eyebrow>
           <h3>{title}</h3>
         </div>
-        <label className="select-wrap">
-          <select value={range} onChange={(e) => setRange(e.target.value)} aria-label={`${title} range`}>
-            {RANGES.map(([value, label]) => <option value={value} key={value}>{label}</option>)}
-          </select>
-          <ChevronDown size={13} />
-        </label>
       </div>
       <div className="chart-stats">
         <span>MIN <b>{nfmt(values.length ? Math.min(...values) : NaN, 1)} {unit}</b></span>
@@ -535,17 +529,7 @@ export default function App() {
       case 'Live Monitoring':
         return (
           <>
-            <PageIntro eyebrow="TELEMETRY" title="Live Monitoring" copy="Live readings and historical graphs for every storage unit.">
-              <label className="history-range">
-                <span>HISTORY RANGE</span>
-                <span className="select-wrap">
-                  <select value={range} onChange={(e) => setRange(e.target.value)} aria-label="History range">
-                    {RANGES.map(([value, label]) => <option value={value} key={value}>{label}</option>)}
-                  </select>
-                  <ChevronDown size={13} />
-                </span>
-              </label>
-            </PageIntro>
+            <PageIntro eyebrow="TELEMETRY" title="Live Monitoring" copy="Live readings and historical graphs for every storage unit." />
             <div className="metric-row">
               {[
                 ['Temperature', reading ? `${nfmt(reading.temperature)} °C` : '—'],

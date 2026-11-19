@@ -44,14 +44,6 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
               {format(Math.min(...values))}–{format(Math.max(...values))} {unit}
             </span>
           )}
-          <select
-            value={range}
-            onChange={(event) => setRange(event.target.value)}
-            aria-label={`${title} history range`}
-          >
-            <option value="6h">6 hours</option>
-            <option value="7d">7 days</option>
-          </select>
         </div>
       </div>
       {data.length > 0 ? (
