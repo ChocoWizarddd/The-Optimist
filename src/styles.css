@@ -165,3 +165,27 @@ body{background:#000;color:#e7e7e7}
 .unit-history-tools select{min-width:66px;max-width:78px;padding:3px 4px;background:#19261b;border:1px solid #344135;color:#b7c7b4;font-size:8px}
 .light-theme .unit-history-tools select{background:#fff;border-color:#cbd2d8;color:#202a31}
 @media(max-width:1100px){.unit-history-tools span{display:none}}
+
+/* Clean, high contrast white theme */
+.light-theme,
+.light-theme .app-shell,
+.light-theme .main,
+.light-theme .content{background:#fff!important;color:#000!important}
+.light-theme .grainient-backdrop{display:none!important}
+.light-theme .sidebar,
+.light-theme .topbar,
+.light-theme .gauge-card,
+.light-theme .panel,
+.light-theme .unit-card,
+.light-theme .unit-history-chart,
+.light-theme .table-wrap,
+.light-theme .metric,
+.light-theme .report-card{background:#fff!important;border-color:#dedede!important;box-shadow:none!important}
+.light-theme :is(.brand b,.brand small,.nav-label,.side-title,.side-clock,.sidebar-foot,.status-row,.crumb span,.crumb b,.crumb strong,.page-heading h1,.page-heading p,.page-intro h2,.page-intro p,.heading-meta,.section-title h2,.section-title small,.gauge-title,.gauge-reading strong,.gauge-reading span,.gauge-meta,.gauge-meta b,.gauge-range,.gauge-caption,.zone,.panel,.panel h2,.panel h3,.panel p,.panel small,.panel-heading small,.chart-stats,.chart-stats b,.detail-row,.detail-row b,.recommendations,.metric,.metric small,.metric b,.report-card,.report-card b,.report-card small,.table-wrap,.table-wrap th,.table-wrap td,.form-panel label,.content-foot,.unit-head b,.unit-values b,.unit-values small,.unit-foot,.unit-monitoring-header h3,.unit-monitoring-header small,.unit-monitoring-readings b,.unit-monitoring-readings small,.unit-history-heading h4,.unit-history-heading span,.unit-history-tools span,.unit-monitoring-foot,.unit-monitoring-foot span,.device-select,.theme-toggle,.text-btn,.small-btn,.primary-btn,.nav-item,.state,.pill,.severity,.connection,.avatar){color:#000!important}
+.light-theme .sidebar nav .nav-item.active{background:#f2f2f2!important;color:#000!important}
+.light-theme .sidebar nav .nav-item:hover{background:#f7f7f7!important;color:#000!important}
+.light-theme .recharts-cartesian-axis-tick-value{fill:#000!important}
+.light-theme .recharts-cartesian-grid line{stroke:#e5e5e5!important}
+.light-theme .gauge-track{stroke:#e1e1e1!important}
+.light-theme .unit-monitoring-readings,.light-theme .unit-monitoring-header,.light-theme .unit-monitoring-foot{border-color:#dedede!important}
+.light-theme .device-select,.light-theme .mode-switch,.light-theme .panel-heading select,.light-theme .page-intro select,.light-theme .form-panel input,.light-theme .form-panel select{background:#fff!important;border-color:#cfcfcf!important;color:#000!important}
