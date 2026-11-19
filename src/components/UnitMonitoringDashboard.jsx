@@ -11,15 +11,15 @@ import {
 
 const DEVICES = Array.from({ length: 6 }, (_, index) => `OPT-00${index + 1}`);
 const CHARTS = [
-  { title: "Temperature", key: "temperature", unit: "°C", color: "#91e855", domain: [-2, 16] },
-  { title: "Humidity", key: "humidity", unit: "%", color: "#a8e84f", domain: [30, 100] },
-  { title: "Battery voltage", key: "battery_voltage", unit: "V", color: "#83dc46", domain: [10, 14] },
+  { title: "Temperature", dataKey: "temperature", unit: "°C", color: "#91e855", domain: [-2, 16] },
+  { title: "Humidity", dataKey: "humidity", unit: "%", color: "#a8e84f", domain: [30, 100] },
+  { title: "Battery voltage", dataKey: "battery_voltage", unit: "V", color: "#83dc46", domain: [10, 14] },
 ];
 
 const format = (value, digits = 1) =>
   Number.isFinite(Number(value)) ? Number(value).toFixed(digits) : "—";
 
-function UnitChart({ title, dataKey, unit, color, domain, threshold, points }) {
+function UnitChart({ title, dataKey, unit, color, domain, threshold, points, range, setRange }) {
   const values = points
     .map((point) => Number(point[dataKey]))
     .filter(Number.isFinite);
@@ -38,11 +38,23 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points }) {
     <section className="unit-history-chart">
       <div className="unit-history-heading">
         <h4>{title}</h4>
-        {values.length > 0 && (
-          <span>
-            {format(Math.min(...values))}–{format(Math.max(...values))} {unit}
-          </span>
-        )}
+        <div className="unit-history-tools">
+          {values.length > 0 && (
+            <span>
+              {format(Math.min(...values))}–{format(Math.max(...values))} {unit}
+            </span>
+          )}
+          <select
+            value={range}
+            onChange={(event) => setRange(event.target.value)}
+            aria-label={`${title} history range`}
+          >
+            <option value="1h">1 hour</option>
+            <option value="6h">6 hours</option>
+            <option value="24h">1 day</option>
+            <option value="7d">7 days</option>
+          </select>
+        </div>
       </div>
       {data.length > 0 ? (
         <div className="unit-history-plot">
@@ -99,6 +111,7 @@ export default function UnitMonitoringDashboard({
   mode,
   settings,
   range,
+  setRange,
 }) {
   return (
     <div className="unit-monitoring-grid">
@@ -127,13 +140,15 @@ export default function UnitMonitoringDashboard({
             <div className="unit-monitoring-charts">
               {CHARTS.map((chart) => (
                 <UnitChart
-                  key={chart.key}
+                  key={chart.dataKey}
                   {...chart}
                   points={points}
+                  range={range}
+                  setRange={setRange}
                   threshold={
-                    chart.key === "temperature"
+                    chart.dataKey === "temperature"
                       ? +settings.temperatureMax
-                      : chart.key === "humidity"
+                      : chart.dataKey === "humidity"
                         ? +settings.humidityMax
                         : +settings.batteryWarning
                   }

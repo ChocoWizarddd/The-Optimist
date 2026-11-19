@@ -159,3 +159,9 @@ body{background:#000;color:#e7e7e7}
 .light-theme .unit-monitoring-charts .unit-history-chart{background:#f5f7f2;border-color:#d5ddd2}
 .light-theme .unit-monitoring-foot{border-color:#e0e4e8}
 @media(max-width:700px){.unit-monitoring-charts{grid-template-columns:1fr}.unit-history-plot{height:150px}.unit-monitoring-readings{grid-template-columns:repeat(2,minmax(0,1fr))}.history-range{flex-direction:row;align-items:center;justify-content:space-between;width:100%}.history-range select{min-width:120px}}
+
+.unit-history-tools{display:flex;align-items:center;gap:5px;min-width:0}
+.unit-history-tools span{font-size:8px;color:#829083;white-space:nowrap}
+.unit-history-tools select{min-width:66px;max-width:78px;padding:3px 4px;background:#19261b;border:1px solid #344135;color:#b7c7b4;font-size:8px}
+.light-theme .unit-history-tools select{background:#fff;border-color:#cbd2d8;color:#202a31}
+@media(max-width:1100px){.unit-history-tools span{display:none}}
