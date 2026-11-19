@@ -48,7 +48,7 @@ Battery runtime and energy consumption are not invented: reliable runtime requir
 
 ## 3D prototype viewer
 
-The dashboard background uses the React Bits PixelBlast WebGL component with a subdued parrot-green pixel animation in Black mode and the component's adapted palette in Light mode. It is bundled locally and renders behind the interface without an external image or service.
+The dashboard background uses the React Bits Grainient WebGL component, with the supplied dark-to-orange palette in Black mode and the component's adapted light palette in Light mode. It is bundled locally and renders behind the interface without an external image or service.
 
 The Overview now displays the supplied `public/models/cooler3Dmodel1.glb` above the three compact telemetry gauges. The viewer uses Three.js with local GLB loading and interactive orbit controls: drag to rotate and scroll to zoom. The model asset is served by Vite from the app itself; no external model host is required. If WebGL is unavailable or the asset fails to load, the viewer displays an inline status message.
 
