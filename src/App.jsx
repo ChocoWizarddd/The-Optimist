@@ -35,7 +35,6 @@ import CurvedLoop from './components/CurvedLoop';
 import FallingText from './components/FallingText';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import WeatherPage from './components/WeatherPage';
-import JellyRadio from './components/JellyRadio';
 import Antigravity from './components/Antigravity';
 import DarkVeil from './components/DarkVeil';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
@@ -336,7 +335,7 @@ function Ticker({ reading, fleet, mode }) {
 
 export default function App() {
   const [page, setPage] = useState('Overview');
-  const [mode, setMode] = useState('demo');
+  const [mode] = useState('demo');
   const [theme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
   const [range, setRange] = useState('6h');
@@ -347,11 +346,17 @@ export default function App() {
   }));
   const [history, setHistory] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
 
   const { reading, fleet, samples, unitHistories, error, lastSuccess } = useTelemetry(
     mode, 3000, range, selectedDevice,
   );
   useReveal(page);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('optimist-theme', theme);
@@ -751,14 +756,12 @@ export default function App() {
             <strong>{page}</strong>
           </div>
           <div className="top-controls">
-            <JellyRadio
-              items={[{ value: 'demo', label: 'DEMO' }, { value: 'live', label: 'LIVE' }]}
-              value={mode}
-              onChange={setMode}
-              size="sm"
-              ariaLabel="Select telemetry mode"
-              className="topbar-mode-radio"
-            />
+            <div className="topbar-clock" aria-label={`Local time ${currentTime.toLocaleTimeString()}`}>
+              <Clock size={14} aria-hidden="true" />
+              <time dateTime={currentTime.toISOString()}>
+                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </time>
+            </div>
             <label className="device-select">
               <Factory size={15} />
               <select value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)} aria-label="Select storage unit">

@@ -331,6 +331,23 @@ img, canvas { max-width: 100%; display: block; }
 .top-controls {
   display: flex; align-items: center; gap: 14px;
 }
+.topbar-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 12px;
+  color: #d8e3e8;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 11px;
+  background: rgba(255,255,255,0.035);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.topbar-clock svg { color: #91c8df; }
 
 .device-select {
   display: flex; align-items: center; gap: 8px;
