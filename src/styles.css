@@ -202,6 +202,24 @@ img, canvas { max-width: 100%; display: block; }
   z-index: 20;
   transition: transform 340ms cubic-bezier(0.23, 1, 0.32, 1);
 }
+.sidebar__galaxy {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  opacity: .62;
+  pointer-events: none;
+}
+.sidebar-galaxy-canvas,
+.sidebar-galaxy-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.sidebar-galaxy-canvas canvas { display: block; }
+.sidebar > :not(.sidebar__galaxy) { position: relative; z-index: 1; }
 
 .main {
   position: relative;

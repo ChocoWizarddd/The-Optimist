@@ -37,6 +37,7 @@ import FallingText from './components/FallingText';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import WeatherPage from './components/WeatherPage';
 import JellyRadio from './components/JellyRadio';
+import Galaxy from './components/Galaxy';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
 const nav = [
@@ -691,6 +692,26 @@ export default function App() {
       <InterfaceFX />
 
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
+        <div className="sidebar__galaxy" aria-hidden="true">
+          <Galaxy
+            starColors={['#8fcde8', '#bcecff', '#68a9c7']}
+            density={0.62}
+            hueShift={190}
+            starSpeed={0.22}
+            speed={0.42}
+            glowIntensity={0.22}
+            saturation={0.55}
+            repulsionStrength={0.55}
+            twinkleIntensity={0.28}
+            rotationSpeed={0.035}
+            starSize={0.72}
+            flareIntensity={0.48}
+            layers={3}
+            clickWarp={false}
+            opacity={0.48}
+            className="sidebar-galaxy-canvas"
+          />
+        </div>
         <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
 
         <div className="nav-label">OPERATIONS</div>
