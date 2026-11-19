@@ -189,3 +189,8 @@ body{background:#000;color:#e7e7e7}
 .light-theme .gauge-track{stroke:#e1e1e1!important}
 .light-theme .unit-monitoring-readings,.light-theme .unit-monitoring-header,.light-theme .unit-monitoring-foot{border-color:#dedede!important}
 .light-theme .device-select,.light-theme .mode-switch,.light-theme .panel-heading select,.light-theme .page-intro select,.light-theme .form-panel input,.light-theme .form-panel select{background:#fff!important;border-color:#cfcfcf!important;color:#000!important}
+
+/* Scroll triggered reveal, adapted for dense telemetry panels */
+.scroll-reveal{opacity:0;transform:translate3d(0,16px,0);filter:blur(3px);transition:opacity .5s ease var(--scroll-reveal-delay,0ms),transform .55s cubic-bezier(.2,.7,.2,1) var(--scroll-reveal-delay,0ms),filter .5s ease var(--scroll-reveal-delay,0ms);will-change:opacity,transform,filter}
+.scroll-reveal.scroll-reveal-visible{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}
+@media(prefers-reduced-motion:reduce){.scroll-reveal,.scroll-reveal.scroll-reveal-visible{opacity:1;transform:none;filter:none;transition:none;will-change:auto}}
