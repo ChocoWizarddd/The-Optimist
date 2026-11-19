@@ -34,7 +34,6 @@ import CoolerModel from './components/CoolerModel';
 import LightLines from './components/LightLines';
 import CurvedLoop from './components/CurvedLoop';
 import FallingText from './components/FallingText';
-import ThemeToggleButton from './components/ThemeToggleButton';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 
@@ -334,7 +333,7 @@ function Ticker({ reading, fleet, mode }) {
 export default function App() {
   const [page, setPage] = useState('Overview');
   const [mode, setMode] = useState('demo');
-  const [theme, setTheme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
+  const [theme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
   const [range, setRange] = useState('6h');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -762,7 +761,6 @@ export default function App() {
             </div>
 
             <div className="avatar" aria-hidden="true">OP</div>
-            <Magnetic strength={0.12}><ThemeToggleButton theme={theme} onToggle={setTheme} /></Magnetic>
           </div>
         </header>
 
