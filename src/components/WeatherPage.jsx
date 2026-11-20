@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getLocale, translateText as tx } from '../utils/i18n';
 import {
   Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSnow,
   CloudSun, Droplets, LocateFixed, MapPin, RefreshCw, Search, Sunrise,
@@ -34,8 +35,8 @@ function WeatherIcon({ code, size = 24 }) {
   return <Cloud {...common} />;
 }
 
-function formatDay(date, options = { weekday: 'short', day: 'numeric', month: 'short' }) {
-  return new Intl.DateTimeFormat(undefined, { ...options, timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
+function formatDay(date, options = { weekday: 'short', day: 'numeric', month: 'short' }, language = 'en') {
+  return new Intl.DateTimeFormat(getLocale(language), { ...options, timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
 }
 
 function formatHour(localDateTime) {
@@ -55,7 +56,7 @@ function getLocationName(location) {
     .join(', ');
 }
 
-export default function WeatherPage() {
+export default function WeatherPage({ language = 'en' }) {
   const [location, setLocation] = useState(DEFAULT_LOCATION);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -203,64 +204,64 @@ export default function WeatherPage() {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search any city, region or country"
-            aria-label="Search weather by city, region, or country"
+            placeholder={tx('Search any city, region or country', language)}
+            aria-label={tx('Search weather by city, region, or country', language)}
             autoComplete="off"
           />
-          {searching && <span className="weather-search-status">SEARCHING</span>}
+          {searching && <span className="weather-search-status">{tx('Searching', language).toUpperCase()}</span>}
           {query.trim().length >= 2 && !searching && (
-            <div className="weather-search-results" role="listbox" aria-label="Location search results">
+            <div className="weather-search-results" role="listbox" aria-label={tx('Location search results', language)}>
               {matches.map((place) => (
                 <button key={`${place.id}-${place.latitude}`} onClick={() => chooseLocation(place)} role="option" aria-selected="false">
                   <MapPin size={15} />
                   <span><b>{place.name}</b><small>{[place.admin1, place.country].filter(Boolean).join(', ')}</small></span>
                 </button>
               ))}
-              {!matches.length && <p>{searchError || 'No matching places found. Try a longer city or region name.'}</p>}
+              {!matches.length && <p>{searchError || tx('No matching places found. Try a longer city or region name.', language)}</p>}
             </div>
           )}
         </div>
         <div className="weather-toolbar-actions">
-          <button className="weather-tool-btn" onClick={useMyLocation}><LocateFixed size={15} /> <span>My location</span></button>
-          <button className="weather-tool-btn" onClick={() => loadWeather(location, true)} disabled={refreshing || loading} aria-label="Refresh forecast" title="Refresh forecast">
-            <RefreshCw size={15} className={refreshing ? 'weather-spin' : ''} /> <span>Refresh</span>
+          <button className="weather-tool-btn" onClick={useMyLocation}><LocateFixed size={15} /> <span>{tx('My location', language)}</span></button>
+          <button className="weather-tool-btn" onClick={() => loadWeather(location, true)} disabled={refreshing || loading} aria-label={tx('Refresh forecast', language)} title={tx('Refresh forecast', language)}>
+            <RefreshCw size={15} className={refreshing ? 'weather-spin' : ''} /> <span>{tx('Refresh', language)}</span>
           </button>
         </div>
       </div>
 
       {searchError && !matches.length && query.trim().length >= 2 && <div className="weather-inline-error">{searchError}</div>}
-      {error && <div className="weather-error"><b>WEATHER UNAVAILABLE</b><span>{error}</span><button className="small-btn" onClick={() => loadWeather(location)}>Try again</button></div>}
+      {error && <div className="weather-error"><b>{tx('Weather unavailable', language).toUpperCase()}</b><span>{error}</span><button className="small-btn" onClick={() => loadWeather(location)}>{tx('Try again', language)}</button></div>}
 
       {loading && !weather ? (
-        <div className="weather-loading panel" role="status"><span className="weather-loader" /><div><b>Loading forecast</b><small>Fetching current conditions and seven-day outlook for {getLocationName(location)}.</small></div></div>
+        <div className="weather-loading panel" role="status"><span className="weather-loader" /><div><b>{tx('Loading forecast', language)}</b><small>{tx('Fetching current conditions and seven-day outlook for', language)} {getLocationName(location)}.</small></div></div>
       ) : weather && current && daily ? (
         <>
           <section className="weather-current panel">
             <div className="weather-current-main">
-              <div className="weather-location"><MapPin size={15} /><span>{getLocationName(location)}</span><i>LOCAL TIME · {weather.timezone_abbreviation || weather.timezone}</i></div>
+              <div className="weather-location"><MapPin size={15} /><span>{getLocationName(location)}</span><i>{tx('local time', language).toUpperCase()} · {weather.timezone_abbreviation || weather.timezone}</i></div>
               <div className="weather-current-reading">
                 <WeatherIcon code={current.weather_code} size={48} />
                 <b>{Math.round(current.temperature_2m)}°</b>
-                <div><strong>{weatherLabel(current.weather_code)}</strong><span>Feels like {Math.round(current.apparent_temperature)}°C</span></div>
+                <div><strong>{tx(weatherLabel(current.weather_code), language)}</strong><span>{tx('Feels like', language)} {Math.round(current.apparent_temperature)}°C</span></div>
               </div>
-              <small className="weather-observed">Observed {formatClock(current.time)} local time · Forecast refreshed {updatedAt?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+              <small className="weather-observed">{tx('Observed', language)} {formatClock(current.time)} {tx('local time', language)} · {tx('Forecast refreshed', language)} {updatedAt?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
             </div>
             <div className="weather-current-stats">
-              <div><Droplets size={16} /><small>HUMIDITY</small><b>{current.relative_humidity_2m}%</b></div>
-              <div><Wind size={16} /><small>WIND</small><b>{Math.round(current.wind_speed_10m)} km/h</b></div>
-              <div><CloudRain size={16} /><small>PRECIPITATION</small><b>{Number(current.precipitation).toFixed(1)} mm</b></div>
-              <div><Thermometer size={16} /><small>COORDINATES</small><b>{location.latitude.toFixed(2)}°, {location.longitude.toFixed(2)}°</b></div>
+              <div><Droplets size={16} /><small>{tx('Humidity', language).toUpperCase()}</small><b>{current.relative_humidity_2m}%</b></div>
+              <div><Wind size={16} /><small>{tx('Wind', language).toUpperCase()}</small><b>{Math.round(current.wind_speed_10m)} km/h</b></div>
+              <div><CloudRain size={16} /><small>{tx('Precipitation', language).toUpperCase()}</small><b>{Number(current.precipitation).toFixed(1)} mm</b></div>
+              <div><Thermometer size={16} /><small>{tx('Coordinates', language).toUpperCase()}</small><b>{location.latitude.toFixed(2)}°, {location.longitude.toFixed(2)}°</b></div>
             </div>
           </section>
 
-          <div className="weather-section-title"><div><span>7 DAY OUTLOOK</span><b>Daily forecast</b></div><small>Tap a day to inspect its hourly details</small></div>
-          <section className="weather-days" aria-label="Seven day forecast">
+          <div className="weather-section-title"><div><span>{tx('7 day outlook', language).toUpperCase()}</span><b>{tx('Daily forecast', language)}</b></div><small>{tx('Tap a day to inspect its hourly details', language)}</small></div>
+          <section className="weather-days" aria-label={tx('Seven day forecast', language)}>
             {daily.time.map((date, index) => (
               <button key={date} className={`weather-day panel ${date === selectedDate ? 'weather-day--active' : ''}`} onClick={() => setSelectedDate(date)} aria-pressed={date === selectedDate}>
-                <b>{index === 0 ? 'Today' : formatDay(date, { weekday: 'short' })}</b>
-                <small>{formatDay(date, { day: 'numeric', month: 'short' })}</small>
+                <b>{index === 0 ? tx('Today', language) : formatDay(date, { weekday: 'short' }, language)}</b>
+                <small>{formatDay(date, { day: 'numeric', month: 'short' }, language)}</small>
                 <WeatherIcon code={daily.weather_code[index]} size={24} />
-                <span>{weatherLabel(daily.weather_code[index])}</span>
+                <span>{tx(weatherLabel(daily.weather_code[index]), language)}</span>
                 <div className="weather-day-temps"><strong>{Math.round(daily.temperature_2m_max[index])}°</strong><i>{Math.round(daily.temperature_2m_min[index])}°</i></div>
                 <small className="weather-day-rain"><CloudRain size={12} /> {daily.precipitation_probability_max[index] ?? 0}%</small>
               </button>
@@ -269,26 +270,26 @@ export default function WeatherPage() {
 
           <section className="weather-detail panel">
             <div className="weather-detail-head">
-              <div><span>HOURLY CONDITIONS</span><h3>{formatDay(selectedDate, { weekday: 'long', day: 'numeric', month: 'long' })}</h3></div>
+              <div><span>{tx('Hourly conditions', language).toUpperCase()}</span><h3>{formatDay(selectedDate, { weekday: 'long', day: 'numeric', month: 'long' }, language)}</h3></div>
               <div className="weather-sun-times">
-                <span><Sunrise size={15} /> Sunrise <b>{formatClock(daily.sunrise[activeDay])}</b></span>
-                <span><Sunset size={15} /> Sunset <b>{formatClock(daily.sunset[activeDay])}</b></span>
+                <span><Sunrise size={15} /> {tx('Sunrise', language)} <b>{formatClock(daily.sunrise[activeDay])}</b></span>
+                <span><Sunset size={15} /> {tx('Sunset', language)} <b>{formatClock(daily.sunset[activeDay])}</b></span>
               </div>
             </div>
-            <div className="weather-hourly-scroll" aria-label="Hourly forecast for selected day">
+            <div className="weather-hourly-scroll" aria-label={tx('Hourly forecast for selected day', language)}>
               {hourlyRows.map((hour) => (
                 <article className="weather-hour" key={hour.time}>
                   <b>{formatHour(hour.time)}</b>
                   <WeatherIcon code={hour.code} size={21} />
                   <strong>{Math.round(hour.temperature)}°</strong>
-                  <small>Feels {Math.round(hour.feelsLike)}°</small>
+                  <small>{tx('Feels like', language)} {Math.round(hour.feelsLike)}°</small>
                   <span><Droplets size={12} />{hour.rainChance ?? 0}%</span>
                   <span><Wind size={12} />{Math.round(hour.wind)} km/h</span>
                   <small>RH {hour.humidity}% · UV {Math.round(hour.uv ?? 0)}</small>
                 </article>
               ))}
             </div>
-            {!hourlyRows.length && <p className="weather-empty">Hourly details are not available for this date.</p>}
+            {!hourlyRows.length && <p className="weather-empty">{tx('Hourly details are not available for this date.', language)}</p>}
           </section>
           <div className="weather-attribution">Weather forecast and location search by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a> · Times are local to the selected location · Forecast values are model estimates.</div>
         </>

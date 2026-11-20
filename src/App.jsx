@@ -39,7 +39,7 @@ import WeatherPage from './components/WeatherPage';
 import Antigravity from './components/Antigravity';
 import DarkVeil from './components/DarkVeil';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
-import { LANGUAGES, languageLabel, translateNav } from './utils/i18n';
+import { LANGUAGES, getLocale, languageLabel, translateNav, translateText as tx } from './utils/i18n';
 
 const nav = [
   { label: 'Overview', icon: Activity, code: '01' },
@@ -68,22 +68,22 @@ const initSettings = {
 
 const nfmt = (n, d = 1) => (Number.isFinite(+n) ? (+n).toFixed(d) : '—');
 
-function Eyebrow({ children, index }) {
+function Eyebrow({ children, index, language = 'en' }) {
   return (
     <div className="eyebrow">
-      <span>{children}</span>
+      <span>{tx(children, language)}</span>
       {index && <em>{index}</em>}
     </div>
   );
 }
 
-function SectionHead({ eyebrow, title, count, action }) {
+function SectionHead({ eyebrow, title, count, action, language = 'en' }) {
   return (
     <div className="section-head" data-reveal="up">
       <div>
-        <Eyebrow>{eyebrow}</Eyebrow>
+        <Eyebrow language={language}>{eyebrow}</Eyebrow>
         <h2 className="section-head__title">
-          {title} {count && <span>{count}</span>}
+          {tx(title, language)} {count && <span>{count}</span>}
         </h2>
       </div>
       {action}
@@ -95,22 +95,22 @@ function PageIntro({ eyebrow, title, copy, children, language }) {
   return (
     <div className="page-intro" data-reveal="up">
       <div>
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h2>{translateNav(title, language)}</h2>
-        <p>{copy}</p>
+        <Eyebrow language={language}>{eyebrow}</Eyebrow>
+        <h2>{translateNav(title, language) !== title ? translateNav(title, language) : tx(title, language)}</h2>
+        <p>{tx(copy, language)}</p>
       </div>
       {children}
     </div>
   );
 }
 
-function Gauge({ title, value, unit, min, max, low, high, color, caption }) {
+function Gauge({ title, value, unit, min, max, low, high, color, caption, language = 'en' }) {
   const pct = Math.max(0, Math.min(1, (value - min) / (max - min)));
   const circ = 2 * Math.PI * 46;
   return (
     <div className="gauge-card">
       <div className="gauge-top">
-        <span className="gauge-title">{title}</span>
+        <span className="gauge-title">{tx(title, language)}</span>
         <span className="live-dot" />
       </div>
       <div className="gauge-wrap">
@@ -134,21 +134,21 @@ function Gauge({ title, value, unit, min, max, low, high, color, caption }) {
         </div>
       </div>
       <div className="gauge-meta">
-        <span>MIN <b>{low}</b></span>
-        <span>MAX <b>{high}</b></span>
+          <span>{tx('Min', language).toUpperCase()} <b>{low}</b></span>
+        <span>{tx('Max', language).toUpperCase()} <b>{high}</b></span>
       </div>
-      <div className="gauge-range">Scale {min}–{max} {unit}</div>
+      <div className="gauge-range">{tx('Scale', language)} {min}–{max} {unit}</div>
       <div className="zone">
-        <i /><span>Normal</span>
-        <i className="yellow" /><span>Warning</span>
-        <i className="red" /><span>Critical</span>
+        <i /><span>{tx('Normal', language)}</span>
+        <i className="yellow" /><span>{tx('Warning', language)}</span>
+        <i className="red" /><span>{tx('Critical', language)}</span>
       </div>
-      <div className="gauge-caption">{caption}</div>
+        <div className="gauge-caption">{tx(caption, language)}</div>
     </div>
   );
 }
 
-function UnitCard({ index, reading }) {
+function UnitCard({ index, reading, language = 'en' }) {
   const id = `OPT-00${index + 1}`;
   const hasReading = Boolean(reading);
 
@@ -161,14 +161,14 @@ function UnitCard({ index, reading }) {
           </div>
         </div>
         <div className="unit-values">
-          <div><small>TEMP</small><b>{hasReading ? `${nfmt(reading.temperature)}°C` : '—'}</b></div>
-          <div><small>HUMIDITY</small><b>{hasReading ? `${nfmt(reading.humidity)}%` : '—'}</b></div>
-          <div><small>BATTERY</small><b>{hasReading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'}</b></div>
+          <div><small>{tx('Temperature', language)}</small><b>{hasReading ? `${nfmt(reading.temperature)}°C` : '—'}</b></div>
+          <div><small>{tx('Humidity', language)}</small><b>{hasReading ? `${nfmt(reading.humidity)}%` : '—'}</b></div>
+          <div><small>{tx('Battery', language)}</small><b>{hasReading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'}</b></div>
         </div>
         <div className="unit-foot">
           <span>
             <Power size={13} />
-            {hasReading ? (reading.compressor_running ? 'COMPRESSOR ON' : 'COMPRESSOR OFF') : 'NO TELEMETRY'}
+            {hasReading ? `${tx('Compressor', language)} ${tx(reading.compressor_running ? 'On' : 'Off', language)}` : tx('No telemetry', language)}
           </span>
         </div>
       </article>
@@ -176,20 +176,20 @@ function UnitCard({ index, reading }) {
   );
 }
 
-function HistoryChart({ title, dataKey, data, color, unit, threshold, range, setRange, domains }) {
+function HistoryChart({ title, dataKey, data, color, unit, threshold, range, setRange, domains, language = 'en' }) {
   const values = data.map((d) => d[dataKey]).filter((v) => Number.isFinite(v));
   return (
     <section className="panel chart-panel" data-reveal="up">
       <div className="panel-heading">
         <div>
-          <Eyebrow>HISTORY</Eyebrow>
-          <h3>{title}</h3>
+          <Eyebrow language={language}>HISTORY</Eyebrow>
+          <h3>{tx(title, language)}</h3>
         </div>
       </div>
       <div className="chart-stats">
         <span>MIN <b>{nfmt(values.length ? Math.min(...values) : NaN, 1)} {unit}</b></span>
         <span>MAX <b>{nfmt(values.length ? Math.max(...values) : NaN, 1)} {unit}</b></span>
-        <span className="chart-stats__hint">SAMPLE STREAM</span>
+        <span className="chart-stats__hint">{tx('SAMPLE STREAM', language)}</span>
       </div>
       <div className="chart">
         <ResponsiveContainer width="100%" height="100%">
@@ -244,7 +244,7 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
   );
 }
 
-function Hero({ reading, onNavigate }) {
+function Hero({ reading, onNavigate, language = 'en' }) {
   const stats = [
     ['CHAMBER TEMP', reading ? `${nfmt(reading.temperature)}°C` : '—'],
     ['REL. HUMIDITY', reading ? `${nfmt(reading.humidity)}%` : '—'],
@@ -255,14 +255,14 @@ function Hero({ reading, onNavigate }) {
   return (
     <section className="hero" data-reveal="up">
       <div className="hero__content">
-        <Eyebrow index="001 / FIELD SYSTEM">DECENTRALIZED COLD STORAGE</Eyebrow>
+        <Eyebrow language={language} index="001 / FIELD SYSTEM">DECENTRALIZED COLD STORAGE</Eyebrow>
         <h1 className="hero__title">
-          <FlipText className="hero__flip-line">Cold chain,</FlipText><br />
-          <FlipText className="hero__flip-line hero__flip-line--accent">without compromise.</FlipText>
+          <FlipText className="hero__flip-line">{tx('Cold chain,', language)}</FlipText><br />
+          <FlipText className="hero__flip-line hero__flip-line--accent">{tx('without compromise.', language)}</FlipText>
         </h1>
         <div className="hero__copy">
           <FallingText
-            text="A field-ready control layer for solar cold-storage units. Watch chamber conditions, fleet health and storage intelligence in one calm, honest view."
+            text={tx('A field-ready control layer for solar cold-storage units. Watch chamber conditions, fleet health and storage intelligence in one calm, honest view.', language)}
             split="words"
             trigger="auto"
             gravity={0.9}
@@ -280,12 +280,12 @@ function Hero({ reading, onNavigate }) {
         <div className="hero__actions">
           <Magnetic>
             <button className="btn btn--primary" onClick={() => onNavigate('Live Monitoring')}>
-              Open live telemetry <ArrowUpRight size={16} />
+              {tx('Open live telemetry', language)} <ArrowUpRight size={16} />
             </button>
           </Magnetic>
           <Magnetic>
             <button className="btn btn--ghost" onClick={() => onNavigate('Storage Units')}>
-              Explore the fleet <ArrowRight size={16} />
+              {tx('Explore the fleet', language)} <ArrowRight size={16} />
             </button>
           </Magnetic>
         </div>
@@ -441,12 +441,13 @@ export default function App() {
       case 'Overview':
         return (
           <>
-            <Hero reading={reading} onNavigate={setPage} />
+            <Hero reading={reading} onNavigate={setPage} language={language} />
             <Ticker reading={reading} fleet={fleet} mode={mode} />
 
             <SectionHead
               eyebrow="INSTRUMENT BAY"
               title="The unit, up close"
+              language={language}
               action={<span className="section-head__note">DRAG TO ROTATE · SCROLL TO ZOOM</span>}
             />
             <div className="overview-top" data-reveal="up">
@@ -479,7 +480,7 @@ export default function App() {
                     },
                   ].map((gauge) => (
                     <Tilt key={gauge.title} className="gauge-wrap-outer" amount={4}>
-                      <Gauge {...gauge} />
+                      <Gauge {...gauge} language={language} />
                     </Tilt>
                   ))}
                 </div>
@@ -489,11 +490,12 @@ export default function App() {
             <SectionHead
               eyebrow="FLEET STATUS"
               title="Storage units"
+              language={language}
               count="06"
               action={
                 <Magnetic>
                   <button className="text-btn" onClick={() => setPage('Storage Units')}>
-                    View all <ArrowUpRight size={15} />
+                    {tx('View all', language)} <ArrowUpRight size={15} />
                   </button>
                 </Magnetic>
               }
@@ -504,6 +506,7 @@ export default function App() {
                   <UnitCard
                     index={i}
                     reading={fleet.find((u) => u.device_id === id)}
+                    language={language}
                   />
                 </div>
               ))}
@@ -525,7 +528,7 @@ export default function App() {
                 ['Sensor health', reading ? '3 / 3 OK' : 'Unknown'],
               ].map(([label, value]) => (
                 <div className="metric panel" key={label} data-reveal="up">
-                  <small>{label}</small>
+                  <small>{tx(label, language)}</small>
                   <b>{value}</b>
                 </div>
               ))}
@@ -533,6 +536,7 @@ export default function App() {
             <SectionHead
               eyebrow="UNIT HISTORY"
               title="All six storage units"
+              language={language}
               count="06"
               action={null}
             />
@@ -543,6 +547,7 @@ export default function App() {
               settings={settings}
               range={range}
               setRange={setRange}
+              language={language}
             />
           </>
         );
@@ -554,6 +559,7 @@ export default function App() {
               eyebrow="FLEET"
               title="Storage Units"
               copy="Unit readings and compressor status."
+              language={language}
             />
             <div className="unit-grid unit-grid--large">
               {DEVICES.map((id, i) => (
@@ -561,6 +567,7 @@ export default function App() {
                   <UnitCard
                     index={i}
                     reading={fleet.find((u) => u.device_id === id)}
+                    language={language}
                   />
                 </div>
               ))}
@@ -572,7 +579,7 @@ export default function App() {
         return (
           <>
             <PageIntro eyebrow="LOCAL CONDITIONS" title="Weather" copy="Search cities and regions worldwide for current conditions, a seven-day outlook, and detailed local hourly forecasts." language={language} />
-            <WeatherPage />
+            <WeatherPage language={language} />
           </>
         );
 
@@ -583,7 +590,7 @@ export default function App() {
             <div className="panel table-wrap" data-reveal="up">
               <table>
                 <thead>
-                  <tr><th>Severity</th><th>Time</th><th>Device</th><th>Event</th><th>Description</th><th>Status</th><th /></tr>
+                  <tr><th>{tx('Severity', language)}</th><th>{tx('Time', language)}</th><th>{tx('Device', language)}</th><th>{tx('Event', language)}</th><th>{tx('Description', language)}</th><th>{tx('Status', language)}</th><th /></tr>
                 </thead>
                 <tbody>
                   {alerts.length ? alerts.map((a, i) => (
@@ -593,25 +600,25 @@ export default function App() {
                       <td>{a.device}</td>
                       <td>{a.type}</td>
                       <td>{a.description}</td>
-                      <td>{a.acknowledged ? 'Acknowledged' : 'Active'}</td>
+                      <td>{tx(a.acknowledged ? 'Acknowledged' : 'active', language)}</td>
                       <td>
                         {!a.acknowledged && (
                           <button
                             className="small-btn"
                             onClick={() => setAlerts((xs) => xs.map((x, j) => (j === i ? { ...x, acknowledged: true } : x)))}
                           >
-                            Acknowledge
+                            {tx('Acknowledge', language)}
                           </button>
                         )}
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan="7" className="empty">No active alerts. Threshold-based events appear as readings cross configured limits.</td></tr>
+                    <tr><td colSpan="7" className="empty">{tx('No active alerts. Threshold-based events appear as readings cross configured limits.', language)}</td></tr>
                   )}
                 </tbody>
               </table>
             </div>
-            <p className="muted-text">Alert history is held in this browser session. Live alert API integration is pending.</p>
+            <p className="muted-text">{tx('Alert history is held in this browser session. Live alert API integration is pending.', language)}</p>
           </>
         );
 
@@ -621,27 +628,27 @@ export default function App() {
             <PageIntro eyebrow="RELIABILITY" title="Maintenance" copy="Inspection planning and current device health." language={language} />
             <div className="two-col maintenance-grid">
               <div className="panel" data-reveal="left">
-                <Eyebrow>DEVICE HEALTH</Eyebrow>
+                <Eyebrow language={language}>DEVICE HEALTH</Eyebrow>
                 <h3>{selectedDevice}</h3>
-                <div className="detail-row"><span>Temperature sensor</span><b>{reading ? 'Connected' : 'Unknown'}</b></div>
-                <div className="detail-row"><span>Humidity sensor</span><b>{reading ? 'Connected' : 'Unknown'}</b></div>
-                <div className="detail-row"><span>Battery monitor</span><b>{reading ? 'Connected' : 'Unknown'}</b></div>
-                <div className="detail-row"><span>Hardware backend</span><b>{error ? 'Disconnected' : 'Connected'}</b></div>
+                <div className="detail-row"><span>{tx('Temperature sensor', language)}</span><b>{tx(reading ? 'Connected' : 'Unknown', language)}</b></div>
+                <div className="detail-row"><span>{tx('Humidity sensor', language)}</span><b>{tx(reading ? 'Connected' : 'Unknown', language)}</b></div>
+                <div className="detail-row"><span>{tx('Battery monitor', language)}</span><b>{tx(reading ? 'Connected' : 'Unknown', language)}</b></div>
+                <div className="detail-row"><span>{tx('Hardware backend', language)}</span><b>{tx(error ? 'Disconnected' : 'Connected', language)}</b></div>
               </div>
               <div className="panel" data-reveal="right">
-                <Eyebrow>RECOMMENDED CHECKS</Eyebrow>
-                <h3>Inspection schedule</h3>
+                <Eyebrow language={language}>RECOMMENDED CHECKS</Eyebrow>
+                <h3>{tx('Inspection schedule', language)}</h3>
                 <ul className="recommendations">
-                  <li>Verify sensor readings against a reference instrument before commissioning.</li>
-                  <li>Inspect wiring and connector strain relief before field deployment.</li>
-                  <li>Review compressor duty pattern and cooling performance during chamber trials.</li>
-                  <li>Perform battery capacity test before displaying runtime estimates.</li>
+                  <li>{tx('Verify sensor readings against a reference instrument before commissioning.', language)}</li>
+                  <li>{tx('Inspect wiring and connector strain relief before field deployment.', language)}</li>
+                  <li>{tx('Review compressor duty pattern and cooling performance during chamber trials.', language)}</li>
+                  <li>{tx('Perform battery capacity test before displaying runtime estimates.', language)}</li>
                 </ul>
               </div>
               <div className="panel" data-reveal="up">
-                <Eyebrow>MAINTENANCE RECORDS</Eyebrow>
-                <h3>No service history</h3>
-                <p>Records can be entered when maintenance workflows are connected.</p>
+                <Eyebrow language={language}>MAINTENANCE RECORDS</Eyebrow>
+                <h3>{tx('No service history', language)}</h3>
+                <p>{tx('Records can be entered when maintenance workflows are connected.', language)}</p>
               </div>
             </div>
           </>
@@ -666,12 +673,12 @@ export default function App() {
               ].map(([label, key]) => (
                 <div className="panel report-card" key={key} data-reveal="up">
                   <div className="report-card__icon"><BarChart3 size={19} /></div>
-                  <b>{label}</b>
+                  <b>{tx(label, language)}</b>
                   <small>
                     {key === 'alerts' ? alerts.length : history.length}
-                    <span> records in current session</span>
+                    <span> {tx('records in current session', language)}</span>
                   </small>
-                  <button className="text-btn" onClick={exportCsv}>Export CSV <ArrowUpRight size={14} /></button>
+                  <button className="text-btn" onClick={exportCsv}>{tx('Export CSV', language)} <ArrowUpRight size={14} /></button>
                 </div>
               ))}
             </div>
@@ -772,10 +779,10 @@ export default function App() {
               </select>
               <ChevronDown size={12} aria-hidden="true" />
             </label>
-            <div className="topbar-clock" aria-label={`Local time ${currentTime.toLocaleTimeString()}`}>
+            <div className="topbar-clock" aria-label={`${tx('local time', language)} ${currentTime.toLocaleTimeString(getLocale(language))}`}>
               <Clock size={14} aria-hidden="true" />
               <time dateTime={currentTime.toISOString()}>
-                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                {currentTime.toLocaleTimeString(getLocale(language), { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </time>
             </div>
             <label className="device-select">
@@ -798,11 +805,11 @@ export default function App() {
         <section className={`content ${page === 'Overview' ? 'content--overview' : 'content--inner'}`} key={page}>
           <div className="page-heading">
             <div>
-              <Eyebrow>{page === 'Overview' ? 'CONTROL ROOM' : 'OPTAL OS'}</Eyebrow>
+              <Eyebrow language={language}>{page === 'Overview' ? 'CONTROL ROOM' : 'OPTAL OS'}</Eyebrow>
               <h1>{translateNav(page, language)}</h1>
             </div>
             <div className="heading-meta">
-              <span><Clock size={13} /> {new Date().toLocaleDateString()}</span>
+              <span><Clock size={13} /> {new Date().toLocaleDateString(getLocale(language))}</span>
             </div>
           </div>
 

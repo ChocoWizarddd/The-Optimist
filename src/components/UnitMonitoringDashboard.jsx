@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { translateText as tx } from "../utils/i18n";
 
 const DEVICES = Array.from({ length: 6 }, (_, index) => `OPT-00${index + 1}`);
 const CHARTS = [
@@ -19,7 +20,7 @@ const CHARTS = [
 const format = (value, digits = 1) =>
   Number.isFinite(Number(value)) ? Number(value).toFixed(digits) : "—";
 
-function UnitChart({ title, dataKey, unit, color, domain, threshold, points, range, setRange }) {
+function UnitChart({ title, dataKey, unit, color, domain, threshold, points, range, setRange, language }) {
   const values = points
     .map((point) => Number(point[dataKey]))
     .filter(Number.isFinite);
@@ -37,7 +38,7 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
   return (
     <section className="unit-history-chart">
       <div className="unit-history-heading">
-        <h4>{title}</h4>
+        <h4>{tx(title, language)}</h4>
         <div className="unit-history-tools">
           {values.length > 0 && (
             <span>
@@ -89,7 +90,7 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="unit-history-empty">No history available for this unit.</div>
+        <div className="unit-history-empty">{tx("No history available for this unit.", language)}</div>
       )}
     </section>
   );
@@ -101,6 +102,7 @@ export default function UnitMonitoringDashboard({
   settings,
   range,
   setRange,
+  language = "en",
 }) {
   return (
     <div className="unit-monitoring-grid">
@@ -111,19 +113,19 @@ export default function UnitMonitoringDashboard({
           <section className="panel unit-monitoring-card" key={deviceId}>
             <header className="unit-monitoring-header">
               <div>
-                <small>STORAGE UNIT · {range.toUpperCase()} HISTORY</small>
+                <small>{tx("Storage Units", language).toUpperCase()} · {range.toUpperCase()} {tx("Unit history", language).toUpperCase()}</small>
                 <h3>{deviceId}</h3>
               </div>
               <span className={`state ${reading ? "ok" : "muted"}`}>
                 <i />
-                {reading ? "ONLINE" : "NO TELEMETRY"}
+                {reading ? tx("Online", language).toUpperCase() : tx("No telemetry", language).toUpperCase()}
               </span>
             </header>
             <div className="unit-monitoring-readings">
-              <div><small>TEMP</small><b>{reading ? `${format(reading.temperature)}°C` : "—"}</b></div>
-              <div><small>HUMIDITY</small><b>{reading ? `${format(reading.humidity)}%` : "—"}</b></div>
-              <div><small>BATTERY</small><b>{reading ? `${format(reading.battery_voltage, 2)} V` : "—"}</b></div>
-              <div><small>COMPRESSOR</small><b>{reading ? (reading.compressor_running ? "ON" : "OFF") : "—"}</b></div>
+              <div><small>{tx("Temperature", language).toUpperCase()}</small><b>{reading ? `${format(reading.temperature)}°C` : "—"}</b></div>
+              <div><small>{tx("Humidity", language).toUpperCase()}</small><b>{reading ? `${format(reading.humidity)}%` : "—"}</b></div>
+              <div><small>{tx("Battery", language).toUpperCase()}</small><b>{reading ? `${format(reading.battery_voltage, 2)} V` : "—"}</b></div>
+              <div><small>{tx("Compressor", language).toUpperCase()}</small><b>{reading ? tx(reading.compressor_running ? "On" : "Off", language).toUpperCase() : "—"}</b></div>
             </div>
             <div className="unit-monitoring-charts">
               {CHARTS.map((chart) => (
@@ -133,6 +135,7 @@ export default function UnitMonitoringDashboard({
                   points={points}
                   range={range}
                   setRange={setRange}
+                  language={language}
                   threshold={
                     chart.dataKey === "temperature"
                       ? +settings.temperatureMax
@@ -144,7 +147,7 @@ export default function UnitMonitoringDashboard({
               ))}
             </div>
             <footer className="unit-monitoring-foot">
-              {reading?.compressor_running ? "Compressor running" : reading ? "Compressor stopped" : "Waiting for telemetry"}
+              {tx(reading?.compressor_running ? "Compressor running" : reading ? "Compressor stopped" : "Waiting for telemetry", language)}
               <span>{String(index + 1).padStart(2, "0")}</span>
             </footer>
           </section>

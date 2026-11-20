@@ -39,14 +39,14 @@ body {
   min-height: 100vh;
   color: var(--ink);
   background: var(--bg);
-  font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  font-family: 'DM Sans', 'Noto Sans', 'Nirmala UI', 'Segoe UI', system-ui, sans-serif;
   font-size: 14px;
   line-height: 1.55;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3, h4, b, strong {
-  font-family: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  font-family: 'Space Grotesk', 'DM Sans', 'Noto Sans', 'Nirmala UI', 'Segoe UI', system-ui, sans-serif;
   letter-spacing: -0.02em;
 }
 h1 { font-size: 56px; line-height: 1.05; margin: 0; }

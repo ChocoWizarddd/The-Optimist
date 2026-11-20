@@ -1,5 +1,7 @@
 // Offline UI translations for India's 22 constitutionally scheduled languages.
 // English remains the fallback for technical text without a reviewed translation.
+import commonTranslations from './commonTranslations.json';
+
 export const LANGUAGES = [
   { code: 'as', label: 'অসমীয়া · Assamese' },
   { code: 'bn', label: 'বাংলা · Bengali' },
@@ -57,4 +59,31 @@ export function translateNav(label, language) {
 
 export function languageLabel(language) {
   return labels[language]?.[7] || 'Choose language';
+}
+
+export function getLocale(language) {
+  if (language === 'en') return 'en-IN';
+  try {
+    const candidate = `${language}-IN`;
+    Intl.DateTimeFormat(candidate);
+    return candidate;
+  } catch {
+    return 'en-IN';
+  }
+}
+
+const phraseEntries = Object.keys(commonTranslations.hi || {})
+  .filter((source) => source.length > 2)
+  .sort((a, b) => b.length - a.length);
+
+export function translateText(value, language) {
+  if (typeof value !== 'string' || language === 'en' || !commonTranslations[language]) return value;
+  const exact = commonTranslations[language][value];
+  if (exact && exact !== value) return exact;
+  return phraseEntries.reduce((text, source) => {
+    const translated = commonTranslations[language][source];
+    if (!translated || translated === source) return text;
+    const escaped = source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(^|[^\\p{L}\\p{N}])(${escaped})(?=$|[^\\p{L}\\p{N}])`, 'giu'), (_, lead) => `${lead}${translated}`);
+  }, value);
 }
