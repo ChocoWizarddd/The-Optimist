@@ -26,6 +26,19 @@ npm run dev
 
 Open the local URL printed by Vite. `npm run build` creates the production bundle.
 
+## Android APK
+
+The site can be packaged as an Android app with Capacitor. Install Android Studio with the Android SDK, install JDK 21, and make the SDK path available as `ANDROID_HOME` (or `ANDROID_SDK_ROOT`). Then run from the project folder:
+
+```powershell
+npm install
+npm run android:apk
+```
+
+The command builds the web app, syncs it into the Android project, and creates a debug APK at `android/app/build/outputs/apk/debug/app-debug.apk`. Transfer that APK to an Android phone and open it to install; on first install Android may ask you to allow installs from that source. The debug APK is for development and direct testing, not Play Store release. The Android Studio project is in `android/` and can also be opened in Android Studio.
+
+Live USB telemetry remains a separate integration step: the current PySerial bridge runs on the computer, while `127.0.0.1` inside the Android app means the phone itself. To use Live mode in the APK, the bridge must be reachable over the phone's network or a native Android USB-serial connection must be added. Demo mode works without that bridge.
+
 ## Simulated mode
 
 Simulation mode is selected initially. It updates readings for OPT-001 and five simulated fleet units every three seconds, including compressor state. Use the device selector in the top bar to switch the selected unit; its gauges, charts, crop readings, alerts and reports follow that unit. Each simulated unit has its own changing readings and history. Threshold alerts are generated from the active unit. CSV export downloads current-session telemetry. Settings are local to the browser. All generated readings are labeled as simulated and are never presented as hardware data.

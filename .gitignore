@@ -3,6 +3,10 @@ backend/.venv/
 __pycache__/
 *.py[cod]
 dist/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
 work/
 outputs/
 .env
