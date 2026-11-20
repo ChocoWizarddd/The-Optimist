@@ -8,7 +8,7 @@
   --panel: rgba(14, 16, 18, 0.72);
   --panel-border: rgba(255, 255, 255, 0.06);
   --ink: #f3f1eb;
-  --ink-muted: #94988c;
+  --ink-muted: #ffffff;
   --ink-dim: #5c6159;
   --accent: #8fcde8;
   --accent-glow: rgba(143, 205, 232, 0.18);
@@ -421,7 +421,7 @@ img, canvas { max-width: 100%; display: block; }
   transition: border-color 250ms ease, box-shadow 250ms ease;
 }
 .topbar { color: #e7e7e7; }
-.topbar .crumb span { color: #94988c; }
+.topbar .crumb span { color: #ffffff; }
 .topbar .crumb b { color: #e7e7e7; font-size: 11px; letter-spacing: 0.08em; }
 .topbar .crumb strong { color: #f3f1eb; }
 .topbar .device-select,
@@ -1477,7 +1477,7 @@ img, canvas { max-width: 100%; display: block; }
   --panel: rgba(255,255,255,0.85);
   --panel-border: rgba(0,0,0,0.08);
   --ink: #141513;
-  --ink-muted: #5c5e59;
+  --ink-muted: #ffffff;
   --ink-dim: #8c8f89;
   --shadow: 0 24px 60px rgba(0,0,0,0.08);
 }
@@ -1541,7 +1541,7 @@ img, canvas { max-width: 100%; display: block; }
   border-color: rgba(255,255,255,0.10) !important;
 }
 .topbar .crumb span,
-.light-theme .topbar .crumb span { color: #94988c !important; }
+.light-theme .topbar .crumb span { color: #ffffff !important; }
 .topbar .crumb b,
 .light-theme .topbar .crumb b { color: #e7e7e7 !important; }
 .topbar .crumb strong,
