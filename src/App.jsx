@@ -337,7 +337,7 @@ function Ticker({ reading, fleet, mode, language = 'en' }) {
 
 export default function App() {
   const [page, setPage] = useState('Overview');
-  const [mode] = useState('demo');
+  const [mode, setMode] = useState(() => localStorage.getItem('optimist-mode') === 'live' ? 'live' : 'demo');
   const [theme] = useState(() => localStorage.getItem('optimist-theme') || 'black');
   const [selectedDevice, setSelectedDevice] = useState('OPT-001');
   const [range, setRange] = useState('6h');
@@ -369,6 +369,10 @@ export default function App() {
     localStorage.setItem('optimist-language', language);
     document.documentElement.lang = language;
   }, [language]);
+
+  useEffect(() => {
+    localStorage.setItem('optimist-mode', mode);
+  }, [mode]);
 
   useEffect(() => {
     if (!reading) return;
@@ -784,6 +788,26 @@ export default function App() {
             <strong>{translateNav(page, language)}</strong>
           </div>
           <div className="top-controls">
+            <div className="mode-switch" role="group" aria-label="Telemetry source">
+              <button
+                type="button"
+                className={mode === 'demo' ? 'chosen' : ''}
+                aria-pressed={mode === 'demo'}
+                onClick={() => setMode('demo')}
+                title="Use generated demonstration readings"
+              >
+                {mode === 'demo' && <span aria-hidden="true" />}{tx('Demo', language)}
+              </button>
+              <button
+                type="button"
+                className={mode === 'live' ? 'live-chosen' : ''}
+                aria-pressed={mode === 'live'}
+                onClick={() => setMode('live')}
+                title="Read telemetry from the ESP32 USB serial bridge"
+              >
+                {mode === 'live' && <span aria-hidden="true" />}{tx('Live', language)}
+              </button>
+            </div>
             <div className="topbar-clock" aria-label={`${tx('local time', language)} ${currentTime.toLocaleTimeString(getLocale(language))}`}>
               <Clock size={14} aria-hidden="true" />
               <time dateTime={currentTime.toISOString()}>
@@ -798,9 +822,9 @@ export default function App() {
               <ChevronDown size={13} />
             </label>
 
-            <div className={`connection ${mode === 'demo' ? 'connected' : error ? 'disconnected' : 'connected'}`}>
-              {mode === 'demo' || !error ? <Wifi size={14} /> : <WifiOff size={14} />}
-              <span>{error ? 'OFFLINE' : 'CONNECTED'}</span>
+            <div className={`connection ${mode === 'demo' || lastSuccess ? 'connected' : error ? 'disconnected' : ''}`}>
+              {mode === 'live' && error ? <WifiOff size={14} /> : <Wifi size={14} />}
+              <span>{mode === 'demo' ? tx('Demo', language).toUpperCase() : lastSuccess ? tx('Connected', language).toUpperCase() : error ? tx('Disconnected', language).toUpperCase() : tx('Connecting', language).toUpperCase()}</span>
             </div>
 
             <div className="avatar" aria-hidden="true">OP</div>
