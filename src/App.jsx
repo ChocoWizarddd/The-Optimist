@@ -754,8 +754,21 @@ export default function App() {
           ))}
         </nav>
 
-        <div className="sidebar-logo">
-          <img src="/optimist-eco-tech-logo.png" alt="Optimist Eco-Tech" />
+        <div className="sidebar-brand-area">
+          <div className="language-picker language-picker--sidebar" title={languageLabel(language)}>
+            <Languages size={14} aria-hidden="true" />
+            <select value={language} onChange={(event) => setLanguage(event.target.value)} aria-label={languageLabel(language)}>
+              <option value="en">English · English</option>
+              {LANGUAGES.map(({ code, label }) => <option key={code} value={code}>{label}</option>)}
+            </select>
+            <span className="language-picker__value" aria-hidden="true">
+              {language === 'en' ? 'English · English' : LANGUAGES.find(({ code }) => code === language)?.label || 'English · English'}
+            </span>
+            <ChevronDown size={12} aria-hidden="true" />
+          </div>
+          <div className="sidebar-logo">
+            <img src="/optimist-eco-tech-logo.png" alt="Optimist Eco-Tech" />
+          </div>
         </div>
         <div className="sidebar-foot">OPTAL OS · FIELD BUILD 1.0</div>
       </aside>
@@ -771,17 +784,6 @@ export default function App() {
             <strong>{translateNav(page, language)}</strong>
           </div>
           <div className="top-controls">
-            <div className="language-picker" title={languageLabel(language)}>
-              <Languages size={14} aria-hidden="true" />
-              <select value={language} onChange={(event) => setLanguage(event.target.value)} aria-label={languageLabel(language)}>
-                <option value="en">English · English</option>
-                {LANGUAGES.map(({ code, label }) => <option key={code} value={code}>{label}</option>)}
-              </select>
-              <span className="language-picker__value" aria-hidden="true">
-                {language === 'en' ? 'English · English' : LANGUAGES.find(({ code }) => code === language)?.label || 'English · English'}
-              </span>
-              <ChevronDown size={12} aria-hidden="true" />
-            </div>
             <div className="topbar-clock" aria-label={`${tx('local time', language)} ${currentTime.toLocaleTimeString(getLocale(language))}`}>
               <Clock size={14} aria-hidden="true" />
               <time dateTime={currentTime.toISOString()}>

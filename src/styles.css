@@ -285,8 +285,16 @@ img, canvas { max-width: 100%; display: block; }
   border: 1px solid rgba(143,205,232,0.35);
 }
 
-.sidebar-logo {
+.sidebar-brand-area {
   margin-top: auto;
+}
+.language-picker--sidebar {
+  width: calc(100% - 36px);
+  max-width: none;
+  margin: 0 18px 10px;
+  box-sizing: border-box;
+}
+.sidebar-logo {
   display: grid;
   place-items: center;
   padding: 18px 28px;
