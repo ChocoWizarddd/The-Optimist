@@ -771,14 +771,17 @@ export default function App() {
             <strong>{translateNav(page, language)}</strong>
           </div>
           <div className="top-controls">
-            <label className="language-picker" title={languageLabel(language)}>
+            <div className="language-picker" title={languageLabel(language)}>
               <Languages size={14} aria-hidden="true" />
               <select value={language} onChange={(event) => setLanguage(event.target.value)} aria-label={languageLabel(language)}>
                 <option value="en">English · English</option>
                 {LANGUAGES.map(({ code, label }) => <option key={code} value={code}>{label}</option>)}
               </select>
+              <span className="language-picker__value" aria-hidden="true">
+                {language === 'en' ? 'English · English' : LANGUAGES.find(({ code }) => code === language)?.label || 'English · English'}
+              </span>
               <ChevronDown size={12} aria-hidden="true" />
-            </label>
+            </div>
             <div className="topbar-clock" aria-label={`${tx('local time', language)} ${currentTime.toLocaleTimeString(getLocale(language))}`}>
               <Clock size={14} aria-hidden="true" />
               <time dateTime={currentTime.toISOString()}>
