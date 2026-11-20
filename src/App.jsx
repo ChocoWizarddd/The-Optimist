@@ -22,6 +22,7 @@ import {
   CloudSun,
   Download,
   Factory,
+  Languages,
   Menu,
   Power,
   Wifi,
@@ -38,6 +39,7 @@ import WeatherPage from './components/WeatherPage';
 import Antigravity from './components/Antigravity';
 import DarkVeil from './components/DarkVeil';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
+import { LANGUAGES, languageLabel, translateNav } from './utils/i18n';
 
 const nav = [
   { label: 'Overview', icon: Activity, code: '01' },
@@ -89,12 +91,12 @@ function SectionHead({ eyebrow, title, count, action }) {
   );
 }
 
-function PageIntro({ eyebrow, title, copy, children }) {
+function PageIntro({ eyebrow, title, copy, children, language }) {
   return (
     <div className="page-intro" data-reveal="up">
       <div>
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h2>{title}</h2>
+        <h2>{translateNav(title, language)}</h2>
         <p>{copy}</p>
       </div>
       {children}
@@ -347,6 +349,7 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [currentTime, setCurrentTime] = useState(() => new Date());
+  const [language, setLanguage] = useState(() => localStorage.getItem('optimist-language') || 'en');
 
   const { reading, fleet, samples, unitHistories, error, lastSuccess } = useTelemetry(
     mode, 3000, range, selectedDevice,
@@ -361,6 +364,11 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('optimist-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('optimist-language', language);
+    document.documentElement.lang = language;
+  }, [language]);
 
   useEffect(() => {
     if (!reading) return;
@@ -506,7 +514,7 @@ export default function App() {
       case 'Live Monitoring':
         return (
           <>
-            <PageIntro eyebrow="TELEMETRY" title="Live Monitoring" copy="Live readings and historical graphs for every storage unit." />
+            <PageIntro eyebrow="TELEMETRY" title="Live Monitoring" copy="Live readings and historical graphs for every storage unit." language={language} />
             <div className="metric-row metric-row--live">
               {[
                 ['Temperature', reading ? `${nfmt(reading.temperature)} °C` : '—'],
@@ -563,7 +571,7 @@ export default function App() {
       case 'Weather':
         return (
           <>
-            <PageIntro eyebrow="LOCAL CONDITIONS" title="Weather" copy="Search cities and regions worldwide for current conditions, a seven-day outlook, and detailed local hourly forecasts." />
+            <PageIntro eyebrow="LOCAL CONDITIONS" title="Weather" copy="Search cities and regions worldwide for current conditions, a seven-day outlook, and detailed local hourly forecasts." language={language} />
             <WeatherPage />
           </>
         );
@@ -571,7 +579,7 @@ export default function App() {
       case 'Alerts & Events':
         return (
           <>
-            <PageIntro eyebrow="EVENT LOG" title="Alerts & Events" copy={`${unacknowledged} active · configured thresholds stored locally`} />
+            <PageIntro eyebrow="EVENT LOG" title="Alerts & Events" copy={`${unacknowledged} active · configured thresholds stored locally`} language={language} />
             <div className="panel table-wrap" data-reveal="up">
               <table>
                 <thead>
@@ -610,7 +618,7 @@ export default function App() {
       case 'Maintenance':
         return (
           <>
-            <PageIntro eyebrow="RELIABILITY" title="Maintenance" copy="Inspection planning and current device health." />
+            <PageIntro eyebrow="RELIABILITY" title="Maintenance" copy="Inspection planning and current device health." language={language} />
             <div className="two-col maintenance-grid">
               <div className="panel" data-reveal="left">
                 <Eyebrow>DEVICE HEALTH</Eyebrow>
@@ -642,7 +650,7 @@ export default function App() {
       case 'Reports':
         return (
           <>
-            <PageIntro eyebrow="DATA EXPORT" title="Reports" copy="Download locally collected samples as CSV.">
+            <PageIntro eyebrow="DATA EXPORT" title="Reports" copy="Download locally collected samples as CSV." language={language}>
               <Magnetic>
                 <button className="btn btn--primary" onClick={exportCsv}><Download size={15} /> Export CSV</button>
               </Magnetic>
@@ -732,7 +740,7 @@ export default function App() {
               onClick={() => { setPage(label); setMobileOpen(false); }}
             >
               <span className="nav-item__icon"><Icon size={16} strokeWidth={1.8} /></span>
-              <span className="nav-item__label">{label}</span>
+              <span className="nav-item__label">{translateNav(label, language)}</span>
               <span className="nav-item__code">{code}</span>
               {label === 'Alerts & Events' && unacknowledged > 0 && <i className="nav-count">{unacknowledged}</i>}
             </button>
@@ -753,9 +761,17 @@ export default function App() {
           <div className="crumb">
             <span>OPTAL OS</span>
             <b>/</b>
-            <strong>{page}</strong>
+            <strong>{translateNav(page, language)}</strong>
           </div>
           <div className="top-controls">
+            <label className="language-picker" title={languageLabel(language)}>
+              <Languages size={14} aria-hidden="true" />
+              <select value={language} onChange={(event) => setLanguage(event.target.value)} aria-label={languageLabel(language)}>
+                <option value="en">English · English</option>
+                {LANGUAGES.map(({ code, label }) => <option key={code} value={code}>{label}</option>)}
+              </select>
+              <ChevronDown size={12} aria-hidden="true" />
+            </label>
             <div className="topbar-clock" aria-label={`Local time ${currentTime.toLocaleTimeString()}`}>
               <Clock size={14} aria-hidden="true" />
               <time dateTime={currentTime.toISOString()}>
@@ -783,7 +799,7 @@ export default function App() {
           <div className="page-heading">
             <div>
               <Eyebrow>{page === 'Overview' ? 'CONTROL ROOM' : 'OPTAL OS'}</Eyebrow>
-              <h1>{page}</h1>
+              <h1>{translateNav(page, language)}</h1>
             </div>
             <div className="heading-meta">
               <span><Clock size={13} /> {new Date().toLocaleDateString()}</span>
