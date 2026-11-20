@@ -34,7 +34,37 @@ Crop profiles are illustrative defaults for software demonstration and must be v
 
 ## Live hardware mode / future USB integration
 
-Live mode polls `GET /api/status?device_id=OPT-001` for the selected device at `http://localhost:8000` by default (override with `VITE_API_BASE_URL`). History requests include both `range` and `device_id`. If the backend is unavailable, the UI reports disconnected and shows no new values; any previous successful sample remains identified as stale. Live mode never runs the simulator.
+Live mode polls `GET /api/status?device_id=OPT-001` for the selected device at `http://127.0.0.1:8000` by default (override with `VITE_API_BASE_URL`). The local FastAPI/PySerial bridge lives in `backend/main.py`. In Live mode, the dashboard shows serial-port controls; choose the ESP32 COM port and the baud rate configured by its firmware, then connect. The bridge accepts newline-terminated JSON telemetry, validates actual sensor fields, and serves `/api/status`, `/api/history`, `/api/health`, and `/api/ports`. Live mode never runs the simulator.
+
+### Install and run the USB bridge on Windows
+
+1. Connect the ESP32 to this computer with a USB data cable. Close Arduino Serial Monitor or other programs that may have the COM port open.
+2. From the project folder, create the Python environment and install the bridge packages:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File backend\setup.ps1
+   ```
+
+3. List the detected ports and start the bridge:
+
+   ```powershell
+   backend\.venv\Scripts\python.exe -m serial.tools.list_ports
+   powershell -ExecutionPolicy Bypass -File backend\start.ps1
+   ```
+
+   Keep this terminal open. The bridge listens only on this computer at `127.0.0.1:8000`.
+4. Start the React app with `npm run dev`, choose **Live**, then select the ESP32 COM port and matching baud rate in the **Connect ESP32** panel.
+5. The ESP32 firmware must print one JSON object per line, ending in a newline. Required keys and types:
+
+   ```json
+   {"device_id":"OPT-001","temperature":8.2,"humidity":72,"battery_voltage":12.4,"compressor_running":true}
+   ```
+
+   This is a payload example only; it is not a claimed sensor reading. Send real measured values from the ESP32. `uptime_seconds` and a boolean `sensor_health` object are optional. Do not leave Arduino Serial Monitor open while the bridge owns the port.
+
+The COM port list is discovered by PySerial. The UI reports disconnected until the bridge has received valid, fresh serial data for the selected device. If your firmware currently emits CSV or text rather than JSON lines, update its output format (or adapt `normalize()` in `backend/main.py`) before connecting. The bridge is read-only and does not issue compressor commands.
+
+The Vercel-hosted UI can only see a bridge running on the same computer as the browser, and browser security/CORS settings can affect that setup. For initial hardware bring-up, use the local Vite dashboard and local bridge on the same laptop.
 
 Target data path:
 

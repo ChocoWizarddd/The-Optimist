@@ -36,6 +36,7 @@ import CurvedLoop from './components/CurvedLoop';
 import FallingText from './components/FallingText';
 import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
 import WeatherPage from './components/WeatherPage';
+import SerialBridgePanel from './components/SerialBridgePanel';
 import Antigravity from './components/Antigravity';
 import DarkVeil from './components/DarkVeil';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
@@ -528,8 +529,10 @@ export default function App() {
                 ['Humidity', reading ? `${nfmt(reading.humidity)} %` : '—'],
                 ['Battery voltage', reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'],
                 ['Compressor', reading ? tx(reading.compressor_running ? 'On' : 'Off', language).toUpperCase() : '—'],
-                ['Uptime', reading ? `${Math.floor(reading.uptime_seconds / 3600)} h` : '—'],
-                [tx('Sensor health', language), reading ? '3 / 3 OK' : tx('Unknown', language)],
+                ['Uptime', Number.isFinite(Number(reading?.uptime_seconds)) ? `${Math.floor(reading.uptime_seconds / 3600)} h` : '—'],
+                [tx('Sensor health', language), reading?.sensor_health && Object.keys(reading.sensor_health).length
+                  ? `${Object.values(reading.sensor_health).filter(Boolean).length} / ${Object.keys(reading.sensor_health).length} ${tx('OK', language)}`
+                  : tx('Unknown', language)],
               ].map(([label, value]) => (
                 <div className="metric panel" key={label} data-reveal="up">
                   <small>{tx(label, language)}</small>
@@ -841,6 +844,8 @@ export default function App() {
               <span><Clock size={13} /> {new Date().toLocaleDateString(getLocale(language))}</span>
             </div>
           </div>
+
+          {mode === 'live' && <SerialBridgePanel />}
 
           {mode === 'live' && error && (
             <div className="offline-banner">

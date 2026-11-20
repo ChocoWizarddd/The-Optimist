@@ -339,6 +339,22 @@ img, canvas { max-width: 100%; display: block; }
 .top-controls {
   display: flex; align-items: center; gap: 14px;
 }
+@media (max-width: 1180px) {
+  .top-controls { gap: 8px; }
+}
+@media (max-width: 860px) {
+  .topbar { padding: 0 14px; }
+  .top-controls { gap: 6px; }
+  .topbar-clock { display: none; }
+  .top-controls .mode-switch { height: 36px; }
+  .top-controls .mode-switch button { padding: 0 10px; }
+  .top-controls .device-select { height: 36px; }
+  .top-controls .avatar { display: none; }
+}
+@media (max-width: 500px) {
+  .top-controls .connection { width: 36px; justify-content: center; padding: 0; }
+  .top-controls .connection span { display: none; }
+}
 .topbar-clock {
   display: inline-flex;
   align-items: center;
@@ -476,6 +492,81 @@ img, canvas { max-width: 100%; display: block; }
 }
 .connection.connected span { color: var(--ok); }
 .connection.disconnected span { color: var(--warn); }
+
+.serial-bridge {
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border-color: rgba(143,205,232,0.2);
+  background: rgba(12,16,19,0.82);
+}
+.serial-bridge__header,
+.serial-bridge__title,
+.serial-bridge__status,
+.serial-bridge__controls { display: flex; align-items: center; }
+.serial-bridge__header { justify-content: space-between; gap: 16px; }
+.serial-bridge__title { gap: 10px; }
+.serial-bridge__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--accent);
+  border: 1px solid rgba(143,205,232,0.18);
+  border-radius: 9px;
+  background: rgba(143,205,232,0.07);
+}
+.serial-bridge__title small,
+.serial-bridge__controls label > span {
+  display: block;
+  color: var(--ink-dim);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+.serial-bridge__title h3 { margin: 3px 0 0; font-size: 15px; }
+.serial-bridge__status { gap: 7px; color: var(--warn); font-size: 10px; font-weight: 700; letter-spacing: 0.07em; }
+.serial-bridge__status.is-connected { color: var(--ok); }
+.serial-bridge__help { margin: 12px 0; color: var(--ink-muted); font-size: 12px; line-height: 1.5; }
+.serial-bridge__controls { gap: 9px; }
+.serial-bridge__controls label { display: grid; gap: 5px; min-width: 150px; }
+.serial-bridge__controls select {
+  height: 36px;
+  min-width: 150px;
+  padding: 0 10px;
+  color: var(--ink);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  outline: 0;
+  background: rgba(255,255,255,0.045);
+  font: inherit;
+  font-size: 11px;
+}
+.serial-bridge__controls select:disabled { opacity: 0.65; }
+.serial-bridge__controls option { color: #f3f1eb; background: #111518; }
+.serial-bridge__action { min-height: 36px; padding: 0 13px; font-size: 10px; }
+.serial-bridge__refresh {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--ink-muted);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+.serial-bridge__refresh:hover { color: var(--accent); border-color: var(--accent); }
+.serial-bridge__refresh:disabled { opacity: 0.55; }
+.serial-bridge__message { margin: 11px 0 0; color: var(--accent); font-size: 11px; }
+.serial-bridge__message.is-error { color: var(--warn); }
+.serial-bridge__format { margin: 10px 0 0; color: var(--ink-dim); font-size: 10px; line-height: 1.5; }
+.serial-bridge__format code { color: var(--ink-muted); font-family: 'IBM Plex Mono', monospace; }
+.light-theme .serial-bridge { background: rgba(12,16,19,0.9); color: #e7e7e7; }
+@media (max-width: 620px) {
+  .serial-bridge__header { align-items: flex-start; flex-direction: column; }
+  .serial-bridge__controls { align-items: stretch; flex-wrap: wrap; }
+  .serial-bridge__controls label { flex: 1 1 125px; min-width: 0; }
+  .serial-bridge__controls select { width: 100%; min-width: 0; }
+  .serial-bridge__action { flex: 1 1 auto; }
+}
 
 .avatar {
   width: 34px; height: 34px; border-radius: 10px;

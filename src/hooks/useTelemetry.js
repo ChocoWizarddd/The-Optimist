@@ -4,6 +4,7 @@ import { createHardwareProvider } from "../services/dataProviders/hardwareProvid
 
 const DEVICE_IDS = Array.from({ length: 6 }, (_, index) => `OPT-00${index + 1}`);
 const rangeDuration = {
+  "1h": 60 * 60 * 1000,
   "6h": 6 * 60 * 60 * 1000,
   "24h": 24 * 60 * 60 * 1000,
   "7d": 7 * 24 * 60 * 60 * 1000,
