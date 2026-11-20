@@ -83,7 +83,7 @@ function SectionHead({ eyebrow, title, count, action, language = 'en' }) {
       <div>
         <Eyebrow language={language}>{eyebrow}</Eyebrow>
         <h2 className="section-head__title">
-          {tx(title, language)} {count && <span>{count}</span>}
+          {(translateNav(title, language) !== title ? translateNav(title, language) : tx(title, language))} {count && <span>{count}</span>}
         </h2>
       </div>
       {action}
@@ -246,10 +246,10 @@ function HistoryChart({ title, dataKey, data, color, unit, threshold, range, set
 
 function Hero({ reading, onNavigate, language = 'en' }) {
   const stats = [
-    ['CHAMBER TEMP', reading ? `${nfmt(reading.temperature)}°C` : '—'],
-    ['REL. HUMIDITY', reading ? `${nfmt(reading.humidity)}%` : '—'],
-    ['BATTERY', reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'],
-    ['COMPRESSOR', reading ? (reading.compressor_running ? 'RUNNING' : 'IDLE') : '—'],
+    ['Chamber temperature', reading ? `${nfmt(reading.temperature)}°C` : '—'],
+    ['Relative humidity', reading ? `${nfmt(reading.humidity)}%` : '—'],
+    ['Battery voltage', reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'],
+    ['Compressor', reading ? (reading.compressor_running ? tx('On', language).toUpperCase() : tx('Idle', language).toUpperCase()) : '—'],
   ];
 
   return (
@@ -262,7 +262,7 @@ function Hero({ reading, onNavigate, language = 'en' }) {
         </h1>
         <div className="hero__copy">
           <FallingText
-            text={tx('A field-ready control layer for solar cold-storage units. Watch chamber conditions, fleet health and storage intelligence in one calm, honest view.', language)}
+            text={tx('A field-ready control system for solar cold storage. Monitor chamber conditions and unit health.', language)}
             split="words"
             trigger="auto"
             gravity={0.9}
@@ -292,7 +292,7 @@ function Hero({ reading, onNavigate, language = 'en' }) {
         <div className="hero__stats">
           {stats.map(([label, value]) => (
             <div className="hero__stat" key={label}>
-              <small>{label}</small>
+              <small>{tx(label, language)}</small>
               <b>{value}</b>
             </div>
           ))}
@@ -307,12 +307,12 @@ function Hero({ reading, onNavigate, language = 'en' }) {
   );
 }
 
-function Ticker({ reading, fleet, mode }) {
+function Ticker({ reading, fleet, mode, language = 'en' }) {
   const items = [
-    `CHAMBER · ${reading ? `${nfmt(reading.temperature)} °C` : '—'}`,
-    `HUMIDITY · ${reading ? `${nfmt(reading.humidity)} %` : '—'}`,
-    `BATTERY · ${reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'}`,
-    `UNITS ONLINE · ${fleet.filter((u) => u).length.toString().padStart(2, '0')} / 06`,
+    `${tx('Chamber temperature', language).toUpperCase()} · ${reading ? `${nfmt(reading.temperature)} °C` : '—'}`,
+    `${tx('Humidity', language).toUpperCase()} · ${reading ? `${nfmt(reading.humidity)} %` : '—'}`,
+    `${tx('Battery voltage', language).toUpperCase()} · ${reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'}`,
+    `${tx('Storage Units', language).toUpperCase()} ${tx('Online', language).toUpperCase()} · ${fleet.filter((u) => u).length.toString().padStart(2, '0')} / 06`,
     `PROTOCOL · OPT/TELEMETRY-1.0`,
   ];
   const marqueeText = items.join('     •     ');
@@ -442,7 +442,7 @@ export default function App() {
         return (
           <>
             <Hero reading={reading} onNavigate={setPage} language={language} />
-            <Ticker reading={reading} fleet={fleet} mode={mode} />
+            <Ticker reading={reading} fleet={fleet} mode={mode} language={language} />
 
             <SectionHead
               eyebrow="INSTRUMENT BAY"
@@ -517,15 +517,15 @@ export default function App() {
       case 'Live Monitoring':
         return (
           <>
-            <PageIntro eyebrow="TELEMETRY" title="Live Monitoring" copy="Live readings and historical graphs for every storage unit." language={language} />
+            <PageIntro eyebrow="TELEMETRY" title="Live Monitoring" copy="Live readings and history for every storage unit." language={language} />
             <div className="metric-row metric-row--live">
               {[
                 ['Temperature', reading ? `${nfmt(reading.temperature)} °C` : '—'],
                 ['Humidity', reading ? `${nfmt(reading.humidity)} %` : '—'],
                 ['Battery voltage', reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'],
-                ['Compressor', reading ? (reading.compressor_running ? 'RUNNING' : 'STOPPED') : '—'],
+                ['Compressor', reading ? tx(reading.compressor_running ? 'On' : 'Off', language).toUpperCase() : '—'],
                 ['Uptime', reading ? `${Math.floor(reading.uptime_seconds / 3600)} h` : '—'],
-                ['Sensor health', reading ? '3 / 3 OK' : 'Unknown'],
+                [tx('Sensor health', language), reading ? '3 / 3 OK' : tx('Unknown', language)],
               ].map(([label, value]) => (
                 <div className="metric panel" key={label} data-reveal="up">
                   <small>{tx(label, language)}</small>
@@ -535,7 +535,7 @@ export default function App() {
             </div>
             <SectionHead
               eyebrow="UNIT HISTORY"
-              title="All six storage units"
+              title="Storage Units"
               language={language}
               count="06"
               action={null}
@@ -578,7 +578,7 @@ export default function App() {
       case 'Weather':
         return (
           <>
-            <PageIntro eyebrow="LOCAL CONDITIONS" title="Weather" copy="Search cities and regions worldwide for current conditions, a seven-day outlook, and detailed local hourly forecasts." language={language} />
+            <PageIntro eyebrow="LOCAL CONDITIONS" title="Weather" copy="Current weather, seven-day outlook and hourly forecast." language={language} />
             <WeatherPage language={language} />
           </>
         );
@@ -586,7 +586,7 @@ export default function App() {
       case 'Alerts & Events':
         return (
           <>
-            <PageIntro eyebrow="EVENT LOG" title="Alerts & Events" copy={`${unacknowledged} active · configured thresholds stored locally`} language={language} />
+            <PageIntro eyebrow="EVENT LOG" title="Alerts & Events" copy={`${unacknowledged} ${tx('active alerts', language)} · ${tx('Alert thresholds are stored locally.', language)}`} language={language} />
             <div className="panel table-wrap" data-reveal="up">
               <table>
                 <thead>
@@ -595,12 +595,12 @@ export default function App() {
                 <tbody>
                   {alerts.length ? alerts.map((a, i) => (
                     <tr key={`${a.key}-${i}`}>
-                      <td><span className={`severity ${a.severity.toLowerCase()}`}>{a.severity}</span></td>
-                      <td>{new Date(a.time).toLocaleString()}</td>
+                      <td><span className={`severity ${a.severity.toLowerCase()}`}>{tx(a.severity, language)}</span></td>
+                      <td>{new Date(a.time).toLocaleString(getLocale(language))}</td>
                       <td>{a.device}</td>
-                      <td>{a.type}</td>
-                      <td>{a.description}</td>
-                      <td>{tx(a.acknowledged ? 'Acknowledged' : 'active', language)}</td>
+                      <td>{tx(a.type, language)}</td>
+                      <td>{tx(a.description, language)}</td>
+                      <td>{tx(a.acknowledged ? 'Acknowledged' : 'Active', language)}</td>
                       <td>
                         {!a.acknowledged && (
                           <button
@@ -625,7 +625,7 @@ export default function App() {
       case 'Maintenance':
         return (
           <>
-            <PageIntro eyebrow="RELIABILITY" title="Maintenance" copy="Inspection planning and current device health." language={language} />
+            <PageIntro eyebrow="RELIABILITY" title="Maintenance" copy="Inspection planning and device health." language={language} />
             <div className="two-col maintenance-grid">
               <div className="panel" data-reveal="left">
                 <Eyebrow language={language}>DEVICE HEALTH</Eyebrow>
@@ -639,10 +639,10 @@ export default function App() {
                 <Eyebrow language={language}>RECOMMENDED CHECKS</Eyebrow>
                 <h3>{tx('Inspection schedule', language)}</h3>
                 <ul className="recommendations">
-                  <li>{tx('Verify sensor readings against a reference instrument before commissioning.', language)}</li>
-                  <li>{tx('Inspect wiring and connector strain relief before field deployment.', language)}</li>
-                  <li>{tx('Review compressor duty pattern and cooling performance during chamber trials.', language)}</li>
-                  <li>{tx('Perform battery capacity test before displaying runtime estimates.', language)}</li>
+                  <li>{tx('Check sensor readings', language)}</li>
+                  <li>{tx('Inspect wiring and connections', language)}</li>
+                  <li>{tx('Review cooling and compressor operation', language)}</li>
+                  <li>{tx('Test battery capacity', language)}</li>
                 </ul>
               </div>
               <div className="panel" data-reveal="up">
@@ -657,7 +657,7 @@ export default function App() {
       case 'Reports':
         return (
           <>
-            <PageIntro eyebrow="DATA EXPORT" title="Reports" copy="Download locally collected samples as CSV." language={language}>
+            <PageIntro eyebrow="DATA EXPORT" title="Reports" copy="Download session data as CSV." language={language}>
               <Magnetic>
                 <button className="btn btn--primary" onClick={exportCsv}><Download size={15} /> Export CSV</button>
               </Magnetic>

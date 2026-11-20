@@ -291,7 +291,7 @@ export default function WeatherPage({ language = 'en' }) {
             </div>
             {!hourlyRows.length && <p className="weather-empty">{tx('Hourly details are not available for this date.', language)}</p>}
           </section>
-          <div className="weather-attribution">Weather forecast and location search by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a> · Times are local to the selected location · Forecast values are model estimates.</div>
+          <div className="weather-attribution">{tx('Weather data from', language)} <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a> · {tx('Local time', language)} · {tx('Forecast values are estimates.', language)}</div>
         </>
       ) : null}
     </div>
