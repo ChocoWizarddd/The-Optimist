@@ -31,6 +31,7 @@ export default function CoolerModel() {
     let controls = null;
     let resizeObserver = null;
     let renderer = null;
+    let fitModel = null;
 
     try {
       renderer = new THREE.WebGLRenderer({
@@ -101,21 +102,24 @@ export default function CoolerModel() {
 
           const modelBounds = new THREE.Box3().setFromObject(model);
           const sphere = modelBounds.getBoundingSphere(new THREE.Sphere());
-          const verticalFov = THREE.MathUtils.degToRad(camera.fov);
-          const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
-          const fitDistance = Math.max(
-            sphere.radius / Math.sin(verticalFov / 2),
-            sphere.radius / Math.sin(horizontalFov / 2),
-          ) * 1.12;
-          const viewDirection = new THREE.Vector3(0.58, 0.34, 0.74).normalize();
-          camera.position.copy(viewDirection.multiplyScalar(fitDistance));
-          camera.near = Math.max(0.01, fitDistance / 100);
-          camera.far = fitDistance * 30;
-          camera.updateProjectionMatrix();
-          controls.target.set(0, 0, 0);
-          controls.minDistance = fitDistance * 0.42;
-          controls.maxDistance = fitDistance * 3.2;
-          controls.update();
+          fitModel = () => {
+            const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+            const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+            const fitDistance = Math.max(
+              sphere.radius / Math.sin(verticalFov / 2),
+              sphere.radius / Math.sin(horizontalFov / 2),
+            ) * 1.12;
+            const viewDirection = new THREE.Vector3(0.58, 0.34, 0.74).normalize();
+            camera.position.copy(viewDirection.multiplyScalar(fitDistance));
+            camera.near = Math.max(0.01, fitDistance / 100);
+            camera.far = fitDistance * 30;
+            camera.updateProjectionMatrix();
+            controls.target.set(0, 0, 0);
+            controls.minDistance = fitDistance * 0.42;
+            controls.maxDistance = fitDistance * 3.2;
+            controls.update();
+          };
+          fitModel();
           setStatus('INTERACTIVE 3D MODEL');
         },
         (event) => {
@@ -142,6 +146,7 @@ export default function CoolerModel() {
         renderer.setSize(root.clientWidth, root.clientHeight);
         camera.aspect = root.clientWidth / root.clientHeight;
         camera.updateProjectionMatrix();
+        fitModel?.();
       });
       resizeObserver.observe(root);
 
