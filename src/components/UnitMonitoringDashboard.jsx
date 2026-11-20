@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -20,11 +21,34 @@ const CHARTS = [
 const format = (value, digits = 1) =>
   Number.isFinite(Number(value)) ? Number(value).toFixed(digits) : "—";
 
-function UnitChart({ title, dataKey, unit, color, domain, threshold, points, range, setRange, language }) {
+function sampleByExtrema(points, key, limit) {
+  if (points.length <= limit) return points;
+  const bucketCount = Math.max(1, Math.floor(limit / 2));
+  const bucketSize = points.length / bucketCount;
+  const sampled = [];
+  for (let bucket = 0; bucket < bucketCount; bucket += 1) {
+    const start = Math.floor(bucket * bucketSize);
+    const end = Math.min(points.length, Math.floor((bucket + 1) * bucketSize));
+    let minimum = start;
+    let maximum = start;
+    for (let index = start + 1; index < end; index += 1) {
+      if (Number(points[index][key]) < Number(points[minimum][key])) minimum = index;
+      if (Number(points[index][key]) > Number(points[maximum][key])) maximum = index;
+    }
+    if (minimum === maximum) sampled.push(points[minimum]);
+    else sampled.push(...(minimum < maximum ? [points[minimum], points[maximum]] : [points[maximum], points[minimum]]));
+  }
+  return sampled;
+}
+
+function UnitChart({ title, dataKey, unit, color, domain, threshold, points, range, setRange, language, maxPoints }) {
+  const sectionRef = useRef(null);
+  const [chartReady, setChartReady] = useState(false);
   const values = points
     .map((point) => Number(point[dataKey]))
     .filter(Number.isFinite);
-  const data = points.map((point) => ({
+  const sampledPoints = useMemo(() => sampleByExtrema(points, dataKey, maxPoints), [points, dataKey, maxPoints]);
+  const data = useMemo(() => sampledPoints.map((point) => ({
     ...point,
     label: new Date(point.timestamp).toLocaleString([], {
       hour: "2-digit",
@@ -33,10 +57,25 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
         ? { month: "numeric", day: "numeric" }
         : {}),
     }),
-  }));
+  })), [sampledPoints]);
+
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) {
+      setChartReady(true);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) {
+        setChartReady(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: "180px 0px" });
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="unit-history-chart">
+    <section className="unit-history-chart" ref={sectionRef}>
       <div className="unit-history-heading">
         <h4>{tx(title, language)}</h4>
         <div className="unit-history-tools">
@@ -47,7 +86,9 @@ function UnitChart({ title, dataKey, unit, color, domain, threshold, points, ran
           )}
         </div>
       </div>
-      {data.length > 0 ? (
+      {!chartReady ? (
+        <div className="unit-history-empty" aria-hidden="true" />
+      ) : data.length > 0 ? (
         <div className="unit-history-plot">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
@@ -103,6 +144,7 @@ export default function UnitMonitoringDashboard({
   range,
   setRange,
   language = "en",
+  lightweight = false,
 }) {
   return (
     <div className="unit-monitoring-grid">
@@ -136,6 +178,7 @@ export default function UnitMonitoringDashboard({
                   range={range}
                   setRange={setRange}
                   language={language}
+                  maxPoints={lightweight ? 180 : 480}
                   threshold={
                     chart.dataKey === "temperature"
                       ? +settings.temperatureMax

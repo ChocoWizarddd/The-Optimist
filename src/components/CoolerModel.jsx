@@ -16,30 +16,53 @@ function disposeModel(root) {
   });
 }
 
-export default function CoolerModel() {
+export default function CoolerModel({ lowPower = false }) {
   const host = useRef(null);
   const [status, setStatus] = useState('Loading 3D model');
   const [failed, setFailed] = useState(false);
+  const [nearViewport, setNearViewport] = useState(false);
 
   useEffect(() => {
     const root = host.current;
     if (!root) return undefined;
+    if (!("IntersectionObserver" in window)) {
+      setNearViewport(true);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) {
+        setNearViewport(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: '160px' });
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const root = host.current;
+    if (!root || !nearViewport) return undefined;
 
     let disposed = false;
     let frame = 0;
+    let timer = 0;
     let model = null;
     let controls = null;
     let resizeObserver = null;
     let renderer = null;
     let fitModel = null;
+    let visible = true;
+    let intersectionObserver = null;
+    let lastDraw = 0;
+    const frameInterval = lowPower ? 1000 / 24 : 1000 / 30;
 
     try {
       renderer = new THREE.WebGLRenderer({
-        antialias: true,
+        antialias: !lowPower,
         alpha: true,
         powerPreference: 'high-performance',
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowPower ? 0.85 : 1.35));
       renderer.setSize(root.clientWidth, root.clientHeight);
       renderer.setClearColor(0x000000, 0);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -70,7 +93,7 @@ export default function CoolerModel() {
       controls.enableDamping = true;
       controls.dampingFactor = 0.07;
       controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.32;
+      controls.autoRotateSpeed = lowPower ? 0.2 : 0.32;
       controls.minDistance = 0.6;
       controls.maxDistance = 30;
       controls.target.set(0, 0, 0);
@@ -133,13 +156,34 @@ export default function CoolerModel() {
         },
       );
 
-      const draw = () => {
-        if (disposed) return;
-        frame = requestAnimationFrame(draw);
+      const scheduleDraw = () => {
+        if (disposed || !visible || document.hidden || frame || timer) return;
+        const delay = Math.max(0, frameInterval - (performance.now() - lastDraw));
+        timer = window.setTimeout(() => {
+          timer = 0;
+          frame = requestAnimationFrame(draw);
+        }, delay);
+      };
+      const draw = (now) => {
+        frame = 0;
+        if (disposed || !visible || document.hidden) return;
+        lastDraw = now;
         controls.update();
         renderer.render(scene, camera);
+        scheduleDraw();
       };
-      draw();
+      const onVisibilityChange = () => {
+        if (document.hidden) {
+          window.clearTimeout(timer);
+          timer = 0;
+          cancelAnimationFrame(frame);
+          frame = 0;
+        } else {
+          scheduleDraw();
+        }
+      };
+      document.addEventListener('visibilitychange', onVisibilityChange);
+      scheduleDraw();
 
       resizeObserver = new ResizeObserver(() => {
         if (!renderer || !root.clientWidth || !root.clientHeight) return;
@@ -147,13 +191,28 @@ export default function CoolerModel() {
         camera.aspect = root.clientWidth / root.clientHeight;
         camera.updateProjectionMatrix();
         fitModel?.();
+        scheduleDraw();
       });
       resizeObserver.observe(root);
+      intersectionObserver = new IntersectionObserver(([entry]) => {
+        visible = Boolean(entry?.isIntersecting);
+        if (visible) scheduleDraw();
+        else {
+          window.clearTimeout(timer);
+          timer = 0;
+          cancelAnimationFrame(frame);
+          frame = 0;
+        }
+      }, { rootMargin: '100px' });
+      intersectionObserver.observe(root);
 
       return () => {
         disposed = true;
+        window.clearTimeout(timer);
         cancelAnimationFrame(frame);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
         resizeObserver?.disconnect();
+        intersectionObserver?.disconnect();
         controls?.dispose();
         disposeModel(model);
         renderer?.dispose();
@@ -164,6 +223,7 @@ export default function CoolerModel() {
       setStatus('WebGL is unavailable in this browser');
       return () => {
         disposed = true;
+        window.clearTimeout(timer);
         cancelAnimationFrame(frame);
         resizeObserver?.disconnect();
         controls?.dispose();
@@ -172,7 +232,7 @@ export default function CoolerModel() {
         renderer?.domElement.remove();
       };
     }
-  }, []);
+  }, [lowPower, nearViewport]);
 
   return (
     <section className={`cooler-model panel ${failed ? 'model-error' : ''}`}>

@@ -707,6 +707,7 @@ img, canvas { max-width: 100%; display: block; }
 
 /* ---------- 3D model panel ---------- */
 .model-wrap { border-radius: var(--radius); overflow: hidden; border: 1px solid transparent; background: transparent; box-shadow: none; }
+.model-loading { min-height: 340px; }
 .cooler-model.panel { width: 100%; height: 340px; position: relative; display: block; overflow: hidden; border-color: transparent; background: transparent; box-shadow: none; backdrop-filter: none; }
 .cooler-model.panel:hover { transform: none; border-color: transparent; box-shadow: none; }
 .cooler-model .model-heading { background: transparent; border-color: rgba(255,255,255,0.1); }
@@ -1407,6 +1408,7 @@ img, canvas { max-width: 100%; display: block; }
   text-transform: uppercase;
   text-shadow: 0 0 12px rgba(255,255,255,0.15);
 }
+.ticker__fallback { padding: 10px 14px; color: var(--ink-muted); font: 10px/1.5 'IBM Plex Mono', monospace; }
 
 /* ---------- overview top / instrument column ---------- */
 .overview-top { display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; margin-bottom: 30px; }
@@ -1732,4 +1734,144 @@ img, canvas { max-width: 100%; display: block; }
   .weather-detail-head { align-items: flex-start; flex-direction: column; padding: 0 14px 13px; }
   .weather-sun-times { gap: 12px; }
   .weather-attribution { text-align: left; line-height: 1.5; }
+}
+
+/* ---------- compact and low-power device tuning ---------- */
+.lightweight-mode .panel,
+.lightweight-mode .unit-card,
+.lightweight-mode .unit-values > div,
+.lightweight-mode .sidebar,
+.lightweight-mode .scroll-top {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.lightweight-mode .unit-card::after { display: none; }
+.lightweight-mode .unit-card::before { opacity: 0.35; }
+.lightweight-mode .live-dot { animation: none; box-shadow: none; }
+.lightweight-mode .tilt { will-change: auto; }
+.hero__copy-static { margin: 0; }
+
+@media (max-width: 860px) {
+  html { scroll-behavior: auto; }
+  .content { padding: 22px 16px 52px; }
+  .topbar {
+    height: auto;
+    min-height: 58px;
+    flex-wrap: wrap;
+    gap: 7px 10px;
+    padding: 8px 12px;
+  }
+  .menu-btn { flex: 0 0 auto; }
+  .crumb { min-width: 0; flex: 1 1 auto; margin-left: 0; overflow: hidden; }
+  .crumb span, .crumb b { display: none; }
+  .crumb strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top-controls { width: 100%; min-width: 0; justify-content: space-between; gap: 8px; }
+  .top-controls .mode-switch { flex: 0 0 auto; }
+  .top-controls .device-select { flex: 1 1 100px; min-width: 88px; justify-content: center; }
+  .top-controls .device-select select { min-width: 0; width: 100%; }
+  .top-controls .connection { flex: 0 0 38px; width: 38px; justify-content: center; padding: 0; }
+  .top-controls .connection span,
+  .top-controls .avatar,
+  .top-controls .topbar-clock { display: none; }
+  .page-heading { align-items: flex-start; margin-bottom: 20px; }
+  .page-heading h1 { font-size: clamp(24px, 7vw, 30px); }
+  .heading-meta { font-size: 10px; white-space: nowrap; }
+  .hero { min-height: 0; padding: 28px 20px 24px; }
+  .hero__title { font-size: clamp(34px, 9vw, 44px); line-height: 1.06; overflow-wrap: anywhere; }
+  .hero__copy { font-size: 15px; }
+  .hero__actions { gap: 9px; margin-bottom: 20px; }
+  .hero__actions .magnetic { display: flex; flex: 1 1 150px; }
+  .hero__actions .btn { width: 100%; min-height: 44px; justify-content: center; padding: 0 12px; }
+  .hero__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .hero__stat b { font-size: 16px; }
+  .hero__visual { opacity: 0.35; }
+  .hero-orbit { animation: none !important; }
+  .ticker { min-height: 38px; margin: 14px 0 24px; }
+  .ticker--static { display: block; overflow: hidden; padding: 10px 12px; color: var(--ink-muted); font: 10px/1.5 'IBM Plex Mono', monospace; white-space: normal; overflow-wrap: anywhere; }
+  .section-head { margin: 24px 0 14px; align-items: flex-start; }
+  .section-head__note { max-width: 130px; text-align: right; font-size: 8px; line-height: 1.5; }
+  .overview-top { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-bottom: 24px; }
+  .cooler-model.panel { height: clamp(220px, 62vw, 300px); }
+  .model-loading { min-height: clamp(220px, 62vw, 300px); }
+  .gauges { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .gauge-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 100px;
+    grid-template-rows: auto auto auto auto auto;
+    align-items: center;
+    gap: 4px 10px;
+    padding: 13px 14px;
+  }
+  .gauge-top { grid-column: 1; grid-row: 1; margin: 0; }
+  .gauge-title { font-size: 10px; }
+  .gauge-wrap { grid-column: 2; grid-row: 1 / 6; width: 96px; margin: 0; }
+  .gauge-meta { grid-column: 1; grid-row: 2; margin: 0; font-size: 10px; }
+  .gauge-range { grid-column: 1; grid-row: 3; margin: 0; font-size: 9px; }
+  .zone { grid-column: 1; grid-row: 4; gap: 5px; font-size: 8px; letter-spacing: 0.05em; }
+  .zone i { width: 6px; height: 6px; }
+  .gauge-caption { grid-column: 1; grid-row: 5; font-size: 10px; }
+  .unit-grid, .unit-grid--large, .unit-monitoring-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .unit-card { padding: 16px; border-radius: 18px; }
+  .unit-values { gap: 7px; }
+  .unit-values > div { padding: 10px 6px; border-radius: 12px; }
+  .unit-values b { font-size: 14px; }
+  .unit-values small { font-size: 8px; letter-spacing: 0.1em; }
+  .unit-monitoring-card { padding: 14px; border-radius: 18px; }
+  .unit-monitoring-readings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .unit-monitoring-charts { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .unit-monitoring-charts .unit-history-chart { min-height: 170px; }
+  .metric-row, .two-col, .maintenance-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .metric-row--live { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metric { min-width: 0; padding: 14px; }
+  .metric b { overflow-wrap: anywhere; }
+  .chart-panel { min-height: 280px; padding: 15px; }
+  .chart { min-height: 180px; }
+  .report-card { min-height: 170px; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-wrap table { min-width: 720px; }
+  .serial-bridge { padding: 14px; }
+}
+
+@media (max-width: 480px) {
+  .content { padding: 18px 12px 44px; }
+  .topbar { padding: 7px 10px; }
+  .top-controls { gap: 6px; }
+  .mode-switch { height: 36px; }
+  .mode-switch button { padding: 0 11px; font-size: 10px; }
+  .device-select { height: 36px; }
+  .page-heading { gap: 8px; }
+  .heading-meta { max-width: 96px; white-space: normal; text-align: right; }
+  .hero { padding: 24px 16px 20px; }
+  .hero__title { font-size: clamp(31px, 9.4vw, 38px); }
+  .hero__copy { font-size: 14px; line-height: 1.5; }
+  .hero__actions { flex-direction: column; }
+  .hero__actions .magnetic { flex-basis: auto; }
+  .hero__stats { gap: 10px; }
+  .hero__stat small { font-size: 9px; }
+  .gauge-card { grid-template-columns: minmax(0, 1fr) 84px; padding: 12px; column-gap: 7px; }
+  .gauge-wrap { width: 82px; }
+  .zone { font-size: 7px; gap: 4px; }
+  .zone i { width: 5px; height: 5px; }
+  .unit-values { gap: 5px; }
+  .unit-values > div { padding: 9px 4px; }
+  .unit-values b { font-size: 12px; }
+  .unit-foot { font-size: 9px; letter-spacing: 0.06em; }
+  .metric-row--live { gap: 8px; }
+  .metric-row--live .metric { padding: 12px 10px; }
+  .section-head__title { font-size: 20px; }
+  .chart-stats { gap: 6px; font-size: 9px; }
+  .chart-stats b { font-size: 11px; }
+  .scroll-top { right: 14px; bottom: 14px; width: 42px; height: 42px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .panel:hover, .unit-card:hover, .metric-row--live .metric:hover, .unit-monitoring-card:hover { transform: none; }
+  .tilt { transform: none !important; }
+  .tilt::before { display: none; }
+  .magnetic { transform: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker:not(.ticker--static), .hero-orbit, .live-dot { animation: none !important; }
+  .panel, .unit-card, .nav-item, .sidebar { transition-duration: 0.01ms !important; }
 }

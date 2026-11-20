@@ -1,15 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { lazy, memo, Suspense, useEffect, useMemo, useState } from 'react';
 import FlipText from './components/FlipText';
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
 import {
   Activity,
   AlertTriangle,
@@ -31,16 +21,17 @@ import {
   X,
 } from 'lucide-react';
 import { useTelemetry } from './hooks/useTelemetry';
-import CoolerModel from './components/CoolerModel';
-import CurvedLoop from './components/CurvedLoop';
-import FallingText from './components/FallingText';
-import UnitMonitoringDashboard from './components/UnitMonitoringDashboard';
-import WeatherPage from './components/WeatherPage';
 import SerialBridgePanel from './components/SerialBridgePanel';
 import Antigravity from './components/Antigravity';
-import DarkVeil from './components/DarkVeil';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 import { LANGUAGES, getLocale, languageLabel, translateNav, translateText as tx } from './utils/i18n';
+
+const CoolerModel = lazy(() => import('./components/CoolerModel'));
+const UnitMonitoringDashboard = lazy(() => import('./components/UnitMonitoringDashboard'));
+const WeatherPage = lazy(() => import('./components/WeatherPage'));
+const DarkVeil = lazy(() => import('./components/DarkVeil'));
+const CurvedLoop = lazy(() => import('./components/CurvedLoop'));
+const FallingText = lazy(() => import('./components/FallingText'));
 
 const nav = [
   { label: 'Overview', icon: Activity, code: '01' },
@@ -177,81 +168,14 @@ function UnitCard({ index, reading, language = 'en' }) {
   );
 }
 
-function HistoryChart({ title, dataKey, data, color, unit, threshold, range, setRange, domains, language = 'en' }) {
-  const values = data.map((d) => d[dataKey]).filter((v) => Number.isFinite(v));
-  return (
-    <section className="panel chart-panel" data-reveal="up">
-      <div className="panel-heading">
-        <div>
-          <Eyebrow language={language}>HISTORY</Eyebrow>
-          <h3>{tx(title, language)}</h3>
-        </div>
-      </div>
-      <div className="chart-stats">
-        <span>MIN <b>{nfmt(values.length ? Math.min(...values) : NaN, 1)} {unit}</b></span>
-        <span>MAX <b>{nfmt(values.length ? Math.max(...values) : NaN, 1)} {unit}</b></span>
-        <span className="chart-stats__hint">{tx('SAMPLE STREAM', language)}</span>
-      </div>
-      <div className="chart">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
-            <defs>
-              <linearGradient id={`fill-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={color} stopOpacity={0.28} />
-                <stop offset="100%" stopColor={color} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid stroke="rgba(255,255,255,.07)" strokeDasharray="3 5" vertical={false} />
-            <XAxis
-              dataKey="label"
-              tick={{ fill: '#7d8581', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
-              tickLine={false}
-              axisLine={{ stroke: 'rgba(255,255,255,.08)' }}
-              minTickGap={24}
-            />
-            <YAxis
-              domain={domains}
-              tick={{ fill: '#7d8581', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
-              tickLine={false}
-              axisLine={false}
-              width={40}
-            />
-            <Tooltip
-              cursor={{ stroke: 'rgba(143,205,232,.35)', strokeDasharray: '3 3' }}
-              contentStyle={{
-                background: 'rgba(14,16,17,.96)',
-                border: '1px solid rgba(255,255,255,.12)',
-                borderRadius: 10,
-                color: '#f3f1eb',
-                fontFamily: 'IBM Plex Mono',
-                fontSize: 11,
-                boxShadow: '0 18px 40px rgba(0,0,0,.5)',
-              }}
-            />
-            <ReferenceLine y={threshold} stroke="#8fcde8" strokeDasharray="4 4" strokeOpacity={0.8} />
-            <Area
-              type="monotone"
-              dataKey={dataKey}
-              stroke={color}
-              strokeWidth={2}
-              fill={`url(#fill-${dataKey})`}
-              isAnimationActive={false}
-              activeDot={{ r: 4, fill: color, stroke: '#0b0d0e', strokeWidth: 2 }}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-    </section>
-  );
-}
-
-function Hero({ reading, onNavigate, language = 'en' }) {
+function Hero({ reading, onNavigate, language = 'en', lightweight = false }) {
   const stats = [
     ['Chamber temperature', reading ? `${nfmt(reading.temperature)}°C` : '—'],
     ['Relative humidity', reading ? `${nfmt(reading.humidity)}%` : '—'],
     ['Battery voltage', reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'],
     ['Compressor', reading ? (reading.compressor_running ? tx('On', language).toUpperCase() : tx('Idle', language).toUpperCase()) : '—'],
   ];
+  const summary = tx('A field-ready control system for solar cold storage. Monitor chamber conditions and unit health.', language);
 
   return (
     <section className="hero" data-reveal="up">
@@ -262,21 +186,27 @@ function Hero({ reading, onNavigate, language = 'en' }) {
           <FlipText className="hero__flip-line hero__flip-line--accent">{tx('without compromise.', language)}</FlipText>
         </h1>
         <div className="hero__copy">
-          <FallingText
-            text={tx('A field-ready control system for solar cold storage. Monitor chamber conditions and unit health.', language)}
-            split="words"
-            trigger="auto"
-            gravity={0.9}
-            bounciness={0.12}
-            scatter={0.12}
-            stagger={0.035}
-            order="center"
-            draggable
-            cursorPush={0.9}
-            restoreDelay={0.8}
-            fontSize="1rem"
-            className="hero__copy-falling"
-          />
+          {lightweight ? (
+            <p className="hero__copy-static">{summary}</p>
+          ) : (
+            <Suspense fallback={<p className="hero__copy-static">{summary}</p>}>
+              <FallingText
+                text={summary}
+                split="words"
+                trigger="auto"
+                gravity={0.9}
+                bounciness={0.12}
+                scatter={0.12}
+                stagger={0.035}
+                order="center"
+                draggable
+                cursorPush={0.9}
+                restoreDelay={0.8}
+                fontSize="1rem"
+                className="hero__copy-falling"
+              />
+            </Suspense>
+          )}
         </div>
         <div className="hero__actions">
           <Magnetic>
@@ -308,7 +238,7 @@ function Hero({ reading, onNavigate, language = 'en' }) {
   );
 }
 
-function Ticker({ reading, fleet, mode, language = 'en' }) {
+function Ticker({ reading, fleet, mode, language = 'en', lightweight = false }) {
   const items = [
     `${tx('Chamber temperature', language).toUpperCase()} · ${reading ? `${nfmt(reading.temperature)} °C` : '—'}`,
     `${tx('Humidity', language).toUpperCase()} · ${reading ? `${nfmt(reading.humidity)} %` : '—'}`,
@@ -317,23 +247,54 @@ function Ticker({ reading, fleet, mode, language = 'en' }) {
     `PROTOCOL · OPT/TELEMETRY-1.0`,
   ];
   const marqueeText = items.join('     •     ');
+  if (lightweight) {
+    return <div className="ticker ticker--static" aria-label={marqueeText}>{marqueeText}</div>;
+  }
   return (
     <div className="ticker" aria-label={marqueeText}>
-      <CurvedLoop
-        marqueeText={marqueeText}
-        speed={1.2}
-        curveAmount={24}
-        direction="left"
-        interactive
-        pauseOnHover={false}
-        className="ticker__text"
-        fontSize={26}
-        fontWeight={700}
-        letterSpacing={1.1}
-        edgeFade={0.08}
-      />
+      <Suspense fallback={<span className="ticker__fallback" aria-label={marqueeText}>{marqueeText}</span>}>
+        <CurvedLoop
+          marqueeText={marqueeText}
+          speed={1.2}
+          curveAmount={24}
+          direction="left"
+          interactive
+          pauseOnHover={false}
+          className="ticker__text"
+          fontSize={26}
+          fontWeight={700}
+          letterSpacing={1.1}
+          edgeFade={0.08}
+        />
+      </Suspense>
     </div>
   );
+}
+
+const LocalClock = memo(function LocalClock({ language }) {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="topbar-clock" aria-label={`${tx('local time', language)} ${now.toLocaleTimeString(getLocale(language))}`}>
+      <Clock size={14} aria-hidden="true" />
+      <time dateTime={now.toISOString()}>
+        {now.toLocaleTimeString(getLocale(language), { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+      </time>
+    </div>
+  );
+});
+
+function prefersLightweightMode() {
+  if (typeof window === 'undefined') return false;
+  const compactViewport = window.matchMedia('(max-width: 860px)').matches;
+  const lowMemory = Number(navigator.deviceMemory) > 0 && Number(navigator.deviceMemory) <= 4;
+  const fewCores = Number(navigator.hardwareConcurrency) > 0 && Number(navigator.hardwareConcurrency) <= 4;
+  return compactViewport || lowMemory || fewCores;
 }
 
 export default function App() {
@@ -349,17 +310,23 @@ export default function App() {
   }));
   const [history, setHistory] = useState([]);
   const [alerts, setAlerts] = useState([]);
-  const [currentTime, setCurrentTime] = useState(() => new Date());
   const [language, setLanguage] = useState(() => localStorage.getItem('optimist-language') || 'en');
+  const [lightweightMode, setLightweightMode] = useState(prefersLightweightMode);
 
   const { reading, fleet, samples, unitHistories, error, lastSuccess } = useTelemetry(
-    mode, 3000, range, selectedDevice,
+    mode, lightweightMode ? 5000 : 3000, range, selectedDevice,
   );
   useReveal(page);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => window.clearInterval(timer);
+    const viewport = window.matchMedia('(max-width: 860px)');
+    const updateProfile = () => setLightweightMode(prefersLightweightMode());
+    viewport.addEventListener?.('change', updateProfile);
+    window.addEventListener('resize', updateProfile, { passive: true });
+    return () => {
+      viewport.removeEventListener?.('change', updateProfile);
+      window.removeEventListener('resize', updateProfile);
+    };
   }, []);
 
   useEffect(() => {
@@ -446,8 +413,8 @@ export default function App() {
       case 'Overview':
         return (
           <>
-            <Hero reading={reading} onNavigate={setPage} language={language} />
-            <Ticker reading={reading} fleet={fleet} mode={mode} language={language} />
+            <Hero reading={reading} onNavigate={setPage} language={language} lightweight={lightweightMode} />
+            <Ticker reading={reading} fleet={fleet} mode={mode} language={language} lightweight={lightweightMode} />
 
             <SectionHead
               eyebrow="INSTRUMENT BAY"
@@ -458,7 +425,9 @@ export default function App() {
             <div className="overview-top" data-reveal="up">
               <div className="instrument-column">
                 <Tilt className="model-wrap" amount={2}>
-                  <CoolerModel />
+                  <Suspense fallback={<div className="model-loading" aria-label="Loading 3D model" />}>
+                    <CoolerModel lowPower={lightweightMode} />
+                  </Suspense>
                 </Tilt>
                 <div className="gauges">
                   {[
@@ -547,15 +516,18 @@ export default function App() {
               count="06"
               action={null}
             />
-            <UnitMonitoringDashboard
-              fleet={fleet}
-              histories={unitHistories}
-              mode={mode}
-              settings={settings}
-              range={range}
-              setRange={setRange}
-              language={language}
-            />
+            <Suspense fallback={<div className="panel page-loading">{tx('Loading', language)}…</div>}>
+              <UnitMonitoringDashboard
+                fleet={fleet}
+                histories={unitHistories}
+                mode={mode}
+                settings={settings}
+                range={range}
+                setRange={setRange}
+                language={language}
+                lightweight={lightweightMode}
+              />
+            </Suspense>
           </>
         );
 
@@ -586,7 +558,9 @@ export default function App() {
         return (
           <>
             <PageIntro eyebrow="LOCAL CONDITIONS" title="Weather" copy="Current weather, seven-day outlook and hourly forecast." language={language} />
-            <WeatherPage language={language} />
+            <Suspense fallback={<div className="panel page-loading">{tx('Loading', language)}…</div>}>
+              <WeatherPage language={language} />
+            </Suspense>
           </>
         );
 
@@ -698,10 +672,10 @@ export default function App() {
   };
 
   return (
-    <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}`}>
+    <div className={`app-shell ${theme === 'light' ? 'light-theme' : 'black-theme'}${lightweightMode ? ' lightweight-mode' : ''}`}>
       <div className="background-stack" aria-hidden="true">
         <Antigravity
-          count={950}
+          count={lightweightMode ? 140 : 650}
           colors={ANTIGRAVITY_COLORS}
           colorMode="radial"
           colorSpeed={0.025}
@@ -718,8 +692,9 @@ export default function App() {
           ambient={0.16}
           interactive
           clickBurst
-          opacity={0.42}
-          maxDevicePixelRatio={1.35}
+          opacity={lightweightMode ? 0.22 : 0.42}
+          maxDevicePixelRatio={lightweightMode ? 0.8 : 1.2}
+          maxFPS={lightweightMode ? 24 : 45}
           className="app-antigravity"
         />
         <div className="bg-vignette" />
@@ -728,7 +703,7 @@ export default function App() {
       <InterfaceFX />
 
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
-        <DarkVeil
+        {!lightweightMode && <Suspense fallback={null}><DarkVeil
           className="sidebar-dark-veil"
           color="#347fa0"
           speed={0.2}
@@ -742,7 +717,7 @@ export default function App() {
           mouseInteraction
           mouseStrength={0.65}
           opacity={0.88}
-        />
+        /></Suspense>}
         <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
 
         <div className="nav-label">OPERATIONS</div>
@@ -811,12 +786,7 @@ export default function App() {
                 {mode === 'live' && <span aria-hidden="true" />}{tx('Live', language)}
               </button>
             </div>
-            <div className="topbar-clock" aria-label={`${tx('local time', language)} ${currentTime.toLocaleTimeString(getLocale(language))}`}>
-              <Clock size={14} aria-hidden="true" />
-              <time dateTime={currentTime.toISOString()}>
-                {currentTime.toLocaleTimeString(getLocale(language), { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-              </time>
-            </div>
+            <LocalClock language={language} />
             <label className="device-select">
               <Factory size={15} />
               <select value={selectedDevice} onChange={(e) => setSelectedDevice(e.target.value)} aria-label="Select storage unit">

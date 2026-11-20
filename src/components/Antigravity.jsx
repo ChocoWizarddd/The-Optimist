@@ -294,6 +294,7 @@ const Antigravity = ({
   lightMode = false,
   opacity = 1,
   maxDevicePixelRatio = 2,
+  maxFPS = 60,
   className = '',
   style
 }) => {
@@ -329,7 +330,8 @@ const Antigravity = ({
     intro,
     light: lightMode,
     opacity: clamp(opacity, 0, 1),
-    maxRatio: clamp(maxDevicePixelRatio, 0.5, 3)
+    maxRatio: clamp(maxDevicePixelRatio, 0.5, 3),
+    maxFPS: clamp(maxFPS, 12, 60)
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -389,6 +391,7 @@ const Antigravity = ({
     let paletteKey = '';
     let time = 0;
     let hue = 0;
+    let lastRendered = 0;
     let charge = 0;
     let introClock = settingsRef.current.intro && !reduced && generation === 0 ? 0 : Infinity;
     let raf = 0;
@@ -610,6 +613,11 @@ const Antigravity = ({
       }
       if (lost || !field) return;
       const s = settingsRef.current;
+      if (now - lastRendered < 1000 / s.maxFPS) {
+        if (visible && pageVisible) raf = requestAnimationFrame(frame);
+        return;
+      }
+      lastRendered = now;
       updatePalette(s);
       const dt = clamp((now - last) / 1000 || 0, 0, 1 / 30);
       last = Math.max(last, now);
