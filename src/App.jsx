@@ -763,21 +763,25 @@ export default function App() {
       <InterfaceFX />
 
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
-        {!lightweightMode && <Suspense fallback={null}><DarkVeil
-          className="sidebar-dark-veil"
-          color="#347fa0"
-          speed={0.2}
-          scale={1.1}
-          flow={0.8}
-          warp={0.26}
-          brightness={1.15}
-          glow={0.48}
-          grain={0.012}
-          quality={0.38}
-          mouseInteraction
-          mouseStrength={0.65}
-          opacity={0.88}
-        /></Suspense>}
+        {!lightweightMode && (
+          <div className="sidebar-background" aria-hidden="true">
+            <Suspense fallback={null}><DarkVeil
+              className="sidebar-dark-veil"
+              color="#347fa0"
+              speed={0.2}
+              scale={1.1}
+              flow={0.8}
+              warp={0.26}
+              brightness={1.15}
+              glow={0.48}
+              grain={0.012}
+              quality={0.38}
+              mouseInteraction
+              mouseStrength={0.65}
+              opacity={0.88}
+            /></Suspense>
+          </div>
+        )}
         <button className="close-nav" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={18} /></button>
 
         <div className="nav-label">OPERATIONS</div>

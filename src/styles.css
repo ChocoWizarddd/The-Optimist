@@ -131,9 +131,18 @@ img, canvas { max-width: 100%; display: block; }
   isolation: isolate;
   overflow: hidden;
 }
+.sidebar-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
 .sidebar-dark-veil {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   opacity: 1;
   pointer-events: none;
@@ -145,7 +154,7 @@ img, canvas { max-width: 100%; display: block; }
   background: linear-gradient(180deg, rgba(5, 8, 10, 0.02), rgba(5, 8, 10, 0.24));
   pointer-events: none;
 }
-.sidebar > :not(.sidebar-dark-veil) {
+.sidebar > :not(.sidebar-dark-veil):not(.sidebar-background) {
   position: relative;
   z-index: 1;
 }
