@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import threading
 import time
 from collections import defaultdict, deque
@@ -41,16 +42,70 @@ class ConnectRequest(BaseModel):
     baud_rate: int = Field(ge=1200, le=2_000_000)
 
 
+SENSOR_ALIASES = {
+    "temperature": ("temperature", "temp", "temperature_c", "temp_c"),
+    "humidity": ("humidity", "relative_humidity", "humidity_pct", "rh"),
+    "battery_voltage": ("battery_voltage", "battery", "voltage", "battery_v"),
+}
+
+
+def parse_serial_payload(line: str) -> Any:
+    text = line.strip().lstrip("\ufeff")
+    if not text:
+        raise ValueError("Empty serial line.")
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+
+    # Accept readable firmware output such as "Temp: 8.1 C, RH: 72%, Battery: 12.4V".
+    labels = {
+        "temperature": "temperature", "temp": "temperature", "temperature_c": "temperature", "temp_c": "temperature",
+        "humidity": "humidity", "relative_humidity": "humidity", "humidity_pct": "humidity", "rh": "humidity",
+        "battery_voltage": "battery_voltage", "battery": "battery_voltage", "voltage": "battery_voltage", "battery_v": "battery_voltage",
+    }
+    values: dict[str, Any] = {}
+    pattern = re.compile(r"([A-Za-z_ ]+)\s*[:=]\s*(-?\d+(?:\.\d+)?)")
+    for label, value in pattern.findall(text):
+        key = re.sub(r"\s+", "_", label.strip().lower())
+        if key in labels:
+            values[labels[key]] = value
+        elif key in ("compressor", "compressor_running", "compressor_status"):
+            values["compressor_running"] = value
+    if values:
+        return values
+
+    # Plain CSV is interpreted in the documented order: temperature, humidity, battery voltage.
+    fields = [field.strip() for field in re.split(r"[,;\t]", text)]
+    if len(fields) in (3, 4):
+        try:
+            numbers = [float(field) for field in fields[:3]]
+            payload: dict[str, Any] = dict(zip(("temperature", "humidity", "battery_voltage"), numbers))
+            if len(fields) == 4:
+                payload["compressor_running"] = fields[3]
+            return payload
+        except ValueError:
+            pass
+    raise ValueError("Serial line is not a supported sensor reading format.")
+
+
 def normalize(payload: Any) -> dict[str, Any]:
     if not isinstance(payload, dict):
-        raise ValueError("Each serial line must be a JSON object.")
-    required = ("device_id", "temperature", "humidity", "battery_voltage", "compressor_running")
-    missing = [key for key in required if key not in payload]
+        raise ValueError("Each serial line must contain temperature, humidity and battery voltage readings.")
+
+    source: dict[str, Any] = dict(payload)
+    for canonical, aliases in SENSOR_ALIASES.items():
+        if canonical not in source:
+            match = next((payload[key] for key in aliases if key in payload), None)
+            if match is not None:
+                source[canonical] = match
+    required = ("temperature", "humidity", "battery_voltage")
+    missing = [key for key in required if key not in source]
     if missing:
         raise ValueError(f"Missing required field(s): {', '.join(missing)}")
 
     def number(key: str) -> float:
-        value = payload[key]
+        value = source[key]
         if isinstance(value, bool):
             raise ValueError(f"{key} must be numeric.")
         result = float(value)
@@ -58,27 +113,34 @@ def normalize(payload: Any) -> dict[str, Any]:
             raise ValueError(f"{key} must be a finite number.")
         return result
 
-    device_id = str(payload["device_id"]).strip()
+    device_id = str(source.get("device_id") or "OPT-001").strip()
     if not device_id or len(device_id) > 64:
         raise ValueError("device_id must be a non-empty string.")
-    compressor = payload["compressor_running"]
-    if not isinstance(compressor, bool):
-        raise ValueError("compressor_running must be JSON true or false.")
     result: dict[str, Any] = {
         "device_id": device_id,
         "temperature": number("temperature"),
         "humidity": number("humidity"),
         "battery_voltage": number("battery_voltage"),
-        "compressor_running": compressor,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "source": "LIVE",
     }
-    if "uptime_seconds" in payload:
-        result["uptime_seconds"] = max(0, int(payload["uptime_seconds"]))
-    if isinstance(payload.get("sensor_health"), dict):
-        if any(not isinstance(value, bool) for value in payload["sensor_health"].values()):
+    if "compressor_running" in source or "compressor" in source or "compressor_status" in source:
+        compressor = source.get("compressor_running", source.get("compressor", source.get("compressor_status")))
+        if isinstance(compressor, str):
+            normalized_compressor = compressor.strip().lower()
+            if normalized_compressor in ("on", "true", "1", "running"):
+                compressor = True
+            elif normalized_compressor in ("off", "false", "0", "stopped"):
+                compressor = False
+        if not isinstance(compressor, bool):
+            raise ValueError("Compressor status must be on/off or true/false when provided.")
+        result["compressor_running"] = compressor
+    if "uptime_seconds" in source:
+        result["uptime_seconds"] = max(0, int(source["uptime_seconds"]))
+    if isinstance(source.get("sensor_health"), dict):
+        if any(not isinstance(value, bool) for value in source["sensor_health"].values()):
             raise ValueError("sensor_health values must be JSON true or false.")
-        result["sensor_health"] = {str(key): bool(value) for key, value in payload["sensor_health"].items()}
+        result["sensor_health"] = {str(key): bool(value) for key, value in source["sensor_health"].items()}
     return result
 
 
@@ -89,7 +151,7 @@ def read_serial(connection: serial.Serial) -> None:
             raw = connection.readline(4096)
             if not raw:
                 continue
-            reading = normalize(json.loads(raw.decode("utf-8-sig").strip()))
+            reading = normalize(parse_serial_payload(raw.decode("utf-8-sig", errors="replace")))
             with lock:
                 latest[reading["device_id"]] = reading
                 history[reading["device_id"]].append(reading)

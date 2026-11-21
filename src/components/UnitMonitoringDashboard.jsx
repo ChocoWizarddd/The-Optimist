@@ -167,7 +167,7 @@ export default function UnitMonitoringDashboard({
               <div><small>{tx("Temperature", language).toUpperCase()}</small><b>{reading ? `${format(reading.temperature)}°C` : "—"}</b></div>
               <div><small>{tx("Humidity", language).toUpperCase()}</small><b>{reading ? `${format(reading.humidity)}%` : "—"}</b></div>
               <div><small>{tx("Battery", language).toUpperCase()}</small><b>{reading ? `${format(reading.battery_voltage, 2)} V` : "—"}</b></div>
-              <div><small>{tx("Compressor", language).toUpperCase()}</small><b>{reading ? tx(reading.compressor_running ? "On" : "Off", language).toUpperCase() : "—"}</b></div>
+              <div><small>{tx("Compressor", language).toUpperCase()}</small><b>{typeof reading?.compressor_running === "boolean" ? tx(reading.compressor_running ? "On" : "Off", language).toUpperCase() : "—"}</b></div>
             </div>
             <div className="unit-monitoring-charts">
               {CHARTS.map((chart) => (
@@ -190,7 +190,9 @@ export default function UnitMonitoringDashboard({
               ))}
             </div>
             <footer className="unit-monitoring-foot">
-              {tx(reading?.compressor_running ? "Compressor running" : reading ? "Compressor stopped" : "Waiting for telemetry", language)}
+              {typeof reading?.compressor_running === "boolean"
+                ? tx(reading.compressor_running ? "Compressor running" : "Compressor stopped", language)
+                : reading ? tx("Sensor readings", language) : tx("Waiting for telemetry", language)}
               <span>{String(index + 1).padStart(2, "0")}</span>
             </footer>
           </section>

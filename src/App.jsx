@@ -160,7 +160,9 @@ function UnitCard({ index, reading, language = 'en' }) {
         <div className="unit-foot">
           <span>
             <Power size={13} />
-            {hasReading ? `${tx('Compressor', language)} ${tx(reading.compressor_running ? 'On' : 'Off', language)}` : tx('No telemetry', language)}
+            {hasReading && typeof reading.compressor_running === 'boolean'
+              ? `${tx('Compressor', language)} ${tx(reading.compressor_running ? 'On' : 'Off', language)}`
+              : hasReading ? tx('Sensor readings', language) : tx('No telemetry', language)}
           </span>
         </div>
       </article>
@@ -173,7 +175,7 @@ function Hero({ reading, onNavigate, language = 'en', lightweight = false }) {
     ['Chamber temperature', reading ? `${nfmt(reading.temperature)}°C` : '—'],
     ['Relative humidity', reading ? `${nfmt(reading.humidity)}%` : '—'],
     ['Battery voltage', reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'],
-    ['Compressor', reading ? (reading.compressor_running ? tx('On', language).toUpperCase() : tx('Idle', language).toUpperCase()) : '—'],
+    ['Compressor', typeof reading?.compressor_running === 'boolean' ? (reading.compressor_running ? tx('On', language).toUpperCase() : tx('Idle', language).toUpperCase()) : '—'],
   ];
   const summary = tx('A field-ready control system for solar cold storage. Monitor chamber conditions and unit health.', language);
 
@@ -497,7 +499,7 @@ export default function App() {
                 ['Temperature', reading ? `${nfmt(reading.temperature)} °C` : '—'],
                 ['Humidity', reading ? `${nfmt(reading.humidity)} %` : '—'],
                 ['Battery voltage', reading ? `${nfmt(reading.battery_voltage, 2)} V` : '—'],
-                ['Compressor', reading ? tx(reading.compressor_running ? 'On' : 'Off', language).toUpperCase() : '—'],
+                ['Compressor', typeof reading?.compressor_running === 'boolean' ? tx(reading.compressor_running ? 'On' : 'Off', language).toUpperCase() : '—'],
                 ['Uptime', Number.isFinite(Number(reading?.uptime_seconds)) ? `${Math.floor(reading.uptime_seconds / 3600)} h` : '—'],
                 [tx('Sensor health', language), reading?.sensor_health && Object.keys(reading.sensor_health).length
                   ? `${Object.values(reading.sensor_health).filter(Boolean).length} / ${Object.keys(reading.sensor_health).length} ${tx('OK', language)}`
@@ -817,21 +819,6 @@ export default function App() {
 
           {mode === 'live' && <SerialBridgePanel />}
 
-          {mode === 'live' && error && (
-            <div className="offline-banner">
-              <WifiOff size={17} />
-              <div>
-                <b>HARDWARE BACKEND DISCONNECTED</b>
-                <small>
-                  No values are generated in Live mode.{' '}
-                  {reading
-                    ? `Showing last successful reading from ${new Date(lastSuccess).toLocaleTimeString()} as stale.`
-                    : 'Waiting for /api/status from the FastAPI backend.'}
-                </small>
-              </div>
-              {reading && <span className="stale-tag">STALE</span>}
-            </div>
-          )}
           {error && mode === 'demo' && <div className="error-banner">{error}</div>}
 
           {pageContent()}

@@ -1875,3 +1875,9 @@ img, canvas { max-width: 100%; display: block; }
   .ticker:not(.ticker--static), .hero-orbit, .live-dot { animation: none !important; }
   .panel, .unit-card, .nav-item, .sidebar { transition-duration: 0.01ms !important; }
 }
+
+.serial-bridge__connected-row { display: flex; align-items: center; justify-content: flex-end; margin-top: 8px; }
+.serial-bridge__connected-row > span { display: none; }
+.serial-bridge__disconnect { padding: 5px 9px; border: 1px solid var(--panel-border); border-radius: 7px; color: var(--ink-dim); font-size: 9px; letter-spacing: .06em; }
+.serial-bridge__disconnect:hover { color: var(--ink); border-color: rgba(255,255,255,.22); }
+.serial-bridge--connected { padding-top: 12px; padding-bottom: 10px; }
