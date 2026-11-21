@@ -3,7 +3,11 @@ import { Cable, CircleCheck, PlugZap, RefreshCw, WifiOff } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
-const isUsbPort = (item) => /usb|serial|uart|ch340|ch910|cp210|ftdi/i.test(`${item?.description || ''} ${item?.hwid || ''}`);
+const isUsbPort = (item) => {
+  const details = `${item?.description || ''} ${item?.hwid || ''}`;
+  if (/bluetooth|bthenum/i.test(details)) return false;
+  return /\busb\b|vid:pid|ch340|ch910|cp210|ftdi|silicon labs/i.test(details);
+};
 
 async function apiRequest(path, options) {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -23,7 +27,7 @@ export default function SerialBridgePanel() {
   const [health, setHealth] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const autoConnectAttempted = useRef('');
+  const autoConnectAttempted = useRef({ port: '', at: 0 });
 
   const refresh = useCallback(async () => {
     try {
@@ -45,8 +49,9 @@ export default function SerialBridgePanel() {
       const wrongSilentPort = healthResult.serial_connected && !healthResult.last_data_at && (!activePort || !isUsbPort(activePort));
       const shouldConnect = usbPorts.length === 1 && (!healthResult.serial_connected || wrongSilentPort);
       const target = usbPorts[0];
-      if (shouldConnect && target && autoConnectAttempted.current !== target.device) {
-        autoConnectAttempted.current = target.device;
+      const attemptExpired = Date.now() - autoConnectAttempted.current.at >= 10_000;
+      if (shouldConnect && target && (autoConnectAttempted.current.port !== target.device || attemptExpired)) {
+        autoConnectAttempted.current = { port: target.device, at: Date.now() };
         setBusy(true);
         try {
           if (healthResult.serial_connected) await apiRequest('/api/serial/disconnect', { method: 'POST' });
@@ -150,7 +155,7 @@ export default function SerialBridgePanel() {
             <button type="button" className="btn btn--primary serial-bridge__action" onClick={connect} disabled={busy || !port}>
               <PlugZap size={15} /> {busy ? 'PLEASE WAIT' : 'CONNECT USB'}
             </button>
-            <button type="button" className="serial-bridge__refresh" onClick={() => { autoConnectAttempted.current = ''; refresh(); }} disabled={busy} aria-label="Refresh serial ports" title="Refresh serial ports">
+            <button type="button" className="serial-bridge__refresh" onClick={() => { autoConnectAttempted.current = { port: '', at: 0 }; refresh(); }} disabled={busy} aria-label="Refresh serial ports" title="Refresh serial ports">
               <RefreshCw size={15} />
             </button>
           </div>
