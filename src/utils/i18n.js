@@ -53,6 +53,9 @@ const labels = {
 };
 
 export function translateNav(label, language) {
+  if (String(label).toLowerCase() === 'our products') {
+    return commonTranslations[language]?.['Our Products'] || label;
+  }
   const index = ['Overview', 'Live Monitoring', 'Storage Units', 'Weather', 'Alerts & Events', 'Maintenance', 'Reports']
     .findIndex((item) => item.toLowerCase() === String(label).toLowerCase());
   return index < 0 ? label : (labels[language]?.[index] || label);

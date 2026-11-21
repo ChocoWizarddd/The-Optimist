@@ -67,7 +67,7 @@ Live mode polls `GET /api/status?device_id=OPT-001` for the selected device at `
 
    Keep this terminal open. The bridge listens only on this computer at `127.0.0.1:8000`.
 4. Start the React app with `npm run dev`, choose **Live**, then select the ESP32 COM port and matching baud rate in the **Connect ESP32** panel.
-5. The ESP32 firmware must send one complete sensor reading per line, ending in a newline. JSON, labeled text, and CSV are supported. The three required measurements are temperature, humidity, and battery voltage; `device_id` defaults to `OPT-001`, and compressor state is optional. JSON example:
+5. The ESP32 firmware must send newline-terminated sensor data. Each line may contain one or more measured fields: temperature, humidity, and/or battery voltage. JSON and labeled text support partial readings; CSV uses the documented three-field order. `device_id` defaults to `OPT-001`, and compressor state is optional. The bridge keeps the latest received value for each field for that device. Missing fields stay missing and are shown as unavailable; the bridge never fills them with generated values. JSON example:
 
    ```json
    {"temperature":8.2,"humidity":72,"battery_voltage":12.4}
@@ -75,7 +75,9 @@ Live mode polls `GET /api/status?device_id=OPT-001` for the selected device at `
 
    This is a payload example only; it is not a claimed sensor reading. Send real measured values from the ESP32. `uptime_seconds` and a boolean `sensor_health` object are optional. Do not leave Arduino Serial Monitor open while the bridge owns the port.
 
-The COM port list is discovered by PySerial; when there is one USB serial adapter it is preferred automatically over Bluetooth ports. The UI reports disconnected until the bridge has received valid, fresh sensor data. Labeled text such as `Temperature: 8.2 C, Humidity: 72%, Battery: 12.4V` and CSV in `temperature,humidity,battery_voltage` order are also supported. Custom binary serial protocols still require a matching decoder in `backend/main.py`. The bridge is read-only and does not issue compressor commands.
+The COM port list is discovered by PySerial; when there is one USB serial adapter it is preferred automatically over Bluetooth ports. The UI reports connected separately from whether valid sensor data has arrived. Labeled text such as `Temperature: 8.2 C, Humidity: 72%, Battery: 12.4V` is supported. CSV uses the order `temperature,humidity,battery_voltage` and therefore must contain all three values. Custom binary serial protocols still require a matching decoder in `backend/main.py`. The bridge is read-only and does not issue compressor commands.
+
+The Products page lists the 2×2, 4×4, and 8×8 offerings. Product descriptions are maintained in `src/data/productCatalog.js`; prices are intentionally shown as “Price on request” until verified amounts are entered in that file.
 
 The Vercel-hosted UI can only see a bridge running on the same computer as the browser, and browser security/CORS settings can affect that setup. For initial hardware bring-up, use the local Vite dashboard and local bridge on the same laptop.
 

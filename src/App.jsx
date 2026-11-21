@@ -14,6 +14,7 @@ import {
   Factory,
   Languages,
   Menu,
+  Package,
   Power,
   Wifi,
   WifiOff,
@@ -25,6 +26,7 @@ import SerialBridgePanel from './components/SerialBridgePanel';
 import Antigravity from './components/Antigravity';
 import InterfaceFX, { Magnetic, Tilt, useReveal } from './components/InterfaceFX';
 import { LANGUAGES, getLocale, languageLabel, translateNav, translateText as tx } from './utils/i18n';
+import { productCatalog } from './data/productCatalog';
 
 const CoolerModel = lazy(() => import('./components/CoolerModel'));
 const UnitMonitoringDashboard = lazy(() => import('./components/UnitMonitoringDashboard'));
@@ -37,10 +39,11 @@ const nav = [
   { label: 'Overview', icon: Activity, code: '01' },
   { label: 'Live Monitoring', icon: Activity, code: '02' },
   { label: 'Storage Units', icon: Box, code: '03' },
-  { label: 'Weather', icon: CloudSun, code: '04' },
-  { label: 'Alerts & Events', icon: AlertTriangle, code: '05' },
-  { label: 'Maintenance', icon: Wrench, code: '06' },
-  { label: 'Reports', icon: BarChart3, code: '07' },
+  { label: 'Our Products', icon: Package, code: '04' },
+  { label: 'Weather', icon: CloudSun, code: '05' },
+  { label: 'Alerts & Events', icon: AlertTriangle, code: '06' },
+  { label: 'Maintenance', icon: Wrench, code: '07' },
+  { label: 'Reports', icon: BarChart3, code: '08' },
 ];
 
 const DEVICES = Array.from({ length: 6 }, (_, i) => `OPT-00${i + 1}`);
@@ -59,6 +62,15 @@ const initSettings = {
 };
 
 const nfmt = (n, d = 1) => (Number.isFinite(+n) ? (+n).toFixed(d) : '—');
+
+function hasAbnormalSensorReading(reading) {
+  const temperatureInvalid = reading.temperature != null &&
+    (!Number.isFinite(Number(reading.temperature)) || reading.temperature < -40 || reading.temperature > 85);
+  const humidityInvalid = reading.humidity != null &&
+    (!Number.isFinite(Number(reading.humidity)) || reading.humidity < 0 || reading.humidity > 100);
+  const batteryInvalid = reading.battery_voltage != null && !Number.isFinite(Number(reading.battery_voltage));
+  return temperatureInvalid || humidityInvalid || batteryInvalid;
+}
 
 function Eyebrow({ children, index, language = 'en' }) {
   return (
@@ -167,6 +179,35 @@ function UnitCard({ index, reading, language = 'en' }) {
         </div>
       </article>
     </Tilt>
+  );
+}
+
+function ProductCard({ product, language = 'en' }) {
+  const price = product.priceInr == null
+    ? tx('Price on request', language)
+    : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(product.priceInr);
+
+  return (
+    <article className="product-card panel" data-reveal="up">
+      <header className="product-card__head">
+        <span className="product-card__icon"><Package size={19} /></span>
+        <span className="product-card__type">{tx('COLD STORAGE', language)}</span>
+      </header>
+      <h3 className="product-card__size">{product.size}</h3>
+      <p className="product-card__summary">{tx(product.summary, language)}</p>
+      <div className="product-card__price">
+        <span>{tx('PRICE', language)}</span>
+        <strong>{price}</strong>
+      </div>
+      <section className="product-card__why">
+        <h4>{tx('Why choose this size?', language)}</h4>
+        <p>{tx(product.why, language)}</p>
+      </section>
+      <footer className="product-card__best-for">
+        <span>{tx('SUITED FOR', language)}</span>
+        <b>{tx(product.bestFor, language)}</b>
+      </footer>
+    </article>
   );
 }
 
@@ -367,7 +408,7 @@ export default function App() {
       { key: 'high-humidity', active: reading.humidity > +settings.humidityMax, severity: 'Warning', type: 'High humidity', description: 'Humidity is above configured upper threshold.' },
       { key: 'low-humidity', active: reading.humidity < +settings.humidityMin, severity: 'Warning', type: 'Low humidity', description: 'Humidity is below configured lower threshold.' },
       { key: 'low-battery', active: reading.battery_voltage < +settings.batteryWarning, severity: 'Critical', type: 'Low battery voltage', description: 'Battery voltage is below configured warning threshold.' },
-      { key: 'abnormal', active: !Number.isFinite(+reading.temperature) || !Number.isFinite(+reading.humidity) || !Number.isFinite(+reading.battery_voltage) || reading.temperature < -40 || reading.temperature > 85 || reading.humidity < 0 || reading.humidity > 100, severity: 'Critical', type: 'Abnormal sensor readings', description: 'One or more sensor values are missing or outside basic physical bounds.' },
+      { key: 'abnormal', active: hasAbnormalSensorReading(reading), severity: 'Critical', type: 'Abnormal sensor readings', description: 'One or more sensor values are outside basic physical bounds.' },
       { key: 'sensor-disconnected', active: reading.sensor_health && Object.values(reading.sensor_health).some((x) => x === false), severity: 'Warning', type: 'Sensor disconnected', description: 'Backend reports one or more disconnected sensors.' },
     ];
     const active = checks.filter((x) => x.active);
@@ -551,6 +592,23 @@ export default function App() {
                     language={language}
                   />
                 </div>
+              ))}
+            </div>
+          </>
+        );
+
+      case 'Our Products':
+        return (
+          <>
+            <PageIntro
+              eyebrow="COLD STORAGE RANGE"
+              title="Our Products"
+              copy="Compare storage sizes and choose the setup that fits your operation."
+              language={language}
+            />
+            <div className="product-grid">
+              {productCatalog.map((product) => (
+                <ProductCard key={product.id} product={product} language={language} />
               ))}
             </div>
           </>

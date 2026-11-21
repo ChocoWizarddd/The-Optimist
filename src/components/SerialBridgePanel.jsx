@@ -126,16 +126,25 @@ export default function SerialBridgePanel() {
         </div>
         <div className={`serial-bridge__status ${connected ? 'is-connected' : ''}`}>
           {connected ? <CircleCheck size={14} /> : <WifiOff size={14} />}
-          <span>{connected ? `CONNECTED · ${health.port}` : 'NOT CONNECTED'}</span>
+          <span>{connected
+            ? `${health.last_data_at ? 'DATA RECEIVED' : 'NO SENSOR DATA'} · ${health.port}`
+            : 'NOT CONNECTED'}</span>
         </div>
       </div>
       {connected ? (
-        <div className="serial-bridge__connected-row">
-          <span><PlugZap size={14} /> USB · {health.port}</span>
-          <button type="button" className="serial-bridge__disconnect" onClick={disconnect} disabled={busy}>
-            {busy ? 'PLEASE WAIT' : 'DISCONNECT'}
-          </button>
-        </div>
+        <>
+          <div className="serial-bridge__connected-row">
+            <span><PlugZap size={14} /> USB · {health.port}</span>
+            <button type="button" className="serial-bridge__disconnect" onClick={disconnect} disabled={busy}>
+              {busy ? 'PLEASE WAIT' : 'DISCONNECT'}
+            </button>
+          </div>
+          {!health.last_data_at && (
+            <p className="serial-bridge__message" role="status">
+              {health.last_serial_error || 'Waiting for newline-terminated ESP32 sensor data. Send JSON with at least one measured field: temperature, humidity, or battery_voltage.'}
+            </p>
+          )}
+        </>
       ) : (
         <>
           <div className="serial-bridge__controls">

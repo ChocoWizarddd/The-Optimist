@@ -99,10 +99,10 @@ def normalize(payload: Any) -> dict[str, Any]:
             match = next((payload[key] for key in aliases if key in payload), None)
             if match is not None:
                 source[canonical] = match
-    required = ("temperature", "humidity", "battery_voltage")
-    missing = [key for key in required if key not in source]
-    if missing:
-        raise ValueError(f"Missing required field(s): {', '.join(missing)}")
+    sensor_fields = ("temperature", "humidity", "battery_voltage")
+    present_fields = [key for key in sensor_fields if key in source]
+    if not present_fields:
+        raise ValueError("Serial line does not contain a temperature, humidity, or battery reading.")
 
     def number(key: str) -> float:
         value = source[key]
@@ -118,12 +118,10 @@ def normalize(payload: Any) -> dict[str, Any]:
         raise ValueError("device_id must be a non-empty string.")
     result: dict[str, Any] = {
         "device_id": device_id,
-        "temperature": number("temperature"),
-        "humidity": number("humidity"),
-        "battery_voltage": number("battery_voltage"),
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "source": "LIVE",
     }
+    result.update({key: number(key) for key in present_fields})
     if "compressor_running" in source or "compressor" in source or "compressor_status" in source:
         compressor = source.get("compressor_running", source.get("compressor", source.get("compressor_status")))
         if isinstance(compressor, str):
@@ -153,8 +151,12 @@ def read_serial(connection: serial.Serial) -> None:
                 continue
             reading = normalize(parse_serial_payload(raw.decode("utf-8-sig", errors="replace")))
             with lock:
-                latest[reading["device_id"]] = reading
-                history[reading["device_id"]].append(reading)
+                device_id = reading["device_id"]
+                # Firmware may emit sensor fields in separate lines. Keep the
+                # last measured value per field; never synthesize missing data.
+                merged = {**latest.get(device_id, {}), **reading}
+                latest[device_id] = merged
+                history[device_id].append(dict(merged))
                 last_serial_error = None
         except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
             with lock:
